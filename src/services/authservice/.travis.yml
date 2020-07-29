@@ -1,0 +1,24 @@
+language: go
+go:
+  - 1.13.x
+dist: xenial
+services:
+  - mysql
+  - redis-server
+addons:
+  postgresql: "9.6"
+env:
+  - GO111MODULE=on
+
+before_install:
+  - go get golang.org/x/tools/cmd/cover
+  - go get github.com/mattn/goveralls
+script: make test-ci
+
+after_success:
+  - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+      make docker;
+      docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+      docker push keratin/authn-server:latest;
+    fi
