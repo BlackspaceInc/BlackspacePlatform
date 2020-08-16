@@ -4,12 +4,12 @@ on:
   pull_request:
     branches:
       - master
-      - development
+      - dev
       - documentation
   push:
     branches:
       - master
-      - development
+      - dev
       - documentation
 
 jobs:
