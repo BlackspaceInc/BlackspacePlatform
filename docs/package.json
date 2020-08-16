@@ -20,6 +20,7 @@
     "classnames": "^2.2.6",
     "docusaurus-lunr-search": "^1.0.2",
     "lunr": "^2.3.8",
+    "prism-react-renderer": "^1.1.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "remark-admonitions": "^1.2.1"

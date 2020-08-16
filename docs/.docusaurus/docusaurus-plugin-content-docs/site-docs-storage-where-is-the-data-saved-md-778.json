@@ -5,7 +5,7 @@
   "title": "Where is the data saved?",
   "description": "When output files are saved at a centralized location, we can display them from the web application or easily access them from scripts.",
   "source": "@site/docs/storage/where-is-the-data-saved.md",
-  "permalink": "/storage/where-is-the-data",
+  "permalink": "/docs/storage/where-is-the-data",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/storage/where-is-the-data-saved.md",
   "sidebar_label": "Where is the data?"
 }

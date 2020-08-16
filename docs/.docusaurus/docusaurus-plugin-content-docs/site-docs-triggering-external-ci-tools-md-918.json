@@ -5,7 +5,7 @@
   "title": "Triggering CI and third-party tools via the web application",
   "description": "You often want to integrate various tools into your workflow, or show status badges. QA-Board lets you connect to those third-party tools on each commit's page and on commit index pages:",
   "source": "@site/docs/triggering-external-ci-tools.md",
-  "permalink": "/triggering-third-party-tools",
+  "permalink": "/docs/triggering-third-party-tools",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/triggering-external-ci-tools.md",
   "sidebar_label": "Triggering External Tools"
 }

@@ -5,7 +5,7 @@
   "title": "Visualizing your algorithm's outputs",
   "description": "The run()function wrapping your code receives an output_directory where it can create all kinds of files. Usually, you only want to look at a few of those files, the rest being debug data. Visualizations help you declare pre-sets of relevant files.",
   "source": "@site/docs/visualizations.md",
-  "permalink": "/visualizations",
+  "permalink": "/docs/visualizations",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/visualizations.md",
   "sidebar_label": "Visualizations"
 }

@@ -5,16 +5,16 @@
   "title": "Deployment Flow",
   "description": "CI/CD Flows (Deployments)",
   "source": "@site/docs/technology/deployments/readme.md",
-  "permalink": "/technology/deployments/deployment",
+  "permalink": "/docs/technology/deployments/deployment",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/deployments/readme.md",
   "sidebar_label": "Deployments",
   "sidebar": "docs",
   "previous": {
     "title": "Frontend Production Ready Checklist",
-    "permalink": "/technology/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist"
+    "permalink": "/docs/technology/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist"
   },
   "next": {
     "title": "Backend System Benchmarks",
-    "permalink": "/technology/system-benchmarks/system-benchmarks"
+    "permalink": "/docs/technology/system-benchmarks/system-benchmarks"
   }
 }

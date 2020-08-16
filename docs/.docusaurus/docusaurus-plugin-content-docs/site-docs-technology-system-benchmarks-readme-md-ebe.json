@@ -4,16 +4,16 @@
   "isDocsHomePage": false,
   "title": "Backend System Benchmarks",
   "source": "@site/docs/technology/system-benchmarks/readme.md",
-  "permalink": "/technology/system-benchmarks/system-benchmarks",
+  "permalink": "/docs/technology/system-benchmarks/system-benchmarks",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/system-benchmarks/readme.md",
   "sidebar_label": "System Benchmarks",
   "sidebar": "docs",
   "previous": {
     "title": "Deployment Flow",
-    "permalink": "/technology/deployments/deployment"
+    "permalink": "/docs/technology/deployments/deployment"
   },
   "next": {
     "title": "Blackspace Analytics Roadmap",
-    "permalink": "/technology/roadmap/blackspace-analytics/blackspace-analytics-roadmap"
+    "permalink": "/docs/technology/roadmap/blackspace-analytics/blackspace-analytics-roadmap"
   }
 }

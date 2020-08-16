@@ -5,7 +5,7 @@
   "title": "QA-Board's API",
   "description": "CLI API",
   "source": "@site/docs/integrating-qa-in-scripts.md",
-  "permalink": "/apis",
+  "permalink": "/docs/apis",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/integrating-qa-in-scripts.md",
   "sidebar_label": "APIs"
 }

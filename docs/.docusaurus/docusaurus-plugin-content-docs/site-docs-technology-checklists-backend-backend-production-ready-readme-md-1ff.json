@@ -5,16 +5,16 @@
   "title": "Backend Production Ready Checklist",
   "description": "Production Ready Checklist",
   "source": "@site/docs/technology/checklists/backend/backend-production-ready/readme.md",
-  "permalink": "/technology/checklists/backend/backend-production-ready/production-ready-checklist",
+  "permalink": "/docs/technology/checklists/backend/backend-production-ready/production-ready-checklist",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/checklists/backend/backend-production-ready/readme.md",
   "sidebar_label": "Backend Production Checklist",
   "sidebar": "docs",
   "previous": {
     "title": "Kubernetes Best Patterns",
-    "permalink": "/technology/checklists/backend/backend-kubernetes/kubernetes-patterns"
+    "permalink": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-patterns"
   },
   "next": {
     "title": "Backend Production Ready Security Checklist",
-    "permalink": "/technology/checklists/backend/backend-security-checklist/production-security-checklist"
+    "permalink": "/docs/technology/checklists/backend/backend-security-checklist/production-security-checklist"
   }
 }

@@ -13,7 +13,7 @@
       "type": "package",
       "version": "2.0.0-alpha.61"
     },
-    "docusaurus-plugin-sitemap": {
+    "docusaurus-plugin-debug": {
       "type": "package",
       "version": "2.0.0-alpha.61"
     },
@@ -21,9 +21,9 @@
       "type": "package",
       "version": "2.0.0-alpha.61"
     },
-    "docusurus-lunr-search": {
+    "docusaurus-theme-search-algolia": {
       "type": "package",
-      "version": "1.0.3"
+      "version": "2.0.0-alpha.61"
     }
   }
 }

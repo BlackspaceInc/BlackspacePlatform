@@ -5,12 +5,12 @@
   "title": "Blackspace General Product Roadmap",
   "description": "Project Plan",
   "source": "@site/docs/technology/roadmap/readme.md",
-  "permalink": "/technology/roadmap/blackspace-roadmap",
+  "permalink": "/docs/technology/roadmap/blackspace-roadmap",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/roadmap/readme.md",
   "sidebar_label": "General Roadmap",
   "sidebar": "docs",
   "previous": {
     "title": "Blackspace Social Roadmap",
-    "permalink": "/technology/roadmap/blackspace-social/blackspace-social-roadmap"
+    "permalink": "/docs/technology/roadmap/blackspace-social/blackspace-social-roadmap"
   }
 }

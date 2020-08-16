@@ -7,6 +7,21 @@ export default {
   },
   "onBrokenLinks": "log",
   "themeConfig": {
+    "colorMode": {
+      "defaultMode": "light",
+      "disableSwitch": false,
+      "respectPrefersColorScheme": true,
+      "switchConfig": {
+        "darkIcon": "🌙",
+        "darkIconStyle": {
+          "marginLeft": "2px"
+        },
+        "lightIcon": "☀",
+        "lightIconStyle": {
+          "marginLeft": "1px"
+        }
+      }
+    },
     "image": "img/share.jpg",
     "announcementBar": {
       "id": "supportus",
@@ -18,6 +33,7 @@ export default {
       "additionalLanguages": [
         "nginx"
       ],
+      "defaultLanguage": "javascript",
       "theme": {
         "plain": {
           "color": "#393A34",
@@ -309,7 +325,7 @@ export default {
           "position": "left"
         },
         {
-          "to": "/introduction",
+          "to": "docs/introduction",
           "label": "Docs",
           "position": "left"
         },
@@ -327,16 +343,11 @@ export default {
       ]
     },
     "sidebarCollapsible": true,
-    "colorMode": {
-      "defaultMode": "light",
-      "disableSwitch": false,
-      "respectPrefersColorScheme": false,
-      "switchConfig": {
-        "darkIcon": "🌜",
-        "darkIconStyle": {},
-        "lightIcon": "🌞",
-        "lightIconStyle": {}
-      }
+    "algolia": {
+      "apiKey": "7e47115263beea4eb52978a771750414",
+      "indexName": "docs",
+      "algoliaOptions": {},
+      "appId": "BH4D9OD16A"
     }
   },
   "presets": [
@@ -345,50 +356,27 @@ export default {
       {
         "theme": {
           "customCss": [
-            "/Users/yoanyomba/go/src/github.com/BlackspaceInc/BlackspacePlatform/docs/src/css/custom.css",
-            "/Users/yoanyomba/go/src/github.com/BlackspaceInc/BlackspacePlatform/docs/node_modules/remark-admonitions/styles/infima.css"
+            "/Users/yoanyomba/go/src/github.com/BlackspaceInc/BlackspacePlatform/docs/src/css/custom.css"
           ]
         },
         "blog": {
           "path": "blog/engineering",
           "routeBasePath": "blog",
-          "blogDescription": "Blackspace Engineering",
-          "feedOptions": {
-            "type": "all",
-            "copyright": "Copyright © 2020 Blackspace Platform, Inc."
-          },
-          "include": [
-            "*.md",
-            "*.mdx"
-          ],
-          "postsPerPage": 10,
-          "blogListComponent": "@theme/BlogListPage",
-          "blogPostComponent": "@theme/BlogPostPage",
-          "blogTagsListComponent": "@theme/BlogTagsListPage",
-          "blogTagsPostsComponent": "@theme/BlogTagsPostsPage",
-          "remarkPlugins": [],
-          "rehypePlugins": [],
-          "beforeDefaultRemarkPlugins": [],
-          "beforeDefaultRehypePlugins": [],
-          "truncateMarker": {},
-          "showReadingTime": true
+          "blogDescription": "Blackspace Engineering"
         },
         "docs": {
           "path": "docs",
-          "routeBasePath": "",
+          "routeBasePath": "docs",
           "sidebarPath": "/Users/yoanyomba/go/src/github.com/BlackspaceInc/BlackspacePlatform/docs/sidebars.js",
-          "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/",
-          "admonitions": {}
+          "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/"
         }
       }
     ]
-  ],
-  "plugins": [
-    "/Users/yoanyomba/go/src/github.com/BlackspaceInc/BlackspacePlatform/docs/node_modules/docusaurus-lunr-search/src/index.js"
   ],
   "url": "https://blackspaceinc.github.io",
   "baseUrl": "/",
   "organizationName": "BlackspaceInc",
   "projectName": "BlackspacePlatform",
+  "plugins": [],
   "themes": []
 };

@@ -5,7 +5,7 @@
   "title": "LSF Integration",
   "description": "QA-Board can use the LSF job management system to submit batch jobs.",
   "source": "@site/docs/lsf-cluster-integration.md",
-  "permalink": "/lsf-integration",
+  "permalink": "/docs/lsf-integration",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/lsf-cluster-integration.md",
   "sidebar_label": "LSF Integration"
 }

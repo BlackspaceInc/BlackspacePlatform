@@ -28,6 +28,23 @@ var config = {
   },
   onBrokenLinks: 'log',
   themeConfig: {
+    colorMode: {
+      defaultMode: 'light',
+      disableSwitch: false,
+      respectPrefersColorScheme: true,
+      switchConfig: {
+        darkIcon: '🌙',
+        darkIconStyle: {
+          // Style object passed to inline CSS
+          // For more information about styling options visit: https://reactjs.org/docs/dom-elements.html#style
+          marginLeft: '2px',
+        },
+        lightIcon: '\u2600',
+        lightIconStyle: {
+          marginLeft: '1px',
+        },
+      },
+    },
     image: "img/share.jpg",
     announcementBar: {
       id: 'supportus',
@@ -37,6 +54,7 @@ var config = {
     },
     prism: {
       additionalLanguages: ['nginx'],
+      defaultLanguage: 'javascript',
       theme: require('prism-react-renderer/themes/github'),
       darkTheme: require('prism-react-renderer/themes/dracula'),
     },
@@ -126,7 +144,7 @@ var config = {
       hideOnScroll: true,
       items: [
         {to: 'blog', label: 'Blog', position: 'left'}, // or position: 'right'
-        {to: is_for_webapp ? '/introduction' : 'docs/introduction', label: 'Docs', position: 'left'},
+        {to: 'docs/introduction', label: 'Docs', position: 'left'},
         {
           href: 'https://github.com/BlackspaceInc/BlackspacePlatform',
           position: 'left',
@@ -152,53 +170,19 @@ config = {
       '@docusaurus/preset-classic',
       {
         theme: {
-          customCss: [require.resolve('./src/css/custom.css'), require.resolve('remark-admonitions/styles/infima.css')],
+          customCss: [require.resolve('./src/css/custom.css')],
         },
         blog: {
           path: 'blog/engineering',
           routeBasePath: 'blog',
           blogDescription: 'Blackspace Engineering',
-          feedOptions: {
-            type: 'all',
-            copyright: `Copyright © ${new Date().getFullYear()} Blackspace Platform, Inc.`,
-          },
-          include: ['*.md', '*.mdx'],
-          postsPerPage: 10,
-          /**
-           * Theme components used by the blog pages.
-           */
-          blogListComponent: '@theme/BlogListPage',
-          blogPostComponent: '@theme/BlogPostPage',
-          blogTagsListComponent: '@theme/BlogTagsListPage',
-          blogTagsPostsComponent: '@theme/BlogTagsPostsPage',
-          /**
-           * Remark and Rehype plugins passed to MDX.
-           */
-          remarkPlugins: [
-            /* require('remark-math') */
-          ],
-          rehypePlugins: [],
-          /**
-           * Custom Remark and Rehype plugins passed to MDX before
-           * the default Docusaurus Remark and Rehype plugins.
-           */
-          beforeDefaultRemarkPlugins: [],
-          beforeDefaultRehypePlugins: [],
-          /**
-           * Truncate marker, can be a regex or string.
-           */
-          truncateMarker: /<!--\s*(truncate)\s*-->/,
-          /**
-           * Show estimated reading time for the blog post.
-           */
-          showReadingTime: true,
         },
         docs: {
           path: 'docs',
           routeBasePath: 'docs',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/',
-          admonitions: {},
+          // admonitions: {},
           // Show documentation's last contributor's name.
           // enableUpdateBy: true,
           // Show documentation's last update time.
@@ -207,52 +191,19 @@ config = {
       },
     ],
   ],
+  url: 'https://blackspaceinc.github.io',
+  baseUrl: '/',
+  organizationName: 'BlackspaceInc',
+  projectName: 'BlackspacePlatform',
 }
 
 
-if (publish_blackspace_public) {
-  config.themeConfig.algolia = {
-    apiKey: '7e47115263beea4eb52978a771750414',
-    indexName: 'docs',
-    algoliaOptions: {
-      // facetFilters: [`version:${versions[0]}`],
-    },
-  }
-} else {
-  config.plugins = [require.resolve('docusaurus-lunr-search')]
-}
-
-
-
-if (is_for_webapp) {
-  // build for the app at /docs
-  config = {
-    ...config,
-    url: 'https://blackspaceinc.github.io',
-    baseUrl: '/',
-    organizationName: 'BlackspaceInc',
-    projectName: 'BlackspacePlatform',
-  }
-  config.presets[0][1].docs.routeBasePath = '';
-} else {
-  if (publish_blackspace_private) {
-    config = {
-      ...config,
-      url: 'https://blackspaceinc.github.io',
-      baseUrl: '/',
-      organizationName: 'BlackspaceInc',
-      projectName: 'BlackspacePlatform',
-    }  
-  }
-  if (publish_blackspace_public) {
-    config = {
-      ...config,
-      url: 'https://blackspaceinc.github.io',
-      baseUrl: '/',
-      organizationName: 'BlackspaceInc',
-      projectName: 'BlackspacePlatform',
-    }
-  }
+config.themeConfig.algolia = {
+  apiKey: '7e47115263beea4eb52978a771750414',
+  indexName: 'docs',
+  algoliaOptions: {
+    // facetFilters: [`version:${versions[0]}`],
+  },
 }
 
 module.exports = config;

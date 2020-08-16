@@ -5,7 +5,7 @@
   "title": "Using input metadata and integrating with external databases",
   "description": "Metadata",
   "source": "@site/docs/metadata-integration-external-databases.md",
-  "permalink": "/metadata-integration-external-databases",
+  "permalink": "/docs/metadata-integration-external-databases",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/metadata-integration-external-databases.md",
   "sidebar_label": "Metadata & External Databases"
 }

@@ -5,16 +5,16 @@
   "title": "Frontend Production Ready Design Checklist",
   "description": "Front-End Design Checklist",
   "source": "@site/docs/technology/checklists/frontend/frontend-design-checklist/README.md",
-  "permalink": "/technology/checklists/frontend/frontend-design-checklist/frontend-design-checklist",
+  "permalink": "/docs/technology/checklists/frontend/frontend-design-checklist/frontend-design-checklist",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/checklists/frontend/frontend-design-checklist/README.md",
   "sidebar_label": "Frontend Checklist",
   "sidebar": "docs",
   "previous": {
     "title": "Frontend Production Ready Performance Checklist",
-    "permalink": "/technology/checklists/frontend/frontend-performance-checklist/frontend-performance-checklist"
+    "permalink": "/docs/technology/checklists/frontend/frontend-performance-checklist/frontend-performance-checklist"
   },
   "next": {
     "title": "Frontend Production Ready Checklist",
-    "permalink": "/technology/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist"
+    "permalink": "/docs/technology/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist"
   }
 }

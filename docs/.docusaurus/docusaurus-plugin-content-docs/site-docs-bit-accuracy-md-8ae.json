@@ -5,7 +5,7 @@
   "title": "Bit accuracy tests",
   "description": "QA-Board was started at Samsung, within a business unit focused on hardware digital design. Because of those root, QA-Board provides a number of ways to check that results are equal from commit to commit.",
   "source": "@site/docs/bit-accuracy.md",
-  "permalink": "/bit-accuracy",
+  "permalink": "/docs/bit-accuracy",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/bit-accuracy.md",
   "sidebar_label": "Bit Accuracy"
 }

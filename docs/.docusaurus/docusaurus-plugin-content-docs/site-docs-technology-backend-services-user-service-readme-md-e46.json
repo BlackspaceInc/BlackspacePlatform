@@ -4,16 +4,16 @@
   "isDocsHomePage": false,
   "title": "User Microservice",
   "source": "@site/docs/technology/backend-services/user-service/readme.md",
-  "permalink": "/technology/backend-services/user-service/user-service",
+  "permalink": "/docs/technology/backend-services/user-service/user-service",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/backend-services/user-service/readme.md",
   "sidebar_label": "User-Service",
   "sidebar": "docs",
   "previous": {
     "title": "Company Microservice",
-    "permalink": "/technology/backend-services/company-service/company-service"
+    "permalink": "/docs/technology/backend-services/company-service/company-service"
   },
   "next": {
     "title": "Kubernetes Application Development Best Practices",
-    "permalink": "/technology/checklists/backend/backend-kubernetes/kubernetes-development"
+    "permalink": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-development"
   }
 }

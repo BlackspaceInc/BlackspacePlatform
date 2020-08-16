@@ -5,7 +5,7 @@
   "title": "Tips for CLI usage",
   "description": "CLI flags worth knowing",
   "source": "@site/docs/using-the-qa-cli.md",
-  "permalink": "/using-the-qa-cli",
+  "permalink": "/docs/using-the-qa-cli",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/using-the-qa-cli.md",
   "sidebar_label": "QA CLI Tips"
 }

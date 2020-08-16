@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[78],{128:function(s){s.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"distributed-systems","name":"distributed systems","count":1,"permalink":"/blog/tags/distributed-systems"}')}}]);

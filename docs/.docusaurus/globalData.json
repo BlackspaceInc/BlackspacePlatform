@@ -1,285 +1,285 @@
 {
   "docusaurus-plugin-content-docs": {
     "default": {
-      "path": "",
+      "path": "/docs",
       "latestVersionName": null,
       "versions": [
         {
           "name": null,
-          "path": "",
+          "path": "/docs",
           "mainDocId": "bit-accuracy",
           "docs": [
             {
               "id": "alternatives",
-              "path": "/alternatives"
+              "path": "/docs/alternatives"
             },
             {
               "id": "apis",
-              "path": "/apis"
+              "path": "/docs/apis"
             },
             {
               "id": "auto-optimization",
-              "path": "/auto-optimization"
+              "path": "/docs/auto-optimization"
             },
             {
               "id": "backend-admin/host-upgrades",
-              "path": "/backend-admin/host-upgrades"
+              "path": "/docs/backend-admin/host-upgrades"
             },
             {
               "id": "backend-admin/troubleshooting",
-              "path": "/backend-admin/troubleshooting"
+              "path": "/docs/backend-admin/troubleshooting"
             },
             {
               "id": "batches-running-on-multiple-inputs",
-              "path": "/batches-running-on-multiple-inputs"
+              "path": "/docs/batches-running-on-multiple-inputs"
             },
             {
               "id": "bit-accuracy",
-              "path": "/bit-accuracy"
+              "path": "/docs/bit-accuracy"
             },
             {
               "id": "business/business",
-              "path": "/business/business"
+              "path": "/docs/business/business"
             },
             {
               "id": "celery-integration",
-              "path": "/celery-integration"
+              "path": "/docs/celery-integration"
             },
             {
               "id": "ci-integration",
-              "path": "/ci-integration"
+              "path": "/docs/ci-integration"
             },
             {
               "id": "computing-quantitative-metrics",
-              "path": "/computing-quantitative-metrics"
+              "path": "/docs/computing-quantitative-metrics"
             },
             {
               "id": "creating-and-viewing-outputs-files",
-              "path": "/creating-and-viewing-outputs-files"
+              "path": "/docs/creating-and-viewing-outputs-files"
             },
             {
               "id": "dag-pipelines",
-              "path": "/dag-pipelines"
+              "path": "/docs/dag-pipelines"
             },
             {
               "id": "debugging-runs-with-an-IDE",
-              "path": "/debugging-runs-with-an-IDE"
+              "path": "/docs/debugging-runs-with-an-IDE"
             },
             {
               "id": "deploy",
-              "path": "/deploy"
+              "path": "/docs/deploy"
             },
             {
               "id": "faq",
-              "path": "/faq"
+              "path": "/docs/faq"
             },
             {
               "id": "inputs",
-              "path": "/inputs"
+              "path": "/docs/inputs"
             },
             {
               "id": "installation",
-              "path": "/installation"
+              "path": "/docs/installation"
             },
             {
               "id": "introduction",
-              "path": "/introduction"
+              "path": "/docs/introduction"
             },
             {
               "id": "lsf-integration",
-              "path": "/lsf-integration"
+              "path": "/docs/lsf-integration"
             },
             {
               "id": "metadata-integration-external-databases",
-              "path": "/metadata-integration-external-databases"
+              "path": "/docs/metadata-integration-external-databases"
             },
             {
               "id": "metrics-quantitative-outputs",
-              "path": "/metrics-quantitative-outputs"
+              "path": "/docs/metrics-quantitative-outputs"
             },
             {
               "id": "monorepo-support",
-              "path": "/monorepo-support"
+              "path": "/docs/monorepo-support"
             },
             {
               "id": "project-init",
-              "path": "/project-init"
+              "path": "/docs/project-init"
             },
             {
               "id": "references-and-milestones",
-              "path": "/references-and-milestones"
+              "path": "/docs/references-and-milestones"
             },
             {
               "id": "running-your-code",
-              "path": "/running-your-code"
+              "path": "/docs/running-your-code"
             },
             {
               "id": "specifying-configurations",
-              "path": "/specifying-configurations"
+              "path": "/docs/specifying-configurations"
             },
             {
               "id": "storage/artifacts",
-              "path": "/storage/artifacts"
+              "path": "/docs/storage/artifacts"
             },
             {
               "id": "storage/deleting-old-data",
-              "path": "/storage/deleting-old-data"
+              "path": "/docs/storage/deleting-old-data"
             },
             {
               "id": "storage/where-is-the-data",
-              "path": "/storage/where-is-the-data"
+              "path": "/docs/storage/where-is-the-data"
             },
             {
               "id": "technology/architecture/backend-services/services",
-              "path": "/technology/architecture/backend-services/services"
+              "path": "/docs/technology/architecture/backend-services/services"
             },
             {
               "id": "technology/architecture/instrumentation/instrumentation",
-              "path": "/technology/architecture/instrumentation/instrumentation"
+              "path": "/docs/technology/architecture/instrumentation/instrumentation"
             },
             {
               "id": "technology/architecture/metrics/metrics",
-              "path": "/technology/architecture/metrics/metrics"
+              "path": "/docs/technology/architecture/metrics/metrics"
             },
             {
               "id": "technology/architecture/service-mesh/service-mesh",
-              "path": "/technology/architecture/service-mesh/service-mesh"
+              "path": "/docs/technology/architecture/service-mesh/service-mesh"
             },
             {
               "id": "technology/backend-services/authentication-service/auth-service",
-              "path": "/technology/backend-services/authentication-service/auth-service"
+              "path": "/docs/technology/backend-services/authentication-service/auth-service"
             },
             {
               "id": "technology/backend-services/company-service/company-service",
-              "path": "/technology/backend-services/company-service/company-service"
+              "path": "/docs/technology/backend-services/company-service/company-service"
             },
             {
               "id": "technology/backend-services/email-service/email-service",
-              "path": "/technology/backend-services/email-service/email-service"
+              "path": "/docs/technology/backend-services/email-service/email-service"
             },
             {
               "id": "technology/backend-services/user-service/user-service",
-              "path": "/technology/backend-services/user-service/user-service"
+              "path": "/docs/technology/backend-services/user-service/user-service"
             },
             {
               "id": "technology/checklists/backend/backend-kubernetes/kubernetes-cluster-config",
-              "path": "/technology/checklists/backend/backend-kubernetes/kubernetes-cluster-config"
+              "path": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-cluster-config"
             },
             {
               "id": "technology/checklists/backend/backend-kubernetes/kubernetes-common",
-              "path": "/technology/checklists/backend/backend-kubernetes/kubernetes-common"
+              "path": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-common"
             },
             {
               "id": "technology/checklists/backend/backend-kubernetes/kubernetes-development",
-              "path": "/technology/checklists/backend/backend-kubernetes/kubernetes-development"
+              "path": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-development"
             },
             {
               "id": "technology/checklists/backend/backend-kubernetes/kubernetes-governance",
-              "path": "/technology/checklists/backend/backend-kubernetes/kubernetes-governance"
+              "path": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-governance"
             },
             {
               "id": "technology/checklists/backend/backend-kubernetes/kubernetes-patterns",
-              "path": "/technology/checklists/backend/backend-kubernetes/kubernetes-patterns"
+              "path": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-patterns"
             },
             {
               "id": "technology/checklists/backend/backend-kubernetes/kubernetes-standards",
-              "path": "/technology/checklists/backend/backend-kubernetes/kubernetes-standards"
+              "path": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-standards"
             },
             {
               "id": "technology/checklists/backend/backend-production-ready/production-ready-checklist",
-              "path": "/technology/checklists/backend/backend-production-ready/production-ready-checklist"
+              "path": "/docs/technology/checklists/backend/backend-production-ready/production-ready-checklist"
             },
             {
               "id": "technology/checklists/backend/backend-security-checklist/CONTRIBUTING",
-              "path": "/technology/checklists/backend/backend-security-checklist/CONTRIBUTING"
+              "path": "/docs/technology/checklists/backend/backend-security-checklist/CONTRIBUTING"
             },
             {
               "id": "technology/checklists/backend/backend-security-checklist/production-security-checklist",
-              "path": "/technology/checklists/backend/backend-security-checklist/production-security-checklist"
+              "path": "/docs/technology/checklists/backend/backend-security-checklist/production-security-checklist"
             },
             {
               "id": "technology/checklists/frontend/frontend-design-checklist/CODE_OF_CONDUCT",
-              "path": "/technology/checklists/frontend/frontend-design-checklist/CODE_OF_CONDUCT"
+              "path": "/docs/technology/checklists/frontend/frontend-design-checklist/CODE_OF_CONDUCT"
             },
             {
               "id": "technology/checklists/frontend/frontend-design-checklist/frontend-design-checklist",
-              "path": "/technology/checklists/frontend/frontend-design-checklist/frontend-design-checklist"
+              "path": "/docs/technology/checklists/frontend/frontend-design-checklist/frontend-design-checklist"
             },
             {
               "id": "technology/checklists/frontend/frontend-performance-checklist/CODE_OF_CONDUCT",
-              "path": "/technology/checklists/frontend/frontend-performance-checklist/CODE_OF_CONDUCT"
+              "path": "/docs/technology/checklists/frontend/frontend-performance-checklist/CODE_OF_CONDUCT"
             },
             {
               "id": "technology/checklists/frontend/frontend-performance-checklist/frontend-performance-checklist",
-              "path": "/technology/checklists/frontend/frontend-performance-checklist/frontend-performance-checklist"
+              "path": "/docs/technology/checklists/frontend/frontend-performance-checklist/frontend-performance-checklist"
             },
             {
               "id": "technology/checklists/frontend/frontend-prod-checklist/CHANGELOG",
-              "path": "/technology/checklists/frontend/frontend-prod-checklist/CHANGELOG"
+              "path": "/docs/technology/checklists/frontend/frontend-prod-checklist/CHANGELOG"
             },
             {
               "id": "technology/checklists/frontend/frontend-prod-checklist/CODE_OF_CONDUCT",
-              "path": "/technology/checklists/frontend/frontend-prod-checklist/CODE_OF_CONDUCT"
+              "path": "/docs/technology/checklists/frontend/frontend-prod-checklist/CODE_OF_CONDUCT"
             },
             {
               "id": "technology/checklists/frontend/frontend-prod-checklist/CONTRIBUTING",
-              "path": "/technology/checklists/frontend/frontend-prod-checklist/CONTRIBUTING"
+              "path": "/docs/technology/checklists/frontend/frontend-prod-checklist/CONTRIBUTING"
             },
             {
               "id": "technology/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist",
-              "path": "/technology/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist"
+              "path": "/docs/technology/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist"
             },
             {
               "id": "technology/checklists/readme",
-              "path": "/technology/checklists/readme"
+              "path": "/docs/technology/checklists/readme"
             },
             {
               "id": "technology/deployments/deployment",
-              "path": "/technology/deployments/deployment"
+              "path": "/docs/technology/deployments/deployment"
             },
             {
               "id": "technology/roadmap/blackspace-analytics/blackspace-analytics-roadmap",
-              "path": "/technology/roadmap/blackspace-analytics/blackspace-analytics-roadmap"
+              "path": "/docs/technology/roadmap/blackspace-analytics/blackspace-analytics-roadmap"
             },
             {
               "id": "technology/roadmap/blackspace-ecommerce/blackspace-ecommerce-roadmap",
-              "path": "/technology/roadmap/blackspace-ecommerce/blackspace-ecommerce-roadmap"
+              "path": "/docs/technology/roadmap/blackspace-ecommerce/blackspace-ecommerce-roadmap"
             },
             {
               "id": "technology/roadmap/blackspace-roadmap",
-              "path": "/technology/roadmap/blackspace-roadmap"
+              "path": "/docs/technology/roadmap/blackspace-roadmap"
             },
             {
               "id": "technology/roadmap/blackspace-social/blackspace-social-roadmap",
-              "path": "/technology/roadmap/blackspace-social/blackspace-social-roadmap"
+              "path": "/docs/technology/roadmap/blackspace-social/blackspace-social-roadmap"
             },
             {
               "id": "technology/system-benchmarks/system-benchmarks",
-              "path": "/technology/system-benchmarks/system-benchmarks"
+              "path": "/docs/technology/system-benchmarks/system-benchmarks"
             },
             {
               "id": "technology/technology",
-              "path": "/technology/technology"
+              "path": "/docs/technology/technology"
             },
             {
               "id": "triggering-third-party-tools",
-              "path": "/triggering-third-party-tools"
+              "path": "/docs/triggering-third-party-tools"
             },
             {
               "id": "tuning-from-the-webapp",
-              "path": "/tuning-from-the-webapp"
+              "path": "/docs/tuning-from-the-webapp"
             },
             {
               "id": "tuning-workflows",
-              "path": "/tuning-workflows"
+              "path": "/docs/tuning-workflows"
             },
             {
               "id": "using-the-qa-cli",
-              "path": "/using-the-qa-cli"
+              "path": "/docs/using-the-qa-cli"
             },
             {
               "id": "visualizations",
-              "path": "/visualizations"
+              "path": "/docs/visualizations"
             }
           ]
         }

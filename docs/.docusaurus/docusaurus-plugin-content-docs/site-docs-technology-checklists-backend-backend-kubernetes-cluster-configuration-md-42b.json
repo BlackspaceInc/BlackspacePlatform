@@ -5,16 +5,16 @@
   "title": "Kubernetes Cluster Configuration",
   "description": "Cluster configuration",
   "source": "@site/docs/technology/checklists/backend/backend-kubernetes/cluster-configuration.md",
-  "permalink": "/technology/checklists/backend/backend-kubernetes/kubernetes-cluster-config",
+  "permalink": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-cluster-config",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/checklists/backend/backend-kubernetes/cluster-configuration.md",
   "sidebar_label": "Kubernetes Configuration",
   "sidebar": "docs",
   "previous": {
     "title": "Kubernetes Best Practices (Hollistic)",
-    "permalink": "/technology/checklists/backend/backend-kubernetes/kubernetes-standards"
+    "permalink": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-standards"
   },
   "next": {
     "title": "Common Kubernetes Configuration",
-    "permalink": "/technology/checklists/backend/backend-kubernetes/kubernetes-common"
+    "permalink": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-common"
   }
 }

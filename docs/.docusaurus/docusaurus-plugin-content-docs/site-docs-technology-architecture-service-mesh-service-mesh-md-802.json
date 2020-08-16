@@ -4,16 +4,16 @@
   "isDocsHomePage": false,
   "title": "Backend Service-Mesh (Linkerd/istio)",
   "source": "@site/docs/technology/architecture/service-mesh/service-mesh.md",
-  "permalink": "/technology/architecture/service-mesh/service-mesh",
+  "permalink": "/docs/technology/architecture/service-mesh/service-mesh",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/architecture/service-mesh/service-mesh.md",
   "sidebar_label": "Service-Mesh",
   "sidebar": "docs",
   "previous": {
     "title": "What is Blackspace Platform?",
-    "permalink": "/introduction"
+    "permalink": "/docs/introduction"
   },
   "next": {
     "title": "Backend Instrumentation",
-    "permalink": "/technology/architecture/instrumentation/instrumentation"
+    "permalink": "/docs/technology/architecture/instrumentation/instrumentation"
   }
 }
