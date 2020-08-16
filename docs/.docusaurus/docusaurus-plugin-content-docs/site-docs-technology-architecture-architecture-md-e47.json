@@ -1,0 +1,10 @@
+{
+  "unversionedId": "technology/architecture/architecture",
+  "id": "technology/architecture/architecture",
+  "isDocsHomePage": false,
+  "title": "architecture",
+  "description": "Service Architectural View",
+  "source": "@site/docs/technology/architecture/architecture.md",
+  "permalink": "/docs/technology/architecture/architecture",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/architecture/architecture.md"
+}

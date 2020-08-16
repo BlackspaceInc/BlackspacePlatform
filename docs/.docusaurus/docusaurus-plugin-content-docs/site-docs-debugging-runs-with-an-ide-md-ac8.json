@@ -1,0 +1,11 @@
+{
+  "unversionedId": "debugging-runs-with-an-IDE",
+  "id": "debugging-runs-with-an-IDE",
+  "isDocsHomePage": false,
+  "title": "Debugging QA-Board' runs in an IDE",
+  "description": "Debugging with PyCharm",
+  "source": "@site/docs/debugging-runs-with-an-IDE.md",
+  "permalink": "/docs/debugging-runs-with-an-IDE",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/debugging-runs-with-an-IDE.md",
+  "sidebar_label": "Debugging with IDEs"
+}

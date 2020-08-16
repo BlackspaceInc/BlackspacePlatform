@@ -1,0 +1,10 @@
+{
+  "unversionedId": "temp/docs/checklists/backend/backend-kubernetes/common",
+  "id": "temp/docs/checklists/backend/backend-kubernetes/common",
+  "isDocsHomePage": false,
+  "title": "common",
+  "description": "Reserve priority and space for Kubernetes resources",
+  "source": "@site/docs/temp/docs/checklists/backend/backend-kubernetes/common.md",
+  "permalink": "/docs/temp/docs/checklists/backend/backend-kubernetes/common",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/temp/docs/checklists/backend/backend-kubernetes/common.md"
+}

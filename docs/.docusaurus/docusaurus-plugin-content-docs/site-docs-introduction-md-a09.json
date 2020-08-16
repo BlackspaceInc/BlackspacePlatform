@@ -1,0 +1,16 @@
+{
+  "unversionedId": "introduction",
+  "id": "introduction",
+  "isDocsHomePage": false,
+  "title": "What is Blackspace Platform?",
+  "description": "Blackspace Platform provides an environment through which commerce between consumers and minority owned business can be facilitated.",
+  "source": "@site/docs/introduction.md",
+  "permalink": "/docs/introduction",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/introduction.md",
+  "sidebar_label": "What is Blackspace Platform?",
+  "sidebar": "docs",
+  "next": {
+    "title": "Backend Service-Mesh (Linkerd/istio)",
+    "permalink": "/docs/technology/architecture/service-mesh/service-mesh"
+  }
+}

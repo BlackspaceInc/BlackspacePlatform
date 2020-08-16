@@ -1,0 +1,11 @@
+{
+  "unversionedId": "storage/artifacts",
+  "id": "storage/artifacts",
+  "isDocsHomePage": false,
+  "title": "Artifacts",
+  "description": "Artifacts are needed by QA-Board to start tuning experiments",
+  "source": "@site/docs/storage/artifacts.md",
+  "permalink": "/docs/storage/artifacts",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/storage/artifacts.md",
+  "sidebar_label": "Artifacts"
+}

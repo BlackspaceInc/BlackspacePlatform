@@ -1,0 +1,19 @@
+{
+  "permalink": "/docs/blog/2020/08/10/introducing-QA-Board",
+  "source": "@site/blog/2020-08-10-introducing-QA-Board.md",
+  "description": "We are happy to introduce QA-Board (source), a run-tracker with advanced visualizations for algorithm and software engineers.",
+  "date": "2020-08-10T00:00:00.000Z",
+  "tags": [
+    {
+      "label": "qualityOps",
+      "permalink": "/docs/blog/tags/quality-ops"
+    },
+    {
+      "label": "engineering",
+      "permalink": "/docs/blog/tags/engineering"
+    }
+  ],
+  "title": "Introducing QA-Board",
+  "readingTime": 0.18,
+  "truncated": true
+}

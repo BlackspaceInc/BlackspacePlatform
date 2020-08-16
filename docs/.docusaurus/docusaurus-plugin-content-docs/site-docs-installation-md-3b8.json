@@ -1,0 +1,11 @@
+{
+  "unversionedId": "installation",
+  "id": "installation",
+  "isDocsHomePage": false,
+  "title": "Installing QA-Board's client",
+  "description": "You need to install QA-Board's CLI client: qa. It wraps and runs your code.",
+  "source": "@site/docs/installation.md",
+  "permalink": "/docs/installation",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/installation.md",
+  "sidebar_label": "Client Installation"
+}

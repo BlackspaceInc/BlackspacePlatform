@@ -1,0 +1,11 @@
+{
+  "unversionedId": "project-init",
+  "id": "project-init",
+  "isDocsHomePage": false,
+  "title": "Adding QA-Board to your project",
+  "description": "Go at the root of your project's git repository and run:",
+  "source": "@site/docs/project-init.md",
+  "permalink": "/docs/project-init",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/project-init.md",
+  "sidebar_label": "Project Setup"
+}

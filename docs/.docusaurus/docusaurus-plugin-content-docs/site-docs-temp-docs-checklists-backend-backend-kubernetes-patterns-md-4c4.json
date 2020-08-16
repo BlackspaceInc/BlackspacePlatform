@@ -1,0 +1,10 @@
+{
+  "unversionedId": "temp/docs/checklists/backend/backend-kubernetes/patterns",
+  "id": "temp/docs/checklists/backend/backend-kubernetes/patterns",
+  "isDocsHomePage": false,
+  "title": "patterns",
+  "description": "Kubernetes Patterns",
+  "source": "@site/docs/temp/docs/checklists/backend/backend-kubernetes/patterns.md",
+  "permalink": "/docs/temp/docs/checklists/backend/backend-kubernetes/patterns",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/temp/docs/checklists/backend/backend-kubernetes/patterns.md"
+}

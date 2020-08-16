@@ -1,0 +1,20 @@
+{
+  "unversionedId": "technology/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist",
+  "id": "technology/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist",
+  "isDocsHomePage": false,
+  "title": "Frontend Production Ready Checklist",
+  "description": "Front-End Checklist",
+  "source": "@site/docs/technology/checklists/frontend/frontend-prod-checklist/README.md",
+  "permalink": "/docs/technology/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/checklists/frontend/frontend-prod-checklist/README.md",
+  "sidebar_label": "Frontend Production Checklist",
+  "sidebar": "docs",
+  "previous": {
+    "title": "Frontend Production Ready Design Checklist",
+    "permalink": "/docs/technology/checklists/frontend/frontend-design-checklist/frontend-design-checklist"
+  },
+  "next": {
+    "title": "Deployment Flow",
+    "permalink": "/docs/technology/deployments/deployment"
+  }
+}

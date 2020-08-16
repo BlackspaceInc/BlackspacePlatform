@@ -1,0 +1,11 @@
+{
+  "unversionedId": "monorepo-support",
+  "id": "monorepo-support",
+  "isDocsHomePage": false,
+  "title": "Monorepo and subproject support",
+  "description": "Each qaboard.yaml is a project",
+  "source": "@site/docs/monorepo-support.md",
+  "permalink": "/docs/monorepo-support",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/monorepo-support.md",
+  "sidebar_label": "Monorepos"
+}

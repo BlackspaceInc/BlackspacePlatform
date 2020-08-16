@@ -1,0 +1,10 @@
+{
+  "unversionedId": "temp/docs/node_modules/docpress/docs/getting-started/quickstart",
+  "id": "temp/docs/node_modules/docpress/docs/getting-started/quickstart",
+  "isDocsHomePage": false,
+  "title": "quickstart",
+  "description": "Quick-start guide",
+  "source": "@site/docs/temp/docs/node_modules/docpress/docs/getting-started/quickstart.md",
+  "permalink": "/docs/temp/docs/node_modules/docpress/docs/getting-started/quickstart",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/temp/docs/node_modules/docpress/docs/getting-started/quickstart.md"
+}

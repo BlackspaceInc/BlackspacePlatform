@@ -1,0 +1,19 @@
+{
+  "unversionedId": "technology/roadmap/blackspace-ecommerce/blackspace-ecommerce-roadmap",
+  "id": "technology/roadmap/blackspace-ecommerce/blackspace-ecommerce-roadmap",
+  "isDocsHomePage": false,
+  "title": "Blackspace Ecommerce Roadmap",
+  "source": "@site/docs/technology/roadmap/blackspace-ecommerce/readme.md",
+  "permalink": "/docs/technology/roadmap/blackspace-ecommerce/blackspace-ecommerce-roadmap",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/roadmap/blackspace-ecommerce/readme.md",
+  "sidebar_label": "Ecommerce Roadmap",
+  "sidebar": "docs",
+  "previous": {
+    "title": "Blackspace Analytics Roadmap",
+    "permalink": "/docs/technology/roadmap/blackspace-analytics/blackspace-analytics-roadmap"
+  },
+  "next": {
+    "title": "Blackspace Social Roadmap",
+    "permalink": "/docs/technology/roadmap/blackspace-social/blackspace-social-roadmap"
+  }
+}

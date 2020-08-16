@@ -1,0 +1,10 @@
+{
+  "unversionedId": "temp/docs/checklists/backend/backend-kubernetes/best-practices",
+  "id": "temp/docs/checklists/backend/backend-kubernetes/best-practices",
+  "isDocsHomePage": false,
+  "title": "best-practices",
+  "description": "Kubernetes Best Practices",
+  "source": "@site/docs/temp/docs/checklists/backend/backend-kubernetes/best-practices.md",
+  "permalink": "/docs/temp/docs/checklists/backend/backend-kubernetes/best-practices",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/temp/docs/checklists/backend/backend-kubernetes/best-practices.md"
+}
