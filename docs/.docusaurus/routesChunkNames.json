@@ -1,351 +1,348 @@
 {
-  "/docs/-7fd": {
-    "component": "component---site-src-pages-index-jsc-4-f-f99",
-    "config": "config---docs-5-e-9-4ea"
+  "/-deb": {
+    "component": "c4f5d8e4",
+    "config": "5e9f5e1a"
   },
-  "/docs/__docusaurus/debug-33d": {
-    "component": "component---theme-debugd-45-c28"
-  },
-  "/docs/blog-422": {
-    "component": "component---theme-blog-list-pagea-6-a-7ba",
+  "/blog-e00": {
+    "component": "a6aa9e1f",
     "items": [
       {
-        "content": "content---docs-blog-883-e3e"
+        "content": "8830d5ed"
       }
     ],
-    "metadata": "metadata---docs-blogf-4-c-486"
+    "metadata": "bbb4ffb5"
   },
-  "/docs/blog/2020/08/16/_system-design-12c": {
-    "component": "component---theme-blog-post-pageccc-cab",
-    "content": "content---docs-blog-2020-08-16-system-designdd-9-323"
+  "/blog/2020/08/16/_system-design-841": {
+    "component": "ccc49370",
+    "content": "dd9dca19"
   },
-  "/docs/blog/tags-13a": {
-    "component": "component---theme-blog-tags-list-page-01-a-d0b",
-    "tags": "tags---docs-blog-tags-36-f-eb2"
+  "/blog/tags-3a8": {
+    "component": "01a85c17",
+    "tags": "8be5b89e"
   },
-  "/docs/blog/tags/distributed-systems-694": {
-    "component": "component---theme-blog-tags-posts-page-687-b6c",
+  "/blog/tags/distributed-systems-b43": {
+    "component": "6875c492",
     "items": [
       {
-        "content": "content---docs-blog-883-e3e"
+        "content": "8830d5ed"
       }
     ],
-    "metadata": "metadata---docs-blog-tags-distributed-systemseca-aa8"
+    "metadata": "de800c15"
   },
-  "/docs/blog/tags/engineering-17d": {
-    "component": "component---theme-blog-tags-posts-page-687-b6c",
+  "/blog/tags/engineering-0d3": {
+    "component": "6875c492",
     "items": [
       {
-        "content": "content---docs-blog-883-e3e"
+        "content": "8830d5ed"
       }
     ],
-    "metadata": "metadata---docs-blog-tags-engineering-6-d-1-b62"
+    "metadata": "f0ae456e"
   },
-  "/docs/blog/tags/microservices-5b6": {
-    "component": "component---theme-blog-tags-posts-page-687-b6c",
+  "/blog/tags/microservices-700": {
+    "component": "6875c492",
     "items": [
       {
-        "content": "content---docs-blog-883-e3e"
+        "content": "8830d5ed"
       }
     ],
-    "metadata": "metadata---docs-blog-tags-microservicesfd-5-b0e"
+    "metadata": "c01a6732"
   },
-  "/docs/blog/tags/software-cff": {
-    "component": "component---theme-blog-tags-posts-page-687-b6c",
+  "/blog/tags/software-267": {
+    "component": "6875c492",
     "items": [
       {
-        "content": "content---docs-blog-883-e3e"
+        "content": "8830d5ed"
       }
     ],
-    "metadata": "metadata---docs-blog-tags-softwareae-7-1c9"
+    "metadata": "40bc48a4"
   },
-  "/docs/blog/tags/system-design-666": {
-    "component": "component---theme-blog-tags-posts-page-687-b6c",
+  "/blog/tags/system-design-4b8": {
+    "component": "6875c492",
     "items": [
       {
-        "content": "content---docs-blog-883-e3e"
+        "content": "8830d5ed"
       }
     ],
-    "metadata": "metadata---docs-blog-tags-system-designaac-a1f"
-  },
-  "/docs/help-27b": {
-    "component": "component---site-src-pages-help-js-7-e-3-222",
-    "config": "config---docs-5-e-9-4ea"
-  },
-  "/docs-a50": {
-    "component": "component---theme-doc-page-1-be-9be",
-    "docsMetadata": "docsMetadata---docs-20-a-426"
-  },
-  "/docs/alternatives-807": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-alternativescb-6-74c"
-  },
-  "/docs/apis-bd9": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-apis-861-37f"
-  },
-  "/docs/auto-optimization-1e1": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-auto-optimization-5-d-7-500"
-  },
-  "/docs/backend-admin/host-upgrades-0f5": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-backend-admin-host-upgrades-10-b-ca8"
-  },
-  "/docs/backend-admin/troubleshooting-a07": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-backend-admin-troubleshooting-2-ee-3d2"
-  },
-  "/docs/batches-running-on-multiple-inputs-e0f": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-batches-running-on-multiple-inputsff-1-508"
-  },
-  "/docs/bit-accuracy-f92": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-bit-accuracy-8-ae-878"
-  },
-  "/docs/business/business-684": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-business-business-564-50d"
-  },
-  "/docs/celery-integration-1c6": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-celery-integration-029-98e"
-  },
-  "/docs/ci-integration-f0f": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-ci-integrationdee-0e5"
-  },
-  "/docs/computing-quantitative-metrics-c73": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-computing-quantitative-metrics-069-1c3"
-  },
-  "/docs/creating-and-viewing-outputs-files-37d": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-creating-and-viewing-outputs-files-520-f4f"
-  },
-  "/docs/dag-pipelines-e7b": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-dag-pipelines-6-de-c45"
-  },
-  "/docs/debugging-runs-with-an-IDE-3cb": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-debugging-runs-with-an-id-eac-8-b87"
-  },
-  "/docs/deploy-0a4": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-deploy-64-e-187"
-  },
-  "/docs/faq-e60": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-faq-048-db5"
-  },
-  "/docs/inputs-d08": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-inputs-5-e-9-b77"
-  },
-  "/docs/installation-b2a": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-installation-3-b-8-7c6"
-  },
-  "/docs/introduction-fca": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-introductiona-09-6b4"
-  },
-  "/docs/lsf-integration-a87": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-lsf-integration-245-9a7"
-  },
-  "/docs/metadata-integration-external-databases-1ef": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-metadata-integration-external-databases-980-ffc"
-  },
-  "/docs/metrics-quantitative-outputs-73b": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-metrics-quantitative-outputs-0-d-1-2a2"
-  },
-  "/docs/monorepo-support-e4a": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-monorepo-supportab-3-4bf"
-  },
-  "/docs/project-init-74d": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-project-init-5-c-7-3a3"
-  },
-  "/docs/references-and-milestones-107": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-references-and-milestones-065-d22"
-  },
-  "/docs/running-your-code-dd8": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-running-your-codeda-3-839"
-  },
-  "/docs/specifying-configurations-a0f": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-specifying-configurationsa-8-b-029"
-  },
-  "/docs/storage/artifacts-8cc": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-storage-artifacts-031-994"
-  },
-  "/docs/storage/deleting-old-data-c57": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-storage-deleting-old-dataaa-3-31e"
-  },
-  "/docs/storage/where-is-the-data-3ff": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-storage-where-is-the-data-778-16d"
-  },
-  "/docs/technology/architecture/backend-services/services-964": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-architecture-backend-services-services-580-e37"
-  },
-  "/docs/technology/architecture/instrumentation/instrumentation-ad9": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-architecture-instrumentation-instrumentation-3-a-9-2d3"
-  },
-  "/docs/technology/architecture/metrics/metrics-fb0": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-architecture-metrics-metricsbea-b26"
-  },
-  "/docs/technology/architecture/service-mesh/service-mesh-c74": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-architecture-service-mesh-service-mesh-802-0b8"
-  },
-  "/docs/technology/backend-services/authentication-service/auth-service-c65": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-backend-services-authentication-service-auth-service-6-de-1a0"
-  },
-  "/docs/technology/backend-services/company-service/company-service-992": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-backend-services-company-service-company-service-976-f6b"
-  },
-  "/docs/technology/backend-services/email-service/email-service-e53": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-backend-services-email-service-email-servicefa-1-05b"
-  },
-  "/docs/technology/backend-services/user-service/user-service-86a": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-backend-services-user-service-user-servicee-46-321"
-  },
-  "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-cluster-config-427": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-kubernetes-kubernetes-cluster-config-42-b-d07"
-  },
-  "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-common-6d1": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-kubernetes-kubernetes-common-7-fc-6cd"
-  },
-  "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-development-d9b": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-kubernetes-kubernetes-developmentf-83-c6f"
-  },
-  "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-governance-4bb": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-kubernetes-kubernetes-governanced-7-b-2ff"
-  },
-  "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-patterns-acd": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-kubernetes-kubernetes-patternsbd-1-0c8"
-  },
-  "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-standards-456": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-kubernetes-kubernetes-standards-7-e-4-060"
-  },
-  "/docs/technology/checklists/backend/backend-production-ready/production-ready-checklist-184": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-production-ready-production-ready-checklist-1-ff-577"
-  },
-  "/docs/technology/checklists/backend/backend-security-checklist/CONTRIBUTING-70c": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-security-checklist-contributing-189-2e5"
-  },
-  "/docs/technology/checklists/backend/backend-security-checklist/production-security-checklist-df1": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-security-checklist-production-security-checklist-478-465"
-  },
-  "/docs/technology/checklists/frontend/frontend-design-checklist/CODE_OF_CONDUCT-0aa": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-frontend-frontend-design-checklist-code-of-conduc-tfc-9-0eb"
-  },
-  "/docs/technology/checklists/frontend/frontend-design-checklist/frontend-design-checklist-cdf": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-frontend-frontend-design-checklist-frontend-design-checklist-7-da-755"
-  },
-  "/docs/technology/checklists/frontend/frontend-performance-checklist/CODE_OF_CONDUCT-9c4": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-frontend-frontend-performance-checklist-code-of-conduct-17-f-f0a"
-  },
-  "/docs/technology/checklists/frontend/frontend-performance-checklist/frontend-performance-checklist-176": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-frontend-frontend-performance-checklist-frontend-performance-checklist-4-af-c34"
-  },
-  "/docs/technology/checklists/frontend/frontend-prod-checklist/CHANGELOG-529": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-frontend-frontend-prod-checklist-changelo-gf-5-f-c74"
-  },
-  "/docs/technology/checklists/frontend/frontend-prod-checklist/CODE_OF_CONDUCT-ff4": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-frontend-frontend-prod-checklist-code-of-conduct-064-68a"
-  },
-  "/docs/technology/checklists/frontend/frontend-prod-checklist/CONTRIBUTING-326": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-frontend-frontend-prod-checklist-contributin-gfe-9-869"
-  },
-  "/docs/technology/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist-4b9": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-frontend-frontend-prod-checklist-frontend-prod-checklist-21-a-d5a"
-  },
-  "/docs/technology/checklists/readme-e58": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-readmeff-4-ad1"
-  },
-  "/docs/technology/deployments/deployment-f32": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-deployments-deployment-9-e-2-2fa"
-  },
-  "/docs/technology/roadmap/blackspace-analytics/blackspace-analytics-roadmap-742": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-roadmap-blackspace-analytics-blackspace-analytics-roadmapa-35-247"
-  },
-  "/docs/technology/roadmap/blackspace-ecommerce/blackspace-ecommerce-roadmap-db4": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-roadmap-blackspace-ecommerce-blackspace-ecommerce-roadmap-785-7f8"
-  },
-  "/docs/technology/roadmap/blackspace-roadmap-238": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-roadmap-blackspace-roadmap-298-4db"
-  },
-  "/docs/technology/roadmap/blackspace-social/blackspace-social-roadmap-4ee": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-roadmap-blackspace-social-blackspace-social-roadmap-9-a-6-85b"
-  },
-  "/docs/technology/system-benchmarks/system-benchmarks-f64": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-system-benchmarks-system-benchmarksebe-238"
-  },
-  "/docs/technology/technology-6a2": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-technologye-0-c-c6b"
-  },
-  "/docs/triggering-third-party-tools-684": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-triggering-third-party-tools-918-556"
-  },
-  "/docs/tuning-from-the-webapp-641": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-tuning-from-the-webapp-446-fa0"
-  },
-  "/docs/tuning-workflows-ddb": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-tuning-workflows-3-f-8-90c"
-  },
-  "/docs/using-the-qa-cli-014": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-using-the-qa-clia-7-b-8a8"
-  },
-  "/docs/visualizations-410": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-visualizations-708-67a"
+    "metadata": "75958d48"
+  },
+  "/help-416": {
+    "component": "7e37206e",
+    "config": "5e9f5e1a"
+  },
+  "-c94": {
+    "component": "1be78505",
+    "docsMetadata": "05c17924"
+  },
+  "/alternatives-33c": {
+    "component": "17896441",
+    "content": "cb6aba0f"
+  },
+  "/apis-df4": {
+    "component": "17896441",
+    "content": "8618ad95"
+  },
+  "/auto-optimization-6e7": {
+    "component": "17896441",
+    "content": "5d74bcd1"
+  },
+  "/backend-admin/host-upgrades-7bc": {
+    "component": "17896441",
+    "content": "10b982b6"
+  },
+  "/backend-admin/troubleshooting-241": {
+    "component": "17896441",
+    "content": "2eebd0d5"
+  },
+  "/batches-running-on-multiple-inputs-53f": {
+    "component": "17896441",
+    "content": "ff17ba7b"
+  },
+  "/bit-accuracy-7c1": {
+    "component": "17896441",
+    "content": "8ae93111"
+  },
+  "/business/business-0d7": {
+    "component": "17896441",
+    "content": "56439656"
+  },
+  "/celery-integration-7d3": {
+    "component": "17896441",
+    "content": "0296f4dc"
+  },
+  "/ci-integration-b13": {
+    "component": "17896441",
+    "content": "deed4054"
+  },
+  "/computing-quantitative-metrics-d17": {
+    "component": "17896441",
+    "content": "0692da40"
+  },
+  "/creating-and-viewing-outputs-files-c25": {
+    "component": "17896441",
+    "content": "52062e8a"
+  },
+  "/dag-pipelines-571": {
+    "component": "17896441",
+    "content": "6de9811a"
+  },
+  "/debugging-runs-with-an-IDE-315": {
+    "component": "17896441",
+    "content": "ac8c4b5b"
+  },
+  "/deploy-a23": {
+    "component": "17896441",
+    "content": "64ea255d"
+  },
+  "/faq-155": {
+    "component": "17896441",
+    "content": "0480b142"
+  },
+  "/inputs-258": {
+    "component": "17896441",
+    "content": "5e90ec3d"
+  },
+  "/installation-a6e": {
+    "component": "17896441",
+    "content": "3b8c55ea"
+  },
+  "/introduction-251": {
+    "component": "17896441",
+    "content": "a09c2993"
+  },
+  "/lsf-integration-9ad": {
+    "component": "17896441",
+    "content": "245954c8"
+  },
+  "/metadata-integration-external-databases-6ad": {
+    "component": "17896441",
+    "content": "980fecf3"
+  },
+  "/metrics-quantitative-outputs-087": {
+    "component": "17896441",
+    "content": "0d18f543"
+  },
+  "/monorepo-support-23b": {
+    "component": "17896441",
+    "content": "ab35165d"
+  },
+  "/project-init-d53": {
+    "component": "17896441",
+    "content": "5c7a4c5c"
+  },
+  "/references-and-milestones-059": {
+    "component": "17896441",
+    "content": "0655ede5"
+  },
+  "/running-your-code-1b7": {
+    "component": "17896441",
+    "content": "da3ce662"
+  },
+  "/specifying-configurations-a56": {
+    "component": "17896441",
+    "content": "a8b61e2f"
+  },
+  "/storage/artifacts-85d": {
+    "component": "17896441",
+    "content": "03193456"
+  },
+  "/storage/deleting-old-data-eb1": {
+    "component": "17896441",
+    "content": "aa36bdbd"
+  },
+  "/storage/where-is-the-data-2c0": {
+    "component": "17896441",
+    "content": "7781b020"
+  },
+  "/technology/architecture/backend-services/services-006": {
+    "component": "17896441",
+    "content": "58078bf0"
+  },
+  "/technology/architecture/instrumentation/instrumentation-5e9": {
+    "component": "17896441",
+    "content": "3a92cac9"
+  },
+  "/technology/architecture/metrics/metrics-029": {
+    "component": "17896441",
+    "content": "bea9e5e7"
+  },
+  "/technology/architecture/service-mesh/service-mesh-8d4": {
+    "component": "17896441",
+    "content": "8025f4ee"
+  },
+  "/technology/backend-services/authentication-service/auth-service-836": {
+    "component": "17896441",
+    "content": "6de1621b"
+  },
+  "/technology/backend-services/company-service/company-service-a19": {
+    "component": "17896441",
+    "content": "976effc4"
+  },
+  "/technology/backend-services/email-service/email-service-4a4": {
+    "component": "17896441",
+    "content": "fa1c6d99"
+  },
+  "/technology/backend-services/user-service/user-service-11b": {
+    "component": "17896441",
+    "content": "e462e407"
+  },
+  "/technology/checklists/backend/backend-kubernetes/kubernetes-cluster-config-9db": {
+    "component": "17896441",
+    "content": "42bd3462"
+  },
+  "/technology/checklists/backend/backend-kubernetes/kubernetes-common-39c": {
+    "component": "17896441",
+    "content": "7fc84338"
+  },
+  "/technology/checklists/backend/backend-kubernetes/kubernetes-development-498": {
+    "component": "17896441",
+    "content": "f83de4eb"
+  },
+  "/technology/checklists/backend/backend-kubernetes/kubernetes-governance-7ef": {
+    "component": "17896441",
+    "content": "d7b761cb"
+  },
+  "/technology/checklists/backend/backend-kubernetes/kubernetes-patterns-78c": {
+    "component": "17896441",
+    "content": "bd15b984"
+  },
+  "/technology/checklists/backend/backend-kubernetes/kubernetes-standards-dc5": {
+    "component": "17896441",
+    "content": "7e42a88c"
+  },
+  "/technology/checklists/backend/backend-production-ready/production-ready-checklist-67c": {
+    "component": "17896441",
+    "content": "1fff5195"
+  },
+  "/technology/checklists/backend/backend-security-checklist/CONTRIBUTING-072": {
+    "component": "17896441",
+    "content": "189acbbc"
+  },
+  "/technology/checklists/backend/backend-security-checklist/production-security-checklist-3fd": {
+    "component": "17896441",
+    "content": "4789f2dc"
+  },
+  "/technology/checklists/frontend/frontend-design-checklist/CODE_OF_CONDUCT-ad7": {
+    "component": "17896441",
+    "content": "fc91b3a9"
+  },
+  "/technology/checklists/frontend/frontend-design-checklist/frontend-design-checklist-3bb": {
+    "component": "17896441",
+    "content": "7da007a1"
+  },
+  "/technology/checklists/frontend/frontend-performance-checklist/CODE_OF_CONDUCT-6dd": {
+    "component": "17896441",
+    "content": "17f965d1"
+  },
+  "/technology/checklists/frontend/frontend-performance-checklist/frontend-performance-checklist-4b2": {
+    "component": "17896441",
+    "content": "4afd8693"
+  },
+  "/technology/checklists/frontend/frontend-prod-checklist/CHANGELOG-893": {
+    "component": "17896441",
+    "content": "f5fa5343"
+  },
+  "/technology/checklists/frontend/frontend-prod-checklist/CODE_OF_CONDUCT-9a9": {
+    "component": "17896441",
+    "content": "0647e745"
+  },
+  "/technology/checklists/frontend/frontend-prod-checklist/CONTRIBUTING-4e7": {
+    "component": "17896441",
+    "content": "fe99cb34"
+  },
+  "/technology/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist-2fe": {
+    "component": "17896441",
+    "content": "21a68360"
+  },
+  "/technology/checklists/readme-3e8": {
+    "component": "17896441",
+    "content": "ff45a5f9"
+  },
+  "/technology/deployments/deployment-dbe": {
+    "component": "17896441",
+    "content": "9e2fc68e"
+  },
+  "/technology/roadmap/blackspace-analytics/blackspace-analytics-roadmap-e02": {
+    "component": "17896441",
+    "content": "a35cbf32"
+  },
+  "/technology/roadmap/blackspace-ecommerce/blackspace-ecommerce-roadmap-03b": {
+    "component": "17896441",
+    "content": "78517833"
+  },
+  "/technology/roadmap/blackspace-roadmap-65d": {
+    "component": "17896441",
+    "content": "2982856f"
+  },
+  "/technology/roadmap/blackspace-social/blackspace-social-roadmap-680": {
+    "component": "17896441",
+    "content": "9a6f1d64"
+  },
+  "/technology/system-benchmarks/system-benchmarks-1e7": {
+    "component": "17896441",
+    "content": "ebef2361"
+  },
+  "/technology/technology-f4e": {
+    "component": "17896441",
+    "content": "e0c9ec1d"
+  },
+  "/triggering-third-party-tools-d02": {
+    "component": "17896441",
+    "content": "918c8794"
+  },
+  "/tuning-from-the-webapp-df2": {
+    "component": "17896441",
+    "content": "4463432e"
+  },
+  "/tuning-workflows-2d7": {
+    "component": "17896441",
+    "content": "3f869480"
+  },
+  "/using-the-qa-cli-92b": {
+    "component": "17896441",
+    "content": "a7bd162d"
+  },
+  "/visualizations-776": {
+    "component": "17896441",
+    "content": "708db0bf"
   }
 }

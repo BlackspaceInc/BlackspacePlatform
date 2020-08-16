@@ -4,16 +4,16 @@
   "isDocsHomePage": false,
   "title": "Backend Instrumentation",
   "source": "@site/docs/technology/architecture/instrumentation/readme.md",
-  "permalink": "/docs/technology/architecture/instrumentation/instrumentation",
+  "permalink": "/technology/architecture/instrumentation/instrumentation",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/architecture/instrumentation/readme.md",
   "sidebar_label": "Instrumentation",
   "sidebar": "docs",
   "previous": {
     "title": "Backend Service-Mesh (Linkerd/istio)",
-    "permalink": "/docs/technology/architecture/service-mesh/service-mesh"
+    "permalink": "/technology/architecture/service-mesh/service-mesh"
   },
   "next": {
     "title": "Backend Service Architecture",
-    "permalink": "/docs/technology/architecture/backend-services/services"
+    "permalink": "/technology/architecture/backend-services/services"
   }
 }

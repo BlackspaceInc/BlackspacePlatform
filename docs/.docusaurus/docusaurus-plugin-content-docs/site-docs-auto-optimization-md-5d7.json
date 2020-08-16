@@ -5,7 +5,7 @@
   "title": "Auto-Optimization",
   "description": "qa optimize",
   "source": "@site/docs/auto-optimization.md",
-  "permalink": "/docs/auto-optimization",
+  "permalink": "/auto-optimization",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/auto-optimization.md",
   "sidebar_label": "Auto-Opt"
 }

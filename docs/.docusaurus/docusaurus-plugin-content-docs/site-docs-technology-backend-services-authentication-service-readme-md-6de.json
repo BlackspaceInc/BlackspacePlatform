@@ -4,16 +4,16 @@
   "isDocsHomePage": false,
   "title": "Authentication Microservice",
   "source": "@site/docs/technology/backend-services/authentication-service/readme.md",
-  "permalink": "/docs/technology/backend-services/authentication-service/auth-service",
+  "permalink": "/technology/backend-services/authentication-service/auth-service",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/backend-services/authentication-service/readme.md",
   "sidebar_label": "Authentication Service",
   "sidebar": "docs",
   "previous": {
     "title": "Backend Metrics & Tracing",
-    "permalink": "/docs/technology/architecture/metrics/metrics"
+    "permalink": "/technology/architecture/metrics/metrics"
   },
   "next": {
     "title": "Email Microservice",
-    "permalink": "/docs/technology/backend-services/email-service/email-service"
+    "permalink": "/technology/backend-services/email-service/email-service"
   }
 }

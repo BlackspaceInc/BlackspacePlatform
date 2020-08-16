@@ -4,16 +4,16 @@
   "isDocsHomePage": false,
   "title": "Company Microservice",
   "source": "@site/docs/technology/backend-services/company-service/readme.md",
-  "permalink": "/docs/technology/backend-services/company-service/company-service",
+  "permalink": "/technology/backend-services/company-service/company-service",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/backend-services/company-service/readme.md",
   "sidebar_label": "Company-Service",
   "sidebar": "docs",
   "previous": {
     "title": "Email Microservice",
-    "permalink": "/docs/technology/backend-services/email-service/email-service"
+    "permalink": "/technology/backend-services/email-service/email-service"
   },
   "next": {
     "title": "User Microservice",
-    "permalink": "/docs/technology/backend-services/user-service/user-service"
+    "permalink": "/technology/backend-services/user-service/user-service"
   }
 }

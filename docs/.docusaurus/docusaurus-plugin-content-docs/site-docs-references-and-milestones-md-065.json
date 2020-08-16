@@ -5,7 +5,7 @@
   "title": "References & Milestones",
   "description": "when looking at results, it is important to compare them to a reference.  It could to a previous version, results from a benchmark",
   "source": "@site/docs/references-and-milestones.md",
-  "permalink": "/docs/references-and-milestones",
+  "permalink": "/references-and-milestones",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/references-and-milestones.md",
   "sidebar_label": "References & Milestones"
 }

@@ -61,13 +61,13 @@ jobs:
           GIT_USER: git
         run: |
           cd docs
-          git config --global user.email "actions@gihub.com"
-          git config --global user.name "gh-actions"
+          git config --global user.email "yoanyombapro@gmail.com"
+          git config --global user.name "LensPlatform"
           if [ -e yarn.lock ]; then
           yarn install --frozen-lockfile
           elif [ -e package-lock.json ]; then
           npm ci
           else
-          npm i
+          npm install
           fi
           npx docusaurus deploy

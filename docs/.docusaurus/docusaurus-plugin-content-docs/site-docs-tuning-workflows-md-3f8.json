@@ -5,7 +5,7 @@
   "title": "Various Tuning Workflows",
   "description": "Tuning from QA-Board",
   "source": "@site/docs/tuning-workflows.md",
-  "permalink": "/docs/tuning-workflows",
+  "permalink": "/tuning-workflows",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/tuning-workflows.md",
   "sidebar_label": "Tuning Workflows"
 }

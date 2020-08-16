@@ -5,16 +5,16 @@
   "title": "Backend Production Ready Security Checklist",
   "description": "API Security Checklist",
   "source": "@site/docs/technology/checklists/backend/backend-security-checklist/README.md",
-  "permalink": "/docs/technology/checklists/backend/backend-security-checklist/production-security-checklist",
+  "permalink": "/technology/checklists/backend/backend-security-checklist/production-security-checklist",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/checklists/backend/backend-security-checklist/README.md",
   "sidebar_label": "Backend Security Checklist",
   "sidebar": "docs",
   "previous": {
     "title": "Backend Production Ready Checklist",
-    "permalink": "/docs/technology/checklists/backend/backend-production-ready/production-ready-checklist"
+    "permalink": "/technology/checklists/backend/backend-production-ready/production-ready-checklist"
   },
   "next": {
     "title": "Frontend Production Ready Performance Checklist",
-    "permalink": "/docs/technology/checklists/frontend/frontend-performance-checklist/frontend-performance-checklist"
+    "permalink": "/technology/checklists/frontend/frontend-performance-checklist/frontend-performance-checklist"
   }
 }

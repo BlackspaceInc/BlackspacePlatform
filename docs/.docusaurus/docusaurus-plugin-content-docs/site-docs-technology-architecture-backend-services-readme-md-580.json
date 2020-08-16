@@ -5,16 +5,16 @@
   "title": "Backend Service Architecture",
   "description": "If you want to use a different folder, replace /mnt/qaboard with your path in docker-compose.yml and services/nginx/conf.d/qaboard.conf.",
   "source": "@site/docs/technology/architecture/backend-services/readme.md",
-  "permalink": "/docs/technology/architecture/backend-services/services",
+  "permalink": "/technology/architecture/backend-services/services",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/architecture/backend-services/readme.md",
   "sidebar_label": "Service Architecture",
   "sidebar": "docs",
   "previous": {
     "title": "Backend Instrumentation",
-    "permalink": "/docs/technology/architecture/instrumentation/instrumentation"
+    "permalink": "/technology/architecture/instrumentation/instrumentation"
   },
   "next": {
     "title": "Backend Metrics & Tracing",
-    "permalink": "/docs/technology/architecture/metrics/metrics"
+    "permalink": "/technology/architecture/metrics/metrics"
   }
 }

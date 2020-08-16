@@ -5,7 +5,7 @@
   "title": "Starting tuning experiments from QA-Board",
   "description": "How to do tuning or trigger extra runs from QA-Board",
   "source": "@site/docs/tuning-from-the-webapp.md",
-  "permalink": "/docs/tuning-from-the-webapp",
+  "permalink": "/tuning-from-the-webapp",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/tuning-from-the-webapp.md",
   "sidebar_label": "Tuning from QA-Board"
 }

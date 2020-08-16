@@ -5,16 +5,16 @@
   "title": "Kubernetes Best Practices (Hollistic)",
   "description": "Kubernetes Best Practices",
   "source": "@site/docs/technology/checklists/backend/backend-kubernetes/best-practices.md",
-  "permalink": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-standards",
+  "permalink": "/technology/checklists/backend/backend-kubernetes/kubernetes-standards",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/checklists/backend/backend-kubernetes/best-practices.md",
   "sidebar_label": "Kubernetes Best Practices",
   "sidebar": "docs",
   "previous": {
     "title": "Kubernetes Application Development Best Practices",
-    "permalink": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-development"
+    "permalink": "/technology/checklists/backend/backend-kubernetes/kubernetes-development"
   },
   "next": {
     "title": "Kubernetes Cluster Configuration",
-    "permalink": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-cluster-config"
+    "permalink": "/technology/checklists/backend/backend-kubernetes/kubernetes-cluster-config"
   }
 }

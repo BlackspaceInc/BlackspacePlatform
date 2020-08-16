@@ -5,7 +5,7 @@
   "title": "Running your code",
   "description": "QA-Board works as a CLI wrapper for your code. As a default to get started, it runs commands you provide as extra arguments:",
   "source": "@site/docs/running-your-code.md",
-  "permalink": "/docs/running-your-code",
+  "permalink": "/running-your-code",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/running-your-code.md",
   "sidebar_label": "Running your code"
 }

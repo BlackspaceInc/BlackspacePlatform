@@ -5,7 +5,7 @@
   "title": "Upgrading the QA-Board host",
   "description": "First connect to the QA-Board host:",
   "source": "@site/docs/backend-admin/host-upgrades.md",
-  "permalink": "/docs/backend-admin/host-upgrades",
+  "permalink": "/backend-admin/host-upgrades",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/backend-admin/host-upgrades.md",
   "sidebar_label": "Host Upgrades"
 }

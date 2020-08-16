@@ -5,7 +5,7 @@
   "title": "Integrating QA-Board with your CI",
   "description": "CI tools run automated scripts and tests everytime someone pushes a new commit.",
   "source": "@site/docs/ci-integration.md",
-  "permalink": "/docs/ci-integration",
+  "permalink": "/ci-integration",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/ci-integration.md",
   "sidebar_label": "CI Integration"
 }

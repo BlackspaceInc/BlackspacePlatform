@@ -5,7 +5,7 @@
   "title": "Computing quantitative metrics",
   "description": "Algorithms are usually evaluated using KPIs / Objective Figures of Merit / metrics. To make sure QA-Board's web UI displays them:",
   "source": "@site/docs/computing-quantitative-metrics.md",
-  "permalink": "/docs/computing-quantitative-metrics",
+  "permalink": "/computing-quantitative-metrics",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/computing-quantitative-metrics.md",
   "sidebar_label": "Metrics"
 }

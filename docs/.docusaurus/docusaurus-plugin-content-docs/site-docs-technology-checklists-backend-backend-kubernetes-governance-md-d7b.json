@@ -5,16 +5,16 @@
   "title": "Kubernetes Namespace & Governance Management",
   "description": "Governance",
   "source": "@site/docs/technology/checklists/backend/backend-kubernetes/governance.md",
-  "permalink": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-governance",
+  "permalink": "/technology/checklists/backend/backend-kubernetes/kubernetes-governance",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/checklists/backend/backend-kubernetes/governance.md",
   "sidebar_label": "Kubernetes Namespace Management",
   "sidebar": "docs",
   "previous": {
     "title": "Common Kubernetes Configuration",
-    "permalink": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-common"
+    "permalink": "/technology/checklists/backend/backend-kubernetes/kubernetes-common"
   },
   "next": {
     "title": "Kubernetes Best Patterns",
-    "permalink": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-patterns"
+    "permalink": "/technology/checklists/backend/backend-kubernetes/kubernetes-patterns"
   }
 }

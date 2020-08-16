@@ -5,7 +5,7 @@
   "title": "Creating and viewing outputs files",
   "description": "1. Write anything in context.output_dir: text, images, logs, pointclouds...",
   "source": "@site/docs/creating-and-viewing-outputs-files.md",
-  "permalink": "/docs/creating-and-viewing-outputs-files",
+  "permalink": "/creating-and-viewing-outputs-files",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/creating-and-viewing-outputs-files.md",
   "sidebar_label": "Outputs"
 }

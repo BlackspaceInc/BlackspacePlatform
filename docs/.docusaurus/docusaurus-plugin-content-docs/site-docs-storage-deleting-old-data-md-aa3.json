@@ -5,7 +5,7 @@
   "title": "Deleting Old Outputs and Artifacts",
   "description": "QA-Board lets you erase old outputs after a period of time.",
   "source": "@site/docs/storage/deleting-old-data.md",
-  "permalink": "/docs/storage/deleting-old-data",
+  "permalink": "/storage/deleting-old-data",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/storage/deleting-old-data.md",
   "sidebar_label": "Deleting Old Data"
 }

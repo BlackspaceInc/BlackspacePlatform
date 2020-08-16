@@ -5,16 +5,16 @@
   "title": "Kubernetes Best Patterns",
   "description": "Kubernetes Patterns",
   "source": "@site/docs/technology/checklists/backend/backend-kubernetes/patterns.md",
-  "permalink": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-patterns",
+  "permalink": "/technology/checklists/backend/backend-kubernetes/kubernetes-patterns",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/checklists/backend/backend-kubernetes/patterns.md",
   "sidebar_label": "Kubernetes Patterns",
   "sidebar": "docs",
   "previous": {
     "title": "Kubernetes Namespace & Governance Management",
-    "permalink": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-governance"
+    "permalink": "/technology/checklists/backend/backend-kubernetes/kubernetes-governance"
   },
   "next": {
     "title": "Backend Production Ready Checklist",
-    "permalink": "/docs/technology/checklists/backend/backend-production-ready/production-ready-checklist"
+    "permalink": "/technology/checklists/backend/backend-production-ready/production-ready-checklist"
   }
 }

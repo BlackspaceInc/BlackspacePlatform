@@ -5,7 +5,7 @@
   "title": "Specifying configurations",
   "description": "You will want to run code on the same inputs with different configuration. Depending on your field, it could be:",
   "source": "@site/docs/specifying-configurations.md",
-  "permalink": "/docs/specifying-configurations",
+  "permalink": "/specifying-configurations",
   "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/specifying-configurations.md",
   "sidebar_label": "Configurations"
 }

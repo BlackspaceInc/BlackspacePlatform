@@ -345,8 +345,8 @@ export default {
       {
         "theme": {
           "customCss": [
-            "/Users/yoanyomba/go/src/github.com/BlackspaceInc/BlackspacePlatform/website/src/css/custom.css",
-            "/Users/yoanyomba/go/src/github.com/BlackspaceInc/BlackspacePlatform/website/node_modules/remark-admonitions/styles/infima.css"
+            "/Users/yoanyomba/go/src/github.com/BlackspaceInc/BlackspacePlatform/docs/src/css/custom.css",
+            "/Users/yoanyomba/go/src/github.com/BlackspaceInc/BlackspacePlatform/docs/node_modules/remark-admonitions/styles/infima.css"
           ]
         },
         "blog": {
@@ -376,7 +376,7 @@ export default {
         "docs": {
           "path": "docs",
           "routeBasePath": "",
-          "sidebarPath": "/Users/yoanyomba/go/src/github.com/BlackspaceInc/BlackspacePlatform/website/sidebars.js",
+          "sidebarPath": "/Users/yoanyomba/go/src/github.com/BlackspaceInc/BlackspacePlatform/docs/sidebars.js",
           "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/",
           "admonitions": {}
         }
@@ -384,9 +384,11 @@ export default {
     ]
   ],
   "plugins": [
-    "/Users/yoanyomba/go/src/github.com/BlackspaceInc/BlackspacePlatform/website/node_modules/docusaurus-lunr-search/src/index.js"
+    "/Users/yoanyomba/go/src/github.com/BlackspaceInc/BlackspacePlatform/docs/node_modules/docusaurus-lunr-search/src/index.js"
   ],
-  "url": "https://qa",
-  "baseUrl": "/docs/",
+  "url": "https://blackspaceinc.github.io",
+  "baseUrl": "/",
+  "organizationName": "BlackspaceInc",
+  "projectName": "BlackspacePlatform",
   "themes": []
 };
