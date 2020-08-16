@@ -1,6 +1,6 @@
-const publish_github_samsung_private = process.env.PUBLISH === 'github_samsung_private' 
-const publish_github_samsung_public  = process.env.PUBLISH === 'github_samsung_public' 
-const is_for_webapp = !publish_github_samsung_private && !publish_github_samsung_public
+const publish_blackspace_private = process.env.PUBLISH === 'blackspace_private' 
+const publish_blackspace_public  = process.env.PUBLISH === 'blackspace_public' 
+const is_for_webapp = !publish_blackspace_private && !publish_blackspace_public
 
 // See https://docusaurus.io/docs/site-config for all the possible site configuration options.
 const logo = {
@@ -210,7 +210,7 @@ config = {
 }
 
 
-if (publish_github_samsung_public) {
+if (publish_blackspace_public) {
   config.themeConfig.algolia = {
     apiKey: '7e47115263beea4eb52978a771750414',
     indexName: 'docs',
@@ -228,12 +228,14 @@ if (is_for_webapp) {
   // build for the app at /docs
   config = {
     ...config,
-    url: 'https://qa', // Your website URL
-    baseUrl: '/docs/', // Base URL for your project */
+    url: 'https://blackspaceinc.github.io',
+    baseUrl: '/',
+    organizationName: 'BlackspaceInc',
+    projectName: 'BlackspacePlatform',
   }
   config.presets[0][1].docs.routeBasePath = '';
 } else {
-  if (publish_github_samsung_private) {
+  if (publish_blackspace_private) {
     config = {
       ...config,
       url: 'https://blackspaceinc.github.io',
@@ -242,7 +244,7 @@ if (is_for_webapp) {
       projectName: 'BlackspacePlatform',
     }  
   }
-  if (publish_github_samsung_public) {
+  if (publish_blackspace_public) {
     config = {
       ...config,
       url: 'https://blackspaceinc.github.io',
