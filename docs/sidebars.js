@@ -4,6 +4,19 @@ module.exports = {
         "Getting Started" : [
             "introduction",
         ],
+        "Learning Resources" : [
+            {
+                type: 'category',
+                label: 'Backend Resources',
+                items: [
+                    "learning/distributed-systems/distributed-systems",
+                    "learning/scalability/scalability",
+                    "learning/distributed-systems/patterns",
+                    "learning/distributed-systems/big-data"
+                ],
+            },
+            
+        ],
         "Technology": [
             {
                 type: 'category',
@@ -66,6 +79,7 @@ module.exports = {
                     "technology/roadmap/blackspace-roadmap",
                 ],
             },
+            "technology/third-party-apis/third-party-apis"
         ],
         /*
         "Getting Started": [

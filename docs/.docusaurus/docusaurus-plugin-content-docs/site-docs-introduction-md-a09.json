@@ -10,7 +10,7 @@
   "sidebar_label": "What is Blackspace Platform?",
   "sidebar": "docs",
   "next": {
-    "title": "Backend Service-Mesh (Linkerd/istio)",
-    "permalink": "/docs/technology/architecture/service-mesh/service-mesh"
+    "title": "Distributed Systems Learning Resources",
+    "permalink": "/docs/learning/distributed-systems/distributed-systems"
   }
 }

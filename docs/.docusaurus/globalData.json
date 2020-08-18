@@ -7,7 +7,7 @@
         {
           "name": null,
           "path": "/docs",
-          "mainDocId": "bit-accuracy",
+          "mainDocId": "alternatives",
           "docs": [
             {
               "id": "alternatives",
@@ -84,6 +84,22 @@
             {
               "id": "introduction",
               "path": "/docs/introduction"
+            },
+            {
+              "id": "learning/distributed-systems/big-data",
+              "path": "/docs/learning/distributed-systems/big-data"
+            },
+            {
+              "id": "learning/distributed-systems/distributed-systems",
+              "path": "/docs/learning/distributed-systems/distributed-systems"
+            },
+            {
+              "id": "learning/distributed-systems/patterns",
+              "path": "/docs/learning/distributed-systems/patterns"
+            },
+            {
+              "id": "learning/scalability/scalability",
+              "path": "/docs/learning/scalability/scalability"
             },
             {
               "id": "lsf-integration",
@@ -260,6 +276,10 @@
             {
               "id": "technology/technology",
               "path": "/docs/technology/technology"
+            },
+            {
+              "id": "technology/third-party-apis/third-party-apis",
+              "path": "/docs/technology/third-party-apis/third-party-apis"
             },
             {
               "id": "triggering-third-party-tools",

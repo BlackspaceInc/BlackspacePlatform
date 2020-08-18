@@ -12,5 +12,9 @@
   "previous": {
     "title": "Blackspace Social Roadmap",
     "permalink": "/docs/technology/roadmap/blackspace-social/blackspace-social-roadmap"
+  },
+  "next": {
+    "title": "Third Party Api's",
+    "permalink": "/docs/technology/third-party-apis/third-party-apis"
   }
 }

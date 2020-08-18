@@ -64,7 +64,7 @@ export default [
 },
 {
   path: '/docs',
-  component: ComponentCreator('/docs','a50'),
+  component: ComponentCreator('/docs','69c'),
   
   routes: [
 {
@@ -160,6 +160,26 @@ export default [
 {
   path: '/docs/introduction',
   component: ComponentCreator('/docs/introduction','fca'),
+  exact: true,
+},
+{
+  path: '/docs/learning/distributed-systems/big-data',
+  component: ComponentCreator('/docs/learning/distributed-systems/big-data','ad4'),
+  exact: true,
+},
+{
+  path: '/docs/learning/distributed-systems/distributed-systems',
+  component: ComponentCreator('/docs/learning/distributed-systems/distributed-systems','518'),
+  exact: true,
+},
+{
+  path: '/docs/learning/distributed-systems/patterns',
+  component: ComponentCreator('/docs/learning/distributed-systems/patterns','80e'),
+  exact: true,
+},
+{
+  path: '/docs/learning/scalability/scalability',
+  component: ComponentCreator('/docs/learning/scalability/scalability','1dc'),
   exact: true,
 },
 {
@@ -380,6 +400,11 @@ export default [
 {
   path: '/docs/technology/technology',
   component: ComponentCreator('/docs/technology/technology','6a2'),
+  exact: true,
+},
+{
+  path: '/docs/technology/third-party-apis/third-party-apis',
+  component: ComponentCreator('/docs/technology/third-party-apis/third-party-apis','41f'),
   exact: true,
 },
 {

@@ -75,7 +75,7 @@
   "/search-afc": {
     "component": "component---users-yoanyomba-go-src-github-com-blackspace-inc-blackspace-platform-docs-node-modules-docusaurus-theme-search-algolia-src-pages-search-index-js-278-63a"
   },
-  "/docs-a50": {
+  "/docs-69c": {
     "component": "component---theme-doc-page-1-be-9be",
     "docsMetadata": "docsMetadata---docs-20-a-426"
   },
@@ -154,6 +154,22 @@
   "/docs/introduction-fca": {
     "component": "component---theme-doc-item-178-a40",
     "content": "content---docs-introductiona-09-6b4"
+  },
+  "/docs/learning/distributed-systems/big-data-ad4": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-learning-distributed-systems-big-data-461-b37"
+  },
+  "/docs/learning/distributed-systems/distributed-systems-518": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-learning-distributed-systems-distributed-systems-697-45c"
+  },
+  "/docs/learning/distributed-systems/patterns-80e": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-learning-distributed-systems-patterns-053-000"
+  },
+  "/docs/learning/scalability/scalability-1dc": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-learning-scalability-scalability-6-e-5-cca"
   },
   "/docs/lsf-integration-a87": {
     "component": "component---theme-doc-item-178-a40",
@@ -330,6 +346,10 @@
   "/docs/technology/technology-6a2": {
     "component": "component---theme-doc-item-178-a40",
     "content": "content---docs-technology-technologye-0-c-c6b"
+  },
+  "/docs/technology/third-party-apis/third-party-apis-41f": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-technology-third-party-apis-third-party-apis-2-d-3-fab"
   },
   "/docs/triggering-third-party-tools-684": {
     "component": "component---theme-doc-item-178-a40",

@@ -16,6 +16,40 @@
       {
         "collapsed": true,
         "type": "category",
+        "label": "Learning Resources",
+        "items": [
+          {
+            "collapsed": true,
+            "type": "category",
+            "label": "Backend Resources",
+            "items": [
+              {
+                "type": "link",
+                "label": "Distributed Systems Resources",
+                "href": "/docs/learning/distributed-systems/distributed-systems"
+              },
+              {
+                "type": "link",
+                "label": "Scalable Systems Resources",
+                "href": "/docs/learning/scalability/scalability"
+              },
+              {
+                "type": "link",
+                "label": "Architectural Patterns",
+                "href": "/docs/learning/distributed-systems/patterns"
+              },
+              {
+                "type": "link",
+                "label": "Big Data Architectural Patterns",
+                "href": "/docs/learning/distributed-systems/big-data"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "collapsed": true,
+        "type": "category",
         "label": "Technology",
         "items": [
           {
@@ -184,6 +218,11 @@
                 "href": "/docs/technology/roadmap/blackspace-roadmap"
               }
             ]
+          },
+          {
+            "type": "link",
+            "label": "Third Party Api's",
+            "href": "/docs/technology/third-party-apis/third-party-apis"
           }
         ]
       }
@@ -191,6 +230,10 @@
   },
   "permalinkToSidebar": {
     "/docs/introduction": "docs",
+    "/docs/learning/distributed-systems/big-data": "docs",
+    "/docs/learning/distributed-systems/distributed-systems": "docs",
+    "/docs/learning/distributed-systems/patterns": "docs",
+    "/docs/learning/scalability/scalability": "docs",
     "/docs/technology/architecture/backend-services/services": "docs",
     "/docs/technology/architecture/instrumentation/instrumentation": "docs",
     "/docs/technology/architecture/metrics/metrics": "docs",
@@ -215,7 +258,8 @@
     "/docs/technology/roadmap/blackspace-ecommerce/blackspace-ecommerce-roadmap": "docs",
     "/docs/technology/roadmap/blackspace-roadmap": "docs",
     "/docs/technology/roadmap/blackspace-social/blackspace-social-roadmap": "docs",
-    "/docs/technology/system-benchmarks/system-benchmarks": "docs"
+    "/docs/technology/system-benchmarks/system-benchmarks": "docs",
+    "/docs/technology/third-party-apis/third-party-apis": "docs"
   },
   "version": null
 }

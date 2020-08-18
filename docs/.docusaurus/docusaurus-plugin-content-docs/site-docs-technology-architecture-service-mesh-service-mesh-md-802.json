@@ -9,8 +9,8 @@
   "sidebar_label": "Service-Mesh",
   "sidebar": "docs",
   "previous": {
-    "title": "What is Blackspace Platform?",
-    "permalink": "/docs/introduction"
+    "title": "Big Data Architectural Patterns",
+    "permalink": "/docs/learning/distributed-systems/big-data"
   },
   "next": {
     "title": "Backend Instrumentation",
