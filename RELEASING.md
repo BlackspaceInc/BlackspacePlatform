@@ -14,16 +14,14 @@ process is dependent on the version change.
   - [Fixing Up a Release](#fixing-up-a-release)
 
 <!-- /MarkdownTOC -->
-
-
 ## Quick Start
 
 ### Patch Releases
 
 1. Create a new branch from the latest `vMAJOR.MINOR.PATCH` tag. Ex: `git checkout -b v1.2.3 v1.2.2`
 2. Make the appropriate changes/fixes.
-3. Update the `version` key in [`version/version.go`] file.
-4. Update the [`/CHANGELOG.md`] header to reflect the new version `vMAJOR.MINOR.PATCH - YYYY-MM-DD`
+3. Update the [`/RELEASE_NOTES.md`] file.
+4. Update the [`/CHANGELOG.md`] and [`/src/services/*/CHANGELOG.md`] headers to reflect the new version `vMAJOR.MINOR.PATCH - YYYY-MM-DD`
 5. Commit the changes above with message "Release vMAJOR.MINOR.PATCH"
 6. Create a new tag named `vMAJOR.MINOR.PATCH`
 7. Push the new tag
@@ -33,8 +31,8 @@ process is dependent on the version change.
 ### Major/Minor Releases
  
 1. Switch to the `master` branch, this should be reflective of the new version's changes.
-2. Update the `version` key in [`version/version.go`] file.
-3. Update the [`/CHANGELOG.md`] header to reflect the new version `vMAJOR.MINOR.PATCH - YYYY-MM-DD`
+2. Update the [`/RELEASE_NOTES.md`] file.
+3. Update the [`/CHANGELOG.md`] and [`/src/services/*/CHANGELOG.md`] headers to reflect the new version `vMAJOR.MINOR.PATCH - YYYY-MM-DD`
 4. Commit the changes above with message `"Release vMAJOR.MINOR.PATCH"`
 5. Create a new tag named `vMAJOR.MINOR.PATCH`
 6. Push the new tag.
