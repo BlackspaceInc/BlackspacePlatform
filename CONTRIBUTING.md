@@ -23,7 +23,6 @@ expanding into more specifics.
   - [Development](#development)
     - [Setup](#setup)
       - [Using a Docker or Podman environment](#using-a-docker-or-podman-environment)
-      - [Bring your own toolbox](#bring-your-own-toolbox)
     - [The Basics](#the-basics)
       - [Directory Structure](#directory-structure)
       - [Makefile](#makefile)
@@ -55,10 +54,7 @@ expanding into more specifics.
   - [Legal](#legal)
     - [DCO](#dco)
       - [Trivial changes](#trivial-changes)
-    - [Granted rights and copyright assignment](#granted-rights-and-copyright-assignment)
   - [FAQ](#faq)
-    - [Why a DCO instead of a CLA?](#why-a-dco-instead-of-a-cla)
-    - [If I’m contributing while an employee, do I still need my employer to sign something?](#if-im-contributing-while-an-employee-do-i-still-need-my-employer-to-sign-something)
     - [What if I forgot to sign my commits?](#what-if-i-forgot-to-sign-my-commits)
 
 <!-- /MarkdownTOC -->
@@ -150,8 +146,8 @@ A list of allowed sub-categories is defined
 The following are all good examples of pull request titles:
 
 ```text
-feat(new sink): new `xyz` sink
-feat(tcp source): add foo bar baz feature
+feature(new sink): new `xyz` sink
+feature(tcp source): add foo bar baz feature
 fix(tcp source): fix foo bar baz bug
 chore: improve build process
 docs: fix typos
@@ -187,15 +183,7 @@ Github Actions is responsible for releasing updated versions of Blackspace throu
 various channels.
 
 Some long running tests are only run daily, rather than on every pull request.
-If needed, an administrator can kick off these tests manually via:
-
-``` bash
-$ curl -u "$GITHUB_USERNAME:$GITHUB_TOKEN" \
-  -H 'Accept: application/vnd.github.v3+json' \
-  -X POST \
-  https://api.github.com/repos/timberio/Blackspace/actions/workflows/nightly.yml/dispatches \
-  --data '{"ref": "$GIT_REF}'
-```
+If needed, an administrator can kick off these tests manually.
 
 ## Development
 
@@ -213,120 +201,45 @@ Since not everyone has a full working native environment, or can use Nix, we too
 
 This is ideal for users who want it to "Just work" and just want to start contributing. It's also what we use for our CI, so you know if it breaks we can't do anything else until we fix it. 😉
 
-**Before you go farther, install Docker or Podman through your official package manager, or from the [Docker](https://docs.docker.com/get-docker/) or [Podman](https://podman.io/) sites.**
-
-```bash
-# Optional: Only if you use `podman`
-export CONTAINER_TOOL="podman"
-```
+**Before you go farther, install Docker through your official package manager, or from the [Docker](https://docs.docker.com/get-docker/) sites.**
 
 By default, `make environment` style tasks will do a `docker pull` from Github's container repository, you can **optionally** build your own environment while you make your morning coffee ☕:
 
 ```bash
 # Optional: Only if you want to go make a coffee
-make environment-prepare
+# sets up environment in which services will run (development or production)
 ```
 
 Now that you have your coffee, you can enter the shell!
 
 ```bash
-# Enter a shell with optimized mounts for interactive processes.
-# Inside here, you can use Blackspace like you have full toolchain (See below!)
-make environment
-# Try out a specific container tool. (Docker/Podman)
-make environment CONTAINER_TOOL="podman"
-# Add extra cli opts
-make environment CLI_OPTS="--publish 3000:2000"
+# Spins up services locally
+# In Debug Mode
+
+
+# In Production mode
 ```
 
 Now you can use the jobs detailed in **"Bring your own toolbox"** below.
-
-Want to run from outside of the environment? _Clever. Good thinking._ You can run any of the following:
-
-```bash
-# Validate your code can compile
-make check ENVIRONMENT=true
-# Validate your code actually does compile (in dev mode)
-make build-dev ENVIRONMENT=true
-# Validate your test pass
-make test SCOPE="sources::example" ENVIRONMENT=true
-# Validate tests (that do not require other services) pass
-make test ENVIRONMENT=true
-# Validate your tests pass (starting required services in Docker)
-make test-integration SCOPE="sources::example" ENVIRONMENT=true
-# Validate your tests pass against a live service.
-make test-integration SCOPE="sources::example" AUTOSPAWN=false ENVIRONMENT=true
-# Validate all tests pass (starting required services in Docker)
-make test-integration ENVIRONMENT=true
-# Run your benchmarks
-make bench SCOPE="transforms::example" ENVIRONMENT=true
-# Format your code before pushing!
-make fmt ENVIRONMENT=true
-```
-
-We use explicit environment opt-in as many contributors choose to keep their Rust toolchain local.
-
-#### Bring your own toolbox
-
-> **Targets:** This option is required for MSVC/Mac/FreeBSD toolchains. It can be used to build for any environment or OS.
-
-To build Blackspace on your own host will require a fairly complete development environment!
-
-We keep an up to date list of all dependencies used in our CI environment inside our `default.nix` file. Loosely, you'll need the following:
-
-- **To build Blackspace:** Have working Rustup, Protobuf tools, C++/C build tools (LLVM, GCC, or MSVC), Python, and Perl, `make` (the GNU one preferably), `bash`, `cmake`, and `autotools`. (Full list in [`scripts/environment/definition.nix`](./scripts/environment/definition.nix).
-- **To run integration tests:** Have `docker` available, or a real live version of that service. (Use `AUTOSPAWN=false`)
-- **To run `make check-component-features`:** Have `remarshal` installed.
-
-If you find yourself needing to run something inside the Docker environment described above, that's totally fine, they won't collide or hurt each other. In this case, you'd just run `make environment-generate`.
-
-We're interested in reducing our dependencies if simple options exist. Got an idea? Try it out, we'd to hear of your successes and failures!
-
-In order to do your development on Blackspace, you'll primarily use a few commands, such as `cargo` and `make` tasks you can use ordered from most to least frequently run:
-
-```bash
-# Validate your code can compile
-cargo check
-make check
-# Validate your code actually does compile (in dev mode)
-cargo build
-make build-dev
-# Validate your test pass
-cargo test sources::example
-make test scope="sources::example"
-# Validate tests (that do not require other services) pass
-cargo test
-make test
-# Validate your tests pass (starting required services in Docker)
-make test-integration scope="sources::example" autospawn=false
-# Validate your tests pass against a live service.
-make test-integration scope="sources::example" autospawn=false
-cargo test --features docker sources::example
-# Validate all tests pass (starting required services in Docker)
-make test-integration
-# Run your benchmarks
-make bench scope="transforms::example"
-cargo bench transforms::example
-# Format your code before pushing!
-make fmt
-cargo fmt
-```
-
-If you run `make` you'll see a full list of all our tasks. Some of these will start Docker containers, sign commits, or even make releases. These are not common development commands and your mileage may vary.
 
 ### The Basics
 
 #### Directory Structure
 
+- [`/.github`](/.github) - Store CI workflows for Blackspace.
 - [`/.meta`](/.meta) - Project metadata used to generate documentation.
 - [`/benches`](/benches) - Internal benchmarks.
-- [`/config`](/config) - Public facing Blackspace config, included in releases.
-- [`/distribution`](/distribution) - Distribution artifacts for various targets.
-- [`/lib`](/lib) - External libraries that do not depend on `Blackspace` but are used within the project.
-- [`/proto`](/proto) - Protobuf definitions.
+- [`/docs`](/docs) -  Store documentation.
+- [`/istio-manifests`](/istio-manifests) -  Istio service mesh and production manifests.
+- [`/kubernetes-manifests`](/kubernetes-manifests) -  Kubernetes production manifests.
+- [`/linkerd-manifests`](/linkerd-manifests) -  Linkerd service mesh and production manifests.
+- [`/monitoring`](/monitoring) -  Production and development configurations for monitoring purposes.
+- [`/pb`](/pb) -  Protobuf schema definitions common across all backend services.
+- [`/release`](/release) -  Release artifacts.
 - [`/scripts`](/scripts) - Scripts used to generate docs and maintain the repo.
 - [`/src`](/src) - Blackspace source.
-- [`/tests`](/tests) - Various high-level test cases.
+- [`/distribution`](/distribution) - Distribution artifacts for various targets.
+- [`/test-harness`](/test-harness) - Utility for E2E tests.
 
 #### Makefile
 
@@ -337,36 +250,24 @@ throughout this document.
 
 #### Code Style
 
-We use `rustfmt` on `stable` to format our code and CI will verify that your
+We use `gofmt` to format our code and CI will verify that your
 code follows
-this format style. To run the following command make sure `rustfmt` has been
+this format style. To run the following command make sure `gofmt` has been
 installed on the stable toolchain locally.
 
 ```bash
-# To install rustfmt
-rustup component add rustfmt
-
 # To format the code
 make fmt
 ```
 
 #### Feature flags
 
-When a new component (a source, transform, or sink) is added, it has to be put
+When a new feature or microservice is added, it has to be put
 behind a feature flag with the corresponding name. This ensures that it is
-possible to customize Blackspace builds. See the `features` section in `Cargo.toml`
-for examples.
+possible to customize Blackspace builds as well as turn it on or off in production especially if we foresee issues arising. 
 
-In addition, during development of a particular component it is useful to
-disable all other components to speed up compilation. For example, it is
-possible to build and run tests only for `console` sink using
-
-```bash
-cargo test --lib --no-default-features --features sinks-console sinks::console
-```
-
-In case if the tests are already built and only the component file changed, it
-is around 4 times faster than rebuilding tests with all features.
+In addition, during chaos testing it is useful to
+disable certain services entirely at runtime to better gain visibility over the system's performance in such scenarios. 
 
 #### Dependencies
 
@@ -374,47 +275,43 @@ Dependencies should be _carefully_ selected and avoided if possible. You can
 see how dependencies are reviewed in the
 [Reviewing guide](/REVIEWING.md#dependencies).
 
-If a dependency is required only by one or multiple components, but not by
-Blackspace's core, make it optional and add it to the list of dependencies of
-the features corresponding to these components in `Cargo.toml`.
-
 ### Guidelines
 
 #### Sink Healthchecks
 
-Sinks may implement a health check as a means for validating their configuration
+Services must implement a health check as a means for validating their configuration
 against the environment and external systems. Ideally, this allows the system to
 inform users of problems such as insufficient credentials, unreachable
 endpoints, non-existent tables, etc. They're not perfect, however, since it's
 impossible to exhaustively check for issues that may happen at runtime.
 
 When implementing health checks, we prefer false positives to false negatives.
-This means we would prefer that a health check pass and the sink then fail than
-to have the health check fail when the sink would have been able to run
+This means we would prefer that a health check pass and the service then fail than
+to have the health check fail when the service would have been able to run
 successfully.
 
 A common cause of false negatives in health checks is performing an operation
-that the sink itself does not need. For example, listing all of the available S3
+that the service itself does not need. For example, listing all of the available S3
 buckets and checking that the configured bucket is on that list. The S3 sink
 doesn't need the ability to list all buckets, and a user that knows that may not
 have permitted it to do so. In that case, the health check will fail due
 to bad credentials even through its credentials are sufficient for normal
 operation.
 
-This leads to a general strategy of mimicking what the sink itself does.
+This leads to a general strategy of mimicking what the service itself does.
 Unfortunately, the fact that health checks don't have real events available to
 them leads to some limitations here. The most obvious example of this is with
-sinks where the exact target of a write depends on the value of some field in
-the event (e.g. an interpolated Kinesis stream name). It also pops up for sinks
+services where the exact target of a write depends on the value of some field in
+the event. It also pops up for services
 where incoming events are expected to conform to a specific schema. In both
 cases, random test data is reasonably likely to trigger a potentially
 false-negative result. Even in simpler cases, we need to think about the effects
 of writing test data and whether the user would find that surprising or
 invasive. The answer usually depends on the system we're interfacing with.
 
-In some cases, like the Kinesis example above, the right thing to do might be
+In some cases, the right thing to do might be
 nothing at all. If we require dynamic information to figure out what entity
-(i.e. Kinesis stream in this case) that we're even dealing with, odds are very
+that we're even dealing with, odds are very
 low that we'll be able to come up with a way to meaningfully validate that it's
 in working order. It's perfectly valid to have a health check that falls back to
 doing nothing when there is a data dependency like this.
@@ -422,9 +319,9 @@ doing nothing when there is a data dependency like this.
 With all that in mind, here is a simple checklist to go over when writing a new
 health check:
 
-- [ ] Does this check perform different fallible operations from the sink itself?
+- [ ] Does this check perform different fallible operations from the service itself?
 - [ ] Does this check have side effects the user would consider undesirable (e.g. data pollution)?
-- [ ] Are there situations where this check would fail but the sink would operate normally?
+- [ ] Are there situations where this check would fail but the service would operate normally?
 
 Not all of the answers need to be a hard "no", but we should think about the
 likelihood that any "yes" would lead to false negatives and balance that against
@@ -443,7 +340,7 @@ compose to spin up mock services for testing, such as
 #### Sample Logs
 
 We use `flog` to build a sample set of log files to test sending logs from a
-file. This can be done with the following commands on mac with homebrew.
+file to our local Kibana stack. This can be done with the following commands on mac with homebrew.
 Installation instruction for flog can be found
 [here](https://github.com/mingrammer/flog#installation).
 
@@ -456,31 +353,7 @@ This will create a `100MiB` sample log file in the `sample.log` file.
 #### Tips and Tricks
 
 If you are developing a particular component and want to quickly iterate on unit
-tests related only to this component, the following approach can reduce waiting
-times:
-
-1. Install [cargo-watch](https://github.com/passcod/cargo-watch).
-2. (Only for GNU/Linux) Install LLVM 9 (for example, package `llvm-9` on Debian)
-   and set `RUSTFLAGS` environment variable to use `lld` as the linker:
-
-   ```sh
-   export RUSTFLAGS='-Clinker=clang-9 -Clink-arg=-fuse-ld=lld'
-   ```
-
-3. Run in the root directory of Blackspace's source
-
-   ```sh
-   cargo watch -s clear -s \
-     'cargo test --lib --no-default-features --features=<component type>-<component name> <component type>::<component name>'
-   ```
-
-   For example, if the component is `add_fields` transform, the command above
-   turns into
-
-   ```sh
-   cargo watch -s clear -s \
-     'cargo test --lib --no-default-features --features=transforms-add_fields transforms::add_fields'
-   ```
+tests related only to this component, run the unit tests from the folder in which the component was developed.
 
 ### Benchmarking
 
@@ -502,12 +375,11 @@ yourself access to collect stats:
 echo -1 | sudo tee /proc/sys/kernel/perf_event_paranoid
 ```
 
-You'll also want to edit `Cargo.toml` and make sure that Blackspace is being built
+You'll also want to edit `.env` files specific to the services you have updated and make sure that Blackspace is being built
 with debug symbols in release mode. This ensures that you'll get human-readable
 info in the eventual output:
 
-```toml
-[profile.release]
+```.env
 debug = true
 ```
 
@@ -515,7 +387,7 @@ Then you can start up a release build of Blackspace with whatever config you're
 interested in profiling.
 
 ```sh
-cargo run --release -- --config my_test_config.toml
+make release
 ```
 
 Once it's started, use the `ps` tool (or equivalent) to make a note of its PID.
@@ -569,9 +441,8 @@ navigated in your favorite web browser.
 
 #### Kubernetes Dev Flow
 
-There is a special flow for when you develop portions of Blackspace that are
-designed to work with Kubernetes, like `kubernetes_logs` source or the
-`deployment/kubernetes/*.yaml` configs.
+There is a special flow for when you develop Blackspace especially since it is
+designed to work with Kubernetes.
 
 This flow facilitates building Blackspace and deploying it into a cluster.
 
@@ -580,8 +451,7 @@ This flow facilitates building Blackspace and deploying it into a cluster.
 There are some extra requirements besides what you'd normally need to work on
 Blackspace:
 
-- `linux` system (create an issue if you want to work with another OS and we'll
-  help);
+- `linux` or `windows` system
 - [`skaffold`](https://skaffold.dev/)
 - [`docker`](https://www.docker.com/)
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
@@ -591,47 +461,30 @@ Blackspace:
 
 ##### The dev flow
 
-Once you have the requirements, use the `scripts/skaffold.sh dev` command.
+Once you have the requirements, use the `make spin-up-kube` command.
 
 That's it, just one command should take care of everything!
 
 It will
 
-1. build the `Blackspace` binary in development mode,
-2. build a docker image from this binary via `skaffold/docker/Dockerfile`,
+1. build the various `Blackspace` service binaries in development mode,
+2. build a docker images from these binaries,
 3. deploy `Blackspace` into the Kubernetes cluster at your current kubectl context
    using the built docker image and a mix of our production deployment
-   configuration from the `distribution/kubernetes/*.yaml` and the special
-   dev-flow configuration at `skaffold/manifests/*.yaml`; see
-   `kustomization.yaml` for the exact specification.
+   configuration defined in the directory of each service
 
-As the result of invoking the `scripts/skaffold.sh dev`, you should see
-a `skaffold` process running on your local machine, printing the logs from the
+As the result of invoking the `make spin-up-kube` command, you should see
+a `kubernetes` process running on your local machine, printing the logs from the
 deployed `Blackspace` instance.
 
-To stop the process, press `Ctrl+C`, and wait for `skaffold` to clean up
+To stop the process, press `Ctrl+C`, and wait for `kubernetes` to clean up
 the cluster state and exit.
 
-`scripts/skaffold.sh` wraps `skaffold`, you can use other `skaffold` subcommands
-if it fits you better.
+Additionally, you can configure [skaffold](https://skaffold.dev/docs/) to automatically set up the kubernetes env requirements
+automatically so we can better focus on development.
 
 ##### Troubleshooting
 
-You might need to tweak `skaffold`, here are some hints:
-
-- `skaffold` will try to detect whether a local cluster is used; if a local
-  cluster is used, `skaffold` won't push the docker images it builds to a
-  registry.
-  See [this page](https://skaffold.dev/docs/environment/local-cluster/)
-  for how you can troubleshoot and tweak this behavior.
-
-- `skaffold` can rewrite the image name so that you don't try to push a docker
-  image to a repo that you don't have access to.
-  See [this page](https://skaffold.dev/docs/environment/image-registries/)
-  for more info.
-
-- For the rest of the `skaffold` tweaks you might want to apply check out
-  [this page](https://skaffold.dev/docs/environment/).
 
 ##### Going through the dev flow manually
 
@@ -644,7 +497,7 @@ that yourself, thus some additional knowledge of Kubernetes inner workings is
 required.
 
 Essentially, the steps you have to take to deploy manually are the same that
-`skaffold` will perform, and they're outlined at the previous section.
+`skaffold` will perform.
 
 #### Kubernetes E2E tests
 
@@ -667,10 +520,6 @@ E2E (end-to-end) tests.
 Blackspace release artifacts are prepared for E2E tests, so the ability to do that
 is required too, see Blackspace [docs](https://Blackspace.dev) for more details.
 
-> Note: `minikube` has a bug in the latest versions that affects our test
-> process - see https://github.com/kubernetes/minikube/issues/8799.
-> Use version `1.11.0` for now.
-
 Also:
 
 > Note: `minikube` has troubles running on ZFS systems. If you're using ZFS, we
@@ -682,54 +531,7 @@ Also:
 To run the E2E tests, use the following command:
 
 ```shell
-CONTAINER_IMAGE_REPO=<your name>/Blackspace-test make test-e2e-kubernetes
-```
 
-Where `CONTAINER_IMAGE_REPO` is the docker image repo name to use, without part
-after the `:`. Replace `<your name>` with your Docker Hub username.
-
-You can also pass additional parameters to adjust the behavior of the test:
-
-- `QUICK_BUILD=true` - use development build and a skaffold image from the dev
-  flow instead of a production docker image. Significantly speeds up the
-  preparation process, but doesn't guarantee the correctness in the release
-  build. Useful for development of the tests or Blackspace code to speed up the
-  iteration cycles.
-
-- `USE_MINIKUBE_CACHE=true` - instead of pushing the built docker image to the
-  registry under the specified name, directly load the image into
-  a `minikube`-controlled cluster node.
-  Requires you to test against a `minikube` cluster. Eliminates the need to have
-  a registry to run tests.
-  When `USE_MINIKUBE_CACHE=true` is set, we provide a default value for the
-  `CONTAINER_IMAGE_REPO` so it can be omitted.
-  Can be set to `auto` (default) to automatically detect whether to use
-  `minikube cache` or not, based on the current `kubectl` context. To opt-out,
-  set `USE_MINIKUBE_CACHE=false`.
-
-- `CONTAINER_IMAGE=<your name>/Blackspace-test:tag` - completely skip the step
-  of building the Blackspace docker image, and use the specified image instead.
-  Useful to speed up the iterations speed when you already have a Blackspace docker
-  image you want to test against.
-
-- `SKIP_CONTAINER_IMAGE_PUBLISHING=true` - completely skip the image publishing
-  step. Useful when you want to speed up the iteration speed and when you know
-  the Blackspace image you want to test is already available to the cluster you're
-  testing against.
-
-- `SCOPE` - pass a filter to the `cargo test` command to filter out the tests,
-  effectively equivalent to `cargo test -- $SCOPE`.
-
-Passing additional commands is done like so:
-
-```shell
-QUICK_BUILD=true USE_MINIKUBE_CACHE=true make test-e2e-kubernetes
-```
-
-or
-
-```shell
-QUICK_BUILD=true CONTAINER_IMAGE_REPO=<your name>/Blackspace-test make test-e2e-kubernetes
 ```
 
 ## Humans
@@ -742,7 +544,7 @@ your feature.
 
 Documentation is very important to the Blackspace project! In order to keep things
 simple for contributors, all reference documentation is derived from metadata
-in the [`/.meta` directory](/.meta). If you add a component, change options,
+in the [`/.meta` directory](/.meta). If you add a service, change options,
 or otherwise change anything user facing, you should update the relevant files
 in the `/.meta` directory.
 
@@ -750,7 +552,7 @@ To ensure your change is valid, you can run `make check-meta`, which validates
 your changes against the local `/.meta/.schema.json` file.
 
 The actual website and documentation are generated on the
-[`Blackspace-website`](https://github.com/timberio/Blackspace-website) repo.
+[`Blackspace-website`](https://github.com/BlackspaceInc/BlackspacePlatform) repo.
 
 ### Changelog
 
@@ -775,7 +577,7 @@ For example, [this performance increase announcement][urls.performance_highlight
 is noteworthy, but also deserves an in-depth blog post covering the work that
 resulted in the performance benefit. Notice that the highlight alludes to an
 upcoming blog post. This allows us to communicate a high-value performance
-improvment without being blocked by an in-depth blog post.
+improvement without being blocked by an in-depth blog post.
 
 ## Security
 
@@ -796,37 +598,9 @@ code adheres to the [Blackspace license](LICENSE.md) (Apache 2.0).
 #### Trivial changes
 
 Trivial changes, such as spelling fixes, do not need to be signed.
-
-### Granted rights and copyright assignment
-
-It is important to note that the DCO is not a license. The license of the
-project – in our case the Apache License – is the license under which the
-contribution is made. However, the DCO in conjunction with the Apache License
-may be considered an alternate CLA.
-
-The existence of section 5 of the Apache License is proof that the Apache
-License is intended to be usable without CLAs. Users need for the code to be
-open-source, with all the legal rights that imply, but it is the open source
-license that provides this. The Apache License provides very generous
-copyright permissions from contributors, and contributors explicitly grant
 patent licenses as well. These rights are granted to everyone.
 
 ## FAQ
-
-### Why a DCO instead of a CLA?
-
-It's simpler, clearer, and still protects users of Blackspace. We believe the DCO
-more accurately embodies the principles of open-source. More info can be found
-here:
-
-- [Gitlab's switch to DCO](https://about.gitlab.com/2017/11/01/gitlab-switches-to-dco-license/)
-- [DCO vs CLA](https://opensource.com/article/18/3/cla-vs-dco-whats-difference)
-
-### If I’m contributing while an employee, do I still need my employer to sign something?
-
-Nope! The DCO confirms that you are entitled to submit the code, which assumes
-that you are authorized to do so. It treats you like an adult and relies on
-your accurate statement about your rights to submit a contribution.
 
 ### What if I forgot to sign my commits?
 
@@ -842,11 +616,11 @@ https://stackoverflow.com/questions/13043357/git-sign-off-previous-commits
 
 [urls.aws_announcements]: https://aws.amazon.com/new/?whats-new-content-all.sort-by=item.additionalFields.postDateTime&whats-new-content-all.sort-order=desc&wn-featured-announcements.sort-by=item.additionalFields.numericSort&wn-featured-announcements.sort-order=asc
 [urls.create_branch]: https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-and-deleting-branches-within-your-repository
-[urls.existing_issues]: https://github.com/timberio/Blackspace/issues
+[urls.existing_issues]: https://github.com/BlackspaceInc/BlackspacePlatform/issues
 [urls.fork_repo]: https://help.github.com/en/github/getting-started-with-github/fork-a-repo
 [urls.github_sign_commits]: https://help.github.com/en/github/authenticating-to-github/signing-commits
-[urls.new_issue]: https://github.com/timberio/Blackspace/issues/new
+[urls.new_issue]: https://github.com/BlackspaceInc/BlackspacePlatform/issues/new
 [urls.push_it_to_the_limit]: https://www.youtube.com/watch?v=ueRzA9GUj9c
-[urls.performance_highlight]: https://Blackspace.dev/highlights/2020-04-11-overall-performance-increase
+[urls.performance_highlight]: https://github.com/BlackspaceInc/BlackspacePlatform/highlights/2020-04-11-overall-performance-increase
 [urls.submit_pr]: https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork
-[urls.Blackspace_test_harness]: https://github.com/timberio/Blackspace-test-harness/
+[urls.Blackspace_test_harness]: https://github.com/timberio/vector-test-harness

@@ -25,3 +25,6 @@ release-s3: ## Release artifacts to S3
 
 release-helm: ## Package and release Helm Chart
 	@scripts/release-helm.sh
+
+check-meta: ## Check that all /.meta file are valid
+	./scripts/check-meta.sh
