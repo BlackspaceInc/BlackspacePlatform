@@ -17,3 +17,17 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+*.iml
+*.tmp
+**/*.rs.bk
+.idea/
+.vscode/
+checkpoints/*
+logs*/
+miniodat
+sample.log
+scripts/package-lock.json
+target
+node_modules
+tests/data/wasm/*/target
