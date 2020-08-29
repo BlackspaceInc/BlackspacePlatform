@@ -1,4 +1,3 @@
-
 signoff: ## Signsoff all previous commits since branch creation
 	scripts/signoff.sh
 
