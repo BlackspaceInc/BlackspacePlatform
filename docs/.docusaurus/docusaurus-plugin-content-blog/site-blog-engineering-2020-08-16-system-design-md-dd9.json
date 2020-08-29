@@ -1,0 +1,31 @@
+{
+  "permalink": "/blog/2020/08/16/_system-design",
+  "source": "@site/blog/engineering/2020-08-16_system-design.md",
+  "description": "Insight into blackspace's backend architecture",
+  "date": "2020-08-16T00:00:00.000Z",
+  "tags": [
+    {
+      "label": "system design",
+      "permalink": "/blog/tags/system-design"
+    },
+    {
+      "label": "distributed systems",
+      "permalink": "/blog/tags/distributed-systems"
+    },
+    {
+      "label": "microservices",
+      "permalink": "/blog/tags/microservices"
+    },
+    {
+      "label": "software",
+      "permalink": "/blog/tags/software"
+    },
+    {
+      "label": "engineering",
+      "permalink": "/blog/tags/engineering"
+    }
+  ],
+  "title": "Blackspace System Design",
+  "readingTime": 0.155,
+  "truncated": true
+}

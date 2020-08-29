@@ -1,0 +1,19 @@
+{
+  "unversionedId": "technology/architecture/metrics/metrics",
+  "id": "technology/architecture/metrics/metrics",
+  "isDocsHomePage": false,
+  "title": "Backend Metrics & Tracing",
+  "source": "@site/docs/technology/architecture/metrics/readme.md",
+  "permalink": "/docs/technology/architecture/metrics/metrics",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/architecture/metrics/readme.md",
+  "sidebar_label": "Metrics",
+  "sidebar": "docs",
+  "previous": {
+    "title": "Backend Service Architecture",
+    "permalink": "/docs/technology/architecture/backend-services/services"
+  },
+  "next": {
+    "title": "Authentication Microservice",
+    "permalink": "/docs/technology/backend-services/authentication-service/auth-service"
+  }
+}

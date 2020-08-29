@@ -1,0 +1,11 @@
+{
+  "unversionedId": "faq",
+  "id": "faq",
+  "isDocsHomePage": false,
+  "title": "Frequently Asked Questions",
+  "description": "There is a bug I'd like you to know about",
+  "source": "@site/docs/faq.md",
+  "permalink": "/docs/faq",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/faq.md",
+  "sidebar_label": "FAQ"
+}

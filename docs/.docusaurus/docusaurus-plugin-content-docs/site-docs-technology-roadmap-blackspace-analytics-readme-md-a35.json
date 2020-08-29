@@ -1,0 +1,19 @@
+{
+  "unversionedId": "technology/roadmap/blackspace-analytics/blackspace-analytics-roadmap",
+  "id": "technology/roadmap/blackspace-analytics/blackspace-analytics-roadmap",
+  "isDocsHomePage": false,
+  "title": "Blackspace Analytics Roadmap",
+  "source": "@site/docs/technology/roadmap/blackspace-analytics/readme.md",
+  "permalink": "/docs/technology/roadmap/blackspace-analytics/blackspace-analytics-roadmap",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/roadmap/blackspace-analytics/readme.md",
+  "sidebar_label": "Analytics Roadmap",
+  "sidebar": "docs",
+  "previous": {
+    "title": "Backend System Benchmarks",
+    "permalink": "/docs/technology/system-benchmarks/system-benchmarks"
+  },
+  "next": {
+    "title": "Blackspace Ecommerce Roadmap",
+    "permalink": "/docs/technology/roadmap/blackspace-ecommerce/blackspace-ecommerce-roadmap"
+  }
+}

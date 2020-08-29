@@ -1,0 +1,11 @@
+{
+  "unversionedId": "batches-running-on-multiple-inputs",
+  "id": "batches-running-on-multiple-inputs",
+  "isDocsHomePage": false,
+  "title": "Batches of inputs",
+  "description": "Make sure you read the section on input files",
+  "source": "@site/docs/batches-running-on-multiple-inputs.md",
+  "permalink": "/docs/batches-running-on-multiple-inputs",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/batches-running-on-multiple-inputs.md",
+  "sidebar_label": "Batches of Inputs"
+}

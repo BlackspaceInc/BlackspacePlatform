@@ -1,0 +1,10 @@
+{
+  "unversionedId": "business/business",
+  "id": "business/business",
+  "isDocsHomePage": false,
+  "title": "business",
+  "description": "",
+  "source": "@site/docs/business/business.md",
+  "permalink": "/docs/business/business",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/business/business.md"
+}

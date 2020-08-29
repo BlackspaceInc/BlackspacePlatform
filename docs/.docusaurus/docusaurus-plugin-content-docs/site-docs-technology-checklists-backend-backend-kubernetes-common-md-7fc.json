@@ -1,0 +1,20 @@
+{
+  "unversionedId": "technology/checklists/backend/backend-kubernetes/kubernetes-common",
+  "id": "technology/checklists/backend/backend-kubernetes/kubernetes-common",
+  "isDocsHomePage": false,
+  "title": "Common Kubernetes Configuration",
+  "description": "Reserve priority and space for Kubernetes resources",
+  "source": "@site/docs/technology/checklists/backend/backend-kubernetes/common.md",
+  "permalink": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-common",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/checklists/backend/backend-kubernetes/common.md",
+  "sidebar_label": "Common Configuration",
+  "sidebar": "docs",
+  "previous": {
+    "title": "Kubernetes Cluster Configuration",
+    "permalink": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-cluster-config"
+  },
+  "next": {
+    "title": "Kubernetes Namespace & Governance Management",
+    "permalink": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-governance"
+  }
+}

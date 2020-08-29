@@ -1,0 +1,11 @@
+{
+  "unversionedId": "inputs",
+  "id": "inputs",
+  "isDocsHomePage": false,
+  "title": "From Inputs to Outputs",
+  "description": "What is a run?",
+  "source": "@site/docs/inputs.md",
+  "permalink": "/docs/inputs",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/inputs.md",
+  "sidebar_label": "From Inputs to Outputs"
+}

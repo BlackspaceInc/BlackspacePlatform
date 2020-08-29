@@ -159,7 +159,7 @@ var configurers = []configurer{
 	// and log in.
 	//
 	// The ideal cost is the slowest one that can be performed without a slow login
-	// experience and without creating CPU bottlenecks or easy DDOS attack vectors.
+	// experience and without creating CPU bottlenecks or easy DDOS attack Blackspaces.
 	//
 	// There's no reason to go below 10, and 12 starts to become noticeable on
 	// current hardware.

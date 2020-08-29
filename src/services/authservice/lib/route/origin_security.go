@@ -11,7 +11,7 @@ type matchedDomainKey int
 
 // OriginSecurity is a SecurityHandler that will ensure a request comes from a known origin. This
 // can be an effective way to mitigate CSRF attacks, which are unable to forge headers due to the
-// passive nature of the attack vector.
+// passive nature of the attack Blackspace.
 //
 // OriginSecurity will store the matching domain in the http.Request's Context. Use MatchedDomain
 // to retrieve the value in later logic.

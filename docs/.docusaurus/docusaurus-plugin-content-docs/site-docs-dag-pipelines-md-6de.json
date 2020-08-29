@@ -1,0 +1,11 @@
+{
+  "unversionedId": "dag-pipelines",
+  "id": "dag-pipelines",
+  "isDocsHomePage": false,
+  "title": "Defining Pipelines / DAG",
+  "description": "Nothing here is implemented available, it's at the API design stage. [Link-to-issue].",
+  "source": "@site/docs/dag-pipelines.md",
+  "permalink": "/docs/dag-pipelines",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/dag-pipelines.md",
+  "sidebar_label": "Defining Pipelines / DAG"
+}

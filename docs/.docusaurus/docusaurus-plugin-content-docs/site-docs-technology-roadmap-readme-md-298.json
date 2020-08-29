@@ -1,0 +1,20 @@
+{
+  "unversionedId": "technology/roadmap/blackspace-roadmap",
+  "id": "technology/roadmap/blackspace-roadmap",
+  "isDocsHomePage": false,
+  "title": "Blackspace General Product Roadmap",
+  "description": "Project Plan",
+  "source": "@site/docs/technology/roadmap/readme.md",
+  "permalink": "/docs/technology/roadmap/blackspace-roadmap",
+  "editUrl": "https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/docs/technology/roadmap/readme.md",
+  "sidebar_label": "General Roadmap",
+  "sidebar": "docs",
+  "previous": {
+    "title": "Blackspace Social Roadmap",
+    "permalink": "/docs/technology/roadmap/blackspace-social/blackspace-social-roadmap"
+  },
+  "next": {
+    "title": "Third Party Api's",
+    "permalink": "/docs/technology/third-party-apis/third-party-apis"
+  }
+}
