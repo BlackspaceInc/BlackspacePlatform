@@ -33,33 +33,33 @@ type Registry interface {
 	HistogramObserve(name string, val float64, labels map[string]string) error
 	// ObtainGaugeFunc attempts to obtain a gauge function by name
 	ObtainGaugeFunc(name string) (*prometheus.GaugeFunc, error)
-	// Monitor observes the request size and latency associated with a specific route and records it in a summary vector metric
+	// Monitor observes the request size and latency associated with a specific route and records it in a summary Blackspace metric
 	Monitor(next http.Handler) http.Handler
 }
 
 // CounterOpts is options to create a counter options
 type CounterOpts struct {
-	Name   string
+	Name      string
 	Namespace string
 	Subsystem string
-	Help   string
-	Labels []string
+	Help      string
+	Labels    []string
 }
 
 // GaugeOpts is options to create a gauge collector
 type GaugeOpts struct {
-	Name   string
+	Name      string
 	Namespace string
 	Subsystem string
-	Help   string
-	Labels []string
+	Help      string
+	Labels    []string
 }
 
 // SummaryOpts is options to create summary collector
 type SummaryOpts struct {
 	Name       string
-	Namespace string
-	Subsystem string
+	Namespace  string
+	Subsystem  string
 	Help       string
 	Labels     []string
 	Objectives map[float64]float64
@@ -67,10 +67,10 @@ type SummaryOpts struct {
 
 // HistogramOpts is options to create histogram collector
 type HistogramOpts struct {
-	Name    string
+	Name      string
 	Namespace string
 	Subsystem string
-	Help    string
-	Labels  []string
-	Buckets []float64
+	Help      string
+	Labels    []string
+	Buckets   []float64
 }
