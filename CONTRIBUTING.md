@@ -97,7 +97,10 @@ descriptive of your changes.
 ### Git Commits
 
 _All_ commits should be concise and adequately describe the change performed. Please ensure you maintain small commits 
-and perform on thing at a time. Each commit should be associated with one distinct change. 
+and perform on thing at a time. Each commit should be associated with one distinct change. Commit should follow a distinct framework
+>> Commits should have follow the following framework
+>> git commit -sm "[Tag]:[Description]"
+>> Acceptable Tags : Configuration, Feature, Bug Fix, Enhancement, Tech Debt, Documentation
 
 #### Style
 
