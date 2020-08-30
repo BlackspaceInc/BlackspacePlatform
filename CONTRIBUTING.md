@@ -1,5 +1,7 @@
 # Contributing
 
+--
+
 First, thank you for contributing to the Blackspace Platform! The goal of this document is to
 provide everything you need to start contributing to Blackspace properly. The
 following TOC is sorted progressively, starting with the basics and
@@ -22,7 +24,7 @@ expanding into more specifics.
     - [CI](#ci)
   - [Development](#development)
     - [Setup](#setup)
-      - [Using a Docker or Podman environment](#using-a-docker-or-podman-environment)
+      - [Using a Docker environment](#using-a-docker-environment)
     - [The Basics](#the-basics)
       - [Directory Structure](#directory-structure)
       - [Makefile](#makefile)
@@ -30,7 +32,7 @@ expanding into more specifics.
       - [Feature flags](#feature-flags)
       - [Dependencies](#dependencies)
     - [Guidelines](#guidelines)
-      - [Sink Healthchecks](#sink-healthchecks)
+      - [Service Healthchecks](#service-healthchecks)
     - [Testing](#testing)
       - [Sample Logs](#sample-logs)
       - [Tips and Tricks](#tips-and-tricks)
@@ -41,7 +43,6 @@ expanding into more specifics.
         - [Requirements](#requirements)
         - [The dev flow](#the-dev-flow)
         - [Troubleshooting](#troubleshooting)
-        - [Going through the dev flow manually](#going-through-the-dev-flow-manually)
       - [Kubernetes E2E tests](#kubernetes-e2e-tests)
         - [Requirements](#requirements-1)
         - [Running the E2E tests](#running-the-e2e-tests)
@@ -66,23 +67,24 @@ expanding into more specifics.
 2. **You've read Blackspace's [docs](https://github.io/blackspace/docs/).**
 3. **You know about the [Blackspace community](https://gitter.im/BlackspaceInc/community).
    Please use this for help.**
+4. You are familiar with and have read the **style guides** for this project present in the __/.style_guide/*__
 
 ## Your First Contribution
-
+0. Read the style guides in __/.style_guide/*__
 1. Ensure your change has an issue! Find an
    [existing issue][urls.existing_issues] or [open a new issue][urls.new_issue].
    - This is where you can get a feel if the change will be accepted or not.
      Changes that are questionable will have a `needs: approval` label.
-2. Once an issue is obtained, [fork the Blackspace repository from master branch][urls.fork_repo] in your own local instance. 
-3. [Create a new Git branch off of the master branch][urls.create_branch].
+2. Once an issue is obtained, [fork the Blackspace repository from dev branch][urls.fork_repo] in your own local instance. 
+3. [Create a new Git branch off of the dev branch][urls.create_branch].
    ```bash
       git clone https://github.com/BlackspaceInc/BlackspacePlatform.git
-      git checkout -b new_branch_name master
+      git checkout -b new_branch_name dev
    ```
 4. Review the Blackspace [workflow](#workflow) and [development](#development) guidelines.
 5. Make your changes.
 6. [Submit the branch as a pull request][urls.submit_pr] to the main Blackspace
-   repo `master branch`. A Blackspace team member should comment and/or review your pull request
+   repo `dev branch`. A Blackspace team member should comment and/or review your pull request
    within a few days. Although, depending on the circumstances, it may take
    longer.
 
@@ -99,8 +101,12 @@ descriptive of your changes.
 _All_ commits should be concise and adequately describe the change performed. Please ensure you maintain small commits 
 and perform on thing at a time. Each commit should be associated with one distinct change. Commit should follow a distinct framework
 > Commits should have follow the following framework
+>
 > git commit -sm "[Tag]:[Description]"
-> Acceptable Tags : chore, docs, enhancement, feat, fix, perf, status, config, tech debt
+>
+> Acceptable Tags :
+>
+>chore, docs, enhancement, feat, fix, perf, status, config, tech debt
 
 #### Style
 
@@ -165,8 +171,8 @@ member. The review process is outlined in the [Review guide](REVIEWING.md).
 
 All pull requests are squashed and merged. We generally discourage large pull
 requests that are over 300-500 lines of diff. If you would like to propose
-a change that is larger we suggest coming onto our gitter channel and
-discuss it with one of our engineers. This way we can talk through the
+a change that is larger we suggest coming onto the team's gitter or slack channel and
+discuss it with one of your counterparts. This way we can talk through the
 solution and discuss if a change that large is even needed! This overall
 will produce a quicker response to the change and likely produce code that
 aligns better with our process.
@@ -185,7 +191,7 @@ ci-condition: skip
 Github Actions is responsible for releasing updated versions of Blackspace through
 various channels.
 
-Some long running tests are only run daily, rather than on every pull request.
+Some long running tests will only run daily, rather than on every pull request.
 If needed, an administrator can kick off these tests manually.
 
 ## Development
@@ -196,11 +202,11 @@ We're super excited to have you interested in working on Blackspace! Before you 
 
 For small or first-time contributions, we recommend the Docker method. If you do a lot of contributing, try adopting the Nix method! It'll be way faster and feel more smooth. Prefer to do it yourself? That's fine too!
 
-#### Using a Docker or Podman environment
+#### Using a Docker environment
 
 > **Targets:** You can use this method to produce AARCH64, Arm6/7, as well as x86/64 Linux builds.
 
-Since not everyone has a full working native environment, or can use Nix, we took our Nix environment and stuffed it into a Docker (or Podman) container!
+Since not everyone has a full working native environment, or can use Nix, we will take our Nix environment and stuff it into orchestrated Docker containers!
 
 This is ideal for users who want it to "Just work" and just want to start contributing. It's also what we use for our CI, so you know if it breaks we can't do anything else until we fix it. 😉
 
@@ -231,6 +237,7 @@ Now you can use the jobs detailed in **"Bring your own toolbox"** below.
 
 - [`/.github`](/.github) - Store CI workflows for Blackspace.
 - [`/.meta`](/.meta) - Project metadata used to generate documentation.
+- [`/.style_guide`](/.style_guide) -  Witholds project styleguides and best practices
 - [`/benches`](/benches) - Internal benchmarks.
 - [`/docs`](/docs) -  Store documentation.
 - [`/istio-manifests`](/istio-manifests) -  Istio service mesh and production manifests.
@@ -280,7 +287,7 @@ see how dependencies are reviewed in the
 
 ### Guidelines
 
-#### Sink Healthchecks
+#### Service Healthchecks
 
 Services must implement a health check as a means for validating their configuration
 against the environment and external systems. Ideally, this allows the system to
@@ -336,9 +343,8 @@ to detect common problems.
 
 ### Testing
 
-You can run Blackspace's tests via the `make test` command. Our tests use Docker
-compose to spin up mock services for testing, such as
-[localstack](https://github.com/localstack/localstack).
+You can run Blackspace's tests via the `make test` command. Our tests either use Docker
+compose to spin up mock services for testing or spins up the necessary service containers in a local minikube cluster.
 
 #### Sample Logs
 
@@ -445,7 +451,7 @@ navigated in your favorite web browser.
 #### Kubernetes Dev Flow
 
 There is a special flow for when you develop Blackspace especially since it is
-designed to work with Kubernetes.
+designed to work with both docker compose and kubernetes.
 
 This flow facilitates building Blackspace and deploying it into a cluster.
 
@@ -460,7 +466,6 @@ Blackspace:
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - [`kustomize`](https://kustomize.io/)
 - [`minikube`](https://minikube.sigs.k8s.io/)-powered or other k8s cluster
-- [`cargo watch`](https://github.com/passcod/cargo-watch)
 
 ##### The dev flow
 
@@ -471,14 +476,14 @@ That's it, just one command should take care of everything!
 It will
 
 1. build the various `Blackspace` service binaries in development mode,
-2. build a docker images from these binaries,
-3. deploy `Blackspace` into the Kubernetes cluster at your current kubectl context
+2. build docker images from these binaries,
+3. deploy `Blackspace services` into the Kubernetes cluster at your current kubectl context
    using the built docker image and a mix of our production deployment
    configuration defined in the directory of each service
 
 As the result of invoking the `make spin-up-kube` command, you should see
 a `kubernetes` process running on your local machine, printing the logs from the
-deployed `Blackspace` instance.
+various deployed `Blackspace service` instances.
 
 To stop the process, press `Ctrl+C`, and wait for `kubernetes` to clean up
 the cluster state and exit.
@@ -487,20 +492,6 @@ Additionally, you can configure [skaffold](https://skaffold.dev/docs/) to automa
 automatically so we can better focus on development.
 
 ##### Troubleshooting
-
-
-##### Going through the dev flow manually
-
-Is some cases `skaffold` may not work. It's possible to go through the dev flow
-manually, without `skaffold`.
-
-One of the important thing `skaffold` does is it patches the configuration to
-tie things together. If you want to go without it, you'll have to take care of
-that yourself, thus some additional knowledge of Kubernetes inner workings is
-required.
-
-Essentially, the steps you have to take to deploy manually are the same that
-`skaffold` will perform.
 
 #### Kubernetes E2E tests
 
@@ -534,7 +525,7 @@ Also:
 To run the E2E tests, use the following command:
 
 ```shell
-
+make run-tests "e2e"
 ```
 
 ## Humans
@@ -576,9 +567,7 @@ Highlights are not blog posts. They are short one, maybe two, paragraph
 announcements. Highlights should allude to, or link to, a blog post if
 relevant.
 
-For example, [this performance increase announcement][urls.performance_highlight]
-is noteworthy, but also deserves an in-depth blog post covering the work that
-resulted in the performance benefit. Notice that the highlight alludes to an
+Highlights alludes to an
 upcoming blog post. This allows us to communicate a high-value performance
 improvement without being blocked by an in-depth blog post.
 
