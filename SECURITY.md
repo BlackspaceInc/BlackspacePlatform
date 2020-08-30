@@ -127,7 +127,7 @@ decisions around design and architecture.
 #### Golang
 
 The [Golang programming language][urls.go] is not memory and thread-safe; it will
-not catch many common sources of vulnerabilities at compile time. Hence, it is the responsibility of the developer
+not catch many common sources of concurency vulnerabilities at compile time. Hence, it is the responsibility of the developer
 to properly account for any potential race conditions.
 
 #### Unsafe Code
