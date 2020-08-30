@@ -7,7 +7,7 @@ policies:
         case: lower
         invalidLastCharacters: .
       body:
-        required: true
+        required: false
       dco: true
       gpg: false
       spellcheck:
@@ -16,6 +16,15 @@ policies:
       conventional:
         types:
           - "type"
+          - "chore"
+          - "fix"
+          - "build"
+          - "ci"
+          - "docs"
+          - "style"
+          - "refactor"
+          - "perf"
+          - "test"
         scopes:
           - "scope"
         descriptionLength: 72
