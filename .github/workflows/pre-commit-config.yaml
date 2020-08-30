@@ -1,0 +1,17 @@
+name: docs
+
+
+on:
+  pull_request:
+    branches:
+      - master
+      - dev
+  push:
+    branches:
+      - master
+      - dev
+
+jobs:
+  steps:
+    - name: Check if commit conforms to policies listed in .conform.yaml
+      uses: talos-systems/conform@v0.1.0-alpha.20

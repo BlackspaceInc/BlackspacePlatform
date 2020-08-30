@@ -70,6 +70,19 @@ expanding into more specifics.
 4. You are familiar with and have read the **style guides** for this project present in the __/.style_guide/*__
 
 ## Your First Contribution
+Run the following scripts/commands in the terminal to download conform and set up a commit message hook locally.
+```bash
+go get github.com/talos-systems/conform
+```
+
+```bash
+cat <<EOF | tee .git/hooks/commit-msg
+#!/bin/sh
+
+conform enforce --commit-msg-file \$1
+EOF
+chmod +x .git/hooks/commit-msg
+```
 0. Read the style guides in __/.style_guide/*__
 1. Ensure your change has an issue! Find an
    [existing issue][urls.existing_issues] or [open a new issue][urls.new_issue].
@@ -106,7 +119,9 @@ and perform on thing at a time. Each commit should be associated with one distin
 >
 > Acceptable Tags :
 >
->chore, docs, enhancement, feat, fix, perf, status, config, tech debt
+>> fix:, feat:, build:, chore:, ci:, docs:, style:, refactor:, perf:, test:
+>
+> example: git commit -sm "chore: remove unecessary configs"
 
 #### Style
 
