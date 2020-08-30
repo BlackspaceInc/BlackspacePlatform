@@ -8,13 +8,11 @@ types:
   - feat                # Any user observable new feature, such as a new platform, source, transform, or sink.
   - fix                 # Any user observable bug fix.
   - perf                # Any user observable performance improvment.
-  - status              # A status change to a Blackspace component.
+  - status              # A status change to a blackspace component.
+  - config              # A config change to a blackspace component. 
+  - tech debt           # A change associated with technical debt
 
 scopes:
-
-  - new source
-  - new transform
-  - new sink
 
   # domains
   <%- metadata.domains.each do |domain| -%>
@@ -29,19 +27,4 @@ scopes:
   # providers
   <%- metadata.service_providers.each do |service_provider| -%>
   - <%= service_provider.downcase %> provider
-  <%- end -%>
-
-  # sources
-  <%- metadata.sources.to_h.values.sort.each do |source| -%>
-  - <%= source.name.downcase %> source
-  <%- end -%>
-
-  # transforms
-  <%- metadata.transforms.to_h.values.sort.each do |transform| -%>
-  - <%= transform.name.downcase %> transform
-  <%- end -%>
-
-  # sinks
-  <%- metadata.sinks.to_h.values.sort.each do |sink| -%>
-  - <%= sink.name.downcase %> sink
   <%- end -%>
