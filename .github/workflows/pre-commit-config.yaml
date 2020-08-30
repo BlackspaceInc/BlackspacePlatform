@@ -1,0 +1,8 @@
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/talos-systems/conform
+    rev: dev
+    hooks:
+      - id: conform
+        stages:
+          - commit-msg
