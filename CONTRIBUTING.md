@@ -100,7 +100,7 @@ _All_ commits should be concise and adequately describe the change performed. Pl
 and perform on thing at a time. Each commit should be associated with one distinct change. Commit should follow a distinct framework
 > Commits should have follow the following framework
 > git commit -sm "[Tag]:[Description]"
-> Acceptable Tags : chore, docs, enhancement, feat, fix, perf, status, config, tech debt
+> Acceptable Tags : fix:, feat:, build:, chore:, ci:, docs:, style:, refactor:, perf:, test:
 
 #### Style
 
