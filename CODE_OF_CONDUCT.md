@@ -1,14 +1,15 @@
 # Code of Conduct
+--
 
 <!-- MarkdownTOC autolink="true" style="ordered" indent="   " -->
 
-- [Code of Conduct](#code-of-conduct)
-  - [Our Pledge](#our-pledge)
-  - [Our Standards](#our-standards)
-  - [Our Responsibilities](#our-responsibilities)
-  - [Scope](#scope)
-  - [Enforcement](#enforcement)
-  - [Attribution](#attribution)
+- [# Code of Conduct](#h1-idcode-of-conduct-2code-of-conducth1)
+- [Our Pledge](#our-pledge)
+- [Our Standards](#our-standards)
+- [Our Responsibilities](#our-responsibilities)
+- [Scope](#scope)
+- [Enforcement](#enforcement)
+- [Attribution](#attribution)
 
 <!-- /MarkdownTOC -->
 
