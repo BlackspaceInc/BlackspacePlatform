@@ -27,3 +27,5 @@ release-helm: ## Package and release Helm Chart
 
 check-meta: ## Check that all /.meta file are valid
 	./scripts/check-meta.sh
+
+spin-up-kube: # Spins up local kubernetes cluster

@@ -1,7 +1,7 @@
 # Privacy Policy
 
-It should go without saying, but Blackspace takes the privacy of your data,
-including how you use Blackspace, very seriously.
+It should go without saying, but Blackspace takes the privacy of our client's data,
+including how clients use Blackspace, very seriously.
 This document clarifies how the Blackspace project thinks about
 privacy now and in the future.
 
