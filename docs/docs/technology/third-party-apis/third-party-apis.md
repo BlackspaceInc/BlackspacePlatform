@@ -1,6 +1,4 @@
 ---
-id: third-party-apis
-sidebar_label: Third Party Api's
 title: Third Party Api's
 ---
 

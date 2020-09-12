@@ -1,10 +1,6 @@
 ---
-id:  big-data
-sidebar_label: Big Data Architectural Patterns
 title: Big Data Architectural Patterns
 ---
-
-# Big Data Learning Resources
 
 [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome)
 

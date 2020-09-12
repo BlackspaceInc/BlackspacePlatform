@@ -1,41 +1,94 @@
-# Website
+[![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com)
+[![Code Style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-green.svg)](https://conventionalcommits.org)
 
-This website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.
+# questdb.io
 
-### Installation
+[This website](https://questdb.io) is built using
+[Docusaurus 2](https://v2.docusaurus.io/). Pages & components are written in
+TypeScript, the styles in vanilla CSS with variables using
+[CSS Modules](https://github.com/css-modules/css-modules).
 
-```
-$ yarn
-```
+<!-- prettier-ignore-start -->
+<div align="center">
+  <a href="http://questdb.io">
+    <img src=".github/console.png" width="400" />
+  </a>
+</div>
+<div align="center">
+  <a href="http://questdb.io">
+    questdb.io
+  </a>
+</div>
+<!-- prettier-ignore-end -->
 
-### Local Development
+## Installation
 
-```
-$ yarn start
-```
-
-This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
-
-### Build
-
-```
-$ yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-### Deployment
-
-```
-$ GIT_USER=<Your GitHub username> USE_SSH=true yarn deploy
+```script
+yarn
 ```
 
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+## Local development
 
-### Continuous Integration
-
-Some common defaults for linting/formatting have been set for you. If you integrate your project with an open source Continuous Integration system (e.g. Travis CI, CircleCI), you may check for issues using the following command.
-
+```script
+yarn start
 ```
-$ yarn ci
+
+This command starts a local development server and open up a browser window.
+Most changes are reflected live without having to restart the server.
+
+## Build for production
+
+```script
+yarn build
 ```
+
+This command generates static content into the `build` directory and can be
+served using any static contents hosting service. For that purpose, you can also
+use:
+
+```script
+yarn serve
+```
+
+# Contributing
+
+Feel free to contribute to the project by forking the repository and submitting
+pull requests.
+
+## Guidelines
+
+Consult the
+[guidelines](https://github.com/questdb/questdb.io/blob/master/docs/__guidelines/markdown.md).
+
+## Lexicon
+
+Consult the
+[lexicon](https://github.com/questdb/questdb.io/blob/master/docs/__guidelines/lexicon.md)
+for terminology we commonly use
+
+## Commits
+
+The commit messages must follow the
+[Conventional Commits](https://conventionalcommits.org/) spec.
+
+# Code Quality
+
+## 1. Linting
+
+The coding style rules are defined by [Prettier](https://prettier.io/) and
+enforced by [Eslint](https://eslint.org)
+
+On top of this, we follow the rules set by the
+[Javascript Standard Style](https://standardjs.com/rules.html).
+
+You do not need to run the linting task manually, Webpack will take care of that
+for you.
+
+## 2. Git Hooks
+
+We use [Husky](https://github.com/typicode/husky) to automatically deploy git
+hooks.
+
+On every `git commit` we check that images added to `static/img/*` do not exceed
+10MB.

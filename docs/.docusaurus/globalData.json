@@ -1,85 +1,338 @@
 {
+  "fetch-release": {
+    "default": {
+      "release": {
+        "message": "API rate limit exceeded for 172.117.13.65. (But here's the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)",
+        "documentation_url": "https://developer.github.com/v3/#rate-limiting"
+      }
+    }
+  },
   "docusaurus-plugin-content-docs": {
     "default": {
       "path": "/docs",
-      "latestVersionName": null,
       "versions": [
         {
-          "name": null,
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
           "path": "/docs",
-          "mainDocId": "alternatives",
+          "mainDocId": "__guidelines/template/guide",
           "docs": [
             {
-              "id": "alternatives",
-              "path": "/docs/alternatives"
+              "id": "__guidelines/content-hierarchy",
+              "path": "/docs/__guidelines/content-hierarchy"
             },
             {
-              "id": "apis",
-              "path": "/docs/apis"
+              "id": "__guidelines/influences",
+              "path": "/docs/__guidelines/influences"
             },
             {
-              "id": "auto-optimization",
-              "path": "/docs/auto-optimization"
+              "id": "__guidelines/lexicon",
+              "path": "/docs/__guidelines/lexicon"
             },
             {
-              "id": "backend-admin/host-upgrades",
-              "path": "/docs/backend-admin/host-upgrades"
+              "id": "__guidelines/markdown",
+              "path": "/docs/__guidelines/markdown"
             },
             {
-              "id": "backend-admin/troubleshooting",
-              "path": "/docs/backend-admin/troubleshooting"
+              "id": "__guidelines/naming-convention",
+              "path": "/docs/__guidelines/naming-convention"
             },
             {
-              "id": "batches-running-on-multiple-inputs",
-              "path": "/docs/batches-running-on-multiple-inputs"
+              "id": "__guidelines/template/function",
+              "path": "/docs/__guidelines/template/function"
             },
             {
-              "id": "bit-accuracy",
-              "path": "/docs/bit-accuracy"
+              "id": "__guidelines/template/guide",
+              "path": "/docs/__guidelines/template/guide"
             },
             {
-              "id": "business/business",
-              "path": "/docs/business/business"
+              "id": "__guidelines/template/sql",
+              "path": "/docs/__guidelines/template/sql"
             },
             {
-              "id": "celery-integration",
-              "path": "/docs/celery-integration"
+              "id": "__uneeded/api/influxdb-line-protocol",
+              "path": "/docs/__uneeded/api/influxdb-line-protocol"
             },
             {
-              "id": "ci-integration",
-              "path": "/docs/ci-integration"
+              "id": "__uneeded/api/java",
+              "path": "/docs/__uneeded/api/java"
             },
             {
-              "id": "computing-quantitative-metrics",
-              "path": "/docs/computing-quantitative-metrics"
+              "id": "__uneeded/api/rest",
+              "path": "/docs/__uneeded/api/rest"
             },
             {
-              "id": "creating-and-viewing-outputs-files",
-              "path": "/docs/creating-and-viewing-outputs-files"
+              "id": "__uneeded/concept/designated-timestamp",
+              "path": "/docs/__uneeded/concept/designated-timestamp"
             },
             {
-              "id": "dag-pipelines",
-              "path": "/docs/dag-pipelines"
+              "id": "__uneeded/concept/indexes",
+              "path": "/docs/__uneeded/concept/indexes"
             },
             {
-              "id": "debugging-runs-with-an-IDE",
-              "path": "/docs/debugging-runs-with-an-IDE"
+              "id": "__uneeded/concept/partitions",
+              "path": "/docs/__uneeded/concept/partitions"
             },
             {
-              "id": "deploy",
-              "path": "/docs/deploy"
+              "id": "__uneeded/concept/sql-execution-order",
+              "path": "/docs/__uneeded/concept/sql-execution-order"
             },
             {
-              "id": "faq",
-              "path": "/docs/faq"
+              "id": "__uneeded/concept/sql-extensions",
+              "path": "/docs/__uneeded/concept/sql-extensions"
             },
             {
-              "id": "inputs",
-              "path": "/docs/inputs"
+              "id": "__uneeded/concept/storage-model",
+              "path": "/docs/__uneeded/concept/storage-model"
             },
             {
-              "id": "installation",
-              "path": "/docs/installation"
+              "id": "__uneeded/concept/symbol",
+              "path": "/docs/__uneeded/concept/symbol"
+            },
+            {
+              "id": "__uneeded/function/aggregation",
+              "path": "/docs/__uneeded/function/aggregation"
+            },
+            {
+              "id": "__uneeded/function/date-time",
+              "path": "/docs/__uneeded/function/date-time"
+            },
+            {
+              "id": "__uneeded/function/meta",
+              "path": "/docs/__uneeded/function/meta"
+            },
+            {
+              "id": "__uneeded/function/numeric",
+              "path": "/docs/__uneeded/function/numeric"
+            },
+            {
+              "id": "__uneeded/function/random-value-generator",
+              "path": "/docs/__uneeded/function/random-value-generator"
+            },
+            {
+              "id": "__uneeded/function/row-generator",
+              "path": "/docs/__uneeded/function/row-generator"
+            },
+            {
+              "id": "__uneeded/function/text",
+              "path": "/docs/__uneeded/function/text"
+            },
+            {
+              "id": "__uneeded/function/timestamp",
+              "path": "/docs/__uneeded/function/timestamp"
+            },
+            {
+              "id": "__uneeded/function/timestamp-generator",
+              "path": "/docs/__uneeded/function/timestamp-generator"
+            },
+            {
+              "id": "__uneeded/reference/configuration/root-directory-structure",
+              "path": "/docs/__uneeded/reference/configuration/root-directory-structure"
+            },
+            {
+              "id": "__uneeded/reference/configuration/server",
+              "path": "/docs/__uneeded/reference/configuration/server"
+            },
+            {
+              "id": "__uneeded/reference/configuration/telemetry",
+              "path": "/docs/__uneeded/reference/configuration/telemetry"
+            },
+            {
+              "id": "__uneeded/reference/sql/alter-table-add-column",
+              "path": "/docs/__uneeded/reference/sql/alter-table-add-column"
+            },
+            {
+              "id": "__uneeded/reference/sql/alter-table-alter-column-add-index",
+              "path": "/docs/__uneeded/reference/sql/alter-table-alter-column-add-index"
+            },
+            {
+              "id": "__uneeded/reference/sql/alter-table-drop-column",
+              "path": "/docs/__uneeded/reference/sql/alter-table-drop-column"
+            },
+            {
+              "id": "__uneeded/reference/sql/alter-table-drop-partition",
+              "path": "/docs/__uneeded/reference/sql/alter-table-drop-partition"
+            },
+            {
+              "id": "__uneeded/reference/sql/backup",
+              "path": "/docs/__uneeded/reference/sql/backup"
+            },
+            {
+              "id": "__uneeded/reference/sql/case",
+              "path": "/docs/__uneeded/reference/sql/case"
+            },
+            {
+              "id": "__uneeded/reference/sql/cast",
+              "path": "/docs/__uneeded/reference/sql/cast"
+            },
+            {
+              "id": "__uneeded/reference/sql/copy",
+              "path": "/docs/__uneeded/reference/sql/copy"
+            },
+            {
+              "id": "__uneeded/reference/sql/create-table",
+              "path": "/docs/__uneeded/reference/sql/create-table"
+            },
+            {
+              "id": "__uneeded/reference/sql/datatypes",
+              "path": "/docs/__uneeded/reference/sql/datatypes"
+            },
+            {
+              "id": "__uneeded/reference/sql/distinct",
+              "path": "/docs/__uneeded/reference/sql/distinct"
+            },
+            {
+              "id": "__uneeded/reference/sql/drop",
+              "path": "/docs/__uneeded/reference/sql/drop"
+            },
+            {
+              "id": "__uneeded/reference/sql/except-intersect",
+              "path": "/docs/__uneeded/reference/sql/except-intersect"
+            },
+            {
+              "id": "__uneeded/reference/sql/fill",
+              "path": "/docs/__uneeded/reference/sql/fill"
+            },
+            {
+              "id": "__uneeded/reference/sql/group-by",
+              "path": "/docs/__uneeded/reference/sql/group-by"
+            },
+            {
+              "id": "__uneeded/reference/sql/insert",
+              "path": "/docs/__uneeded/reference/sql/insert"
+            },
+            {
+              "id": "__uneeded/reference/sql/join",
+              "path": "/docs/__uneeded/reference/sql/join"
+            },
+            {
+              "id": "__uneeded/reference/sql/latest-by",
+              "path": "/docs/__uneeded/reference/sql/latest-by"
+            },
+            {
+              "id": "__uneeded/reference/sql/limit",
+              "path": "/docs/__uneeded/reference/sql/limit"
+            },
+            {
+              "id": "__uneeded/reference/sql/order-by",
+              "path": "/docs/__uneeded/reference/sql/order-by"
+            },
+            {
+              "id": "__uneeded/reference/sql/rename",
+              "path": "/docs/__uneeded/reference/sql/rename"
+            },
+            {
+              "id": "__uneeded/reference/sql/sample-by",
+              "path": "/docs/__uneeded/reference/sql/sample-by"
+            },
+            {
+              "id": "__uneeded/reference/sql/select",
+              "path": "/docs/__uneeded/reference/sql/select"
+            },
+            {
+              "id": "__uneeded/reference/sql/show",
+              "path": "/docs/__uneeded/reference/sql/show"
+            },
+            {
+              "id": "__uneeded/reference/sql/truncate",
+              "path": "/docs/__uneeded/reference/sql/truncate"
+            },
+            {
+              "id": "__uneeded/reference/sql/union",
+              "path": "/docs/__uneeded/reference/sql/union"
+            },
+            {
+              "id": "__uneeded/reference/sql/where",
+              "path": "/docs/__uneeded/reference/sql/where"
+            },
+            {
+              "id": "__uneeded/reference/sql/with",
+              "path": "/docs/__uneeded/reference/sql/with"
+            },
+            {
+              "id": "__uneeded/reference/web-console",
+              "path": "/docs/__uneeded/reference/web-console"
+            },
+            {
+              "id": "checklists/backend/backend-kubernetes/application-development",
+              "path": "/docs/checklists/backend/backend-kubernetes/application-development"
+            },
+            {
+              "id": "checklists/backend/backend-kubernetes/best-practices",
+              "path": "/docs/checklists/backend/backend-kubernetes/best-practices"
+            },
+            {
+              "id": "checklists/backend/backend-kubernetes/cluster-configuration",
+              "path": "/docs/checklists/backend/backend-kubernetes/cluster-configuration"
+            },
+            {
+              "id": "checklists/backend/backend-kubernetes/common",
+              "path": "/docs/checklists/backend/backend-kubernetes/common"
+            },
+            {
+              "id": "checklists/backend/backend-kubernetes/governance",
+              "path": "/docs/checklists/backend/backend-kubernetes/governance"
+            },
+            {
+              "id": "checklists/backend/backend-kubernetes/patterns",
+              "path": "/docs/checklists/backend/backend-kubernetes/patterns"
+            },
+            {
+              "id": "checklists/backend/backend-production-ready/production-ready-checklist",
+              "path": "/docs/checklists/backend/backend-production-ready/production-ready-checklist"
+            },
+            {
+              "id": "checklists/backend/backend-security-checklist/production-security-checklist",
+              "path": "/docs/checklists/backend/backend-security-checklist/production-security-checklist"
+            },
+            {
+              "id": "checklists/frontend/frontend-design-checklist/frontend-design-checklist",
+              "path": "/docs/checklists/frontend/frontend-design-checklist/frontend-design-checklist"
+            },
+            {
+              "id": "checklists/frontend/frontend-performance-checklist/frontend-performance-checklist",
+              "path": "/docs/checklists/frontend/frontend-performance-checklist/frontend-performance-checklist"
+            },
+            {
+              "id": "checklists/frontend/frontend-prod-checklist/frontend-prod-checklist",
+              "path": "/docs/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist"
+            },
+            {
+              "id": "guide/binaries",
+              "path": "/docs/guide/binaries"
+            },
+            {
+              "id": "guide/crud",
+              "path": "/docs/guide/crud"
+            },
+            {
+              "id": "guide/docker",
+              "path": "/docs/guide/docker"
+            },
+            {
+              "id": "guide/homebrew",
+              "path": "/docs/guide/homebrew"
+            },
+            {
+              "id": "guide/kubernetes",
+              "path": "/docs/guide/kubernetes"
+            },
+            {
+              "id": "guide/my-first-database",
+              "path": "/docs/guide/my-first-database"
+            },
+            {
+              "id": "guide/postgres-wire",
+              "path": "/docs/guide/postgres-wire"
+            },
+            {
+              "id": "guide/rest",
+              "path": "/docs/guide/rest"
+            },
+            {
+              "id": "guide/web-console",
+              "path": "/docs/guide/web-console"
             },
             {
               "id": "introduction",
@@ -102,36 +355,24 @@
               "path": "/docs/learning/scalability/scalability"
             },
             {
-              "id": "lsf-integration",
-              "path": "/docs/lsf-integration"
+              "id": "packages/docker",
+              "path": "/docs/packages/docker"
             },
             {
-              "id": "metadata-integration-external-databases",
-              "path": "/docs/metadata-integration-external-databases"
+              "id": "roadmap/blackspace-analytics/blackspace-analytics-roadmap",
+              "path": "/docs/roadmap/blackspace-analytics/blackspace-analytics-roadmap"
             },
             {
-              "id": "metrics-quantitative-outputs",
-              "path": "/docs/metrics-quantitative-outputs"
+              "id": "roadmap/blackspace-ecommerce/blackspace-ecommerce-roadmap",
+              "path": "/docs/roadmap/blackspace-ecommerce/blackspace-ecommerce-roadmap"
             },
             {
-              "id": "monorepo-support",
-              "path": "/docs/monorepo-support"
+              "id": "roadmap/blackspace-roadmap",
+              "path": "/docs/roadmap/blackspace-roadmap"
             },
             {
-              "id": "project-init",
-              "path": "/docs/project-init"
-            },
-            {
-              "id": "references-and-milestones",
-              "path": "/docs/references-and-milestones"
-            },
-            {
-              "id": "running-your-code",
-              "path": "/docs/running-your-code"
-            },
-            {
-              "id": "specifying-configurations",
-              "path": "/docs/specifying-configurations"
+              "id": "roadmap/blackspace-social/blackspace-social-roadmap",
+              "path": "/docs/roadmap/blackspace-social/blackspace-social-roadmap"
             },
             {
               "id": "storage/artifacts",
@@ -146,10 +387,6 @@
               "path": "/docs/storage/where-is-the-data"
             },
             {
-              "id": "technology/architecture/backend-services/services",
-              "path": "/docs/technology/architecture/backend-services/services"
-            },
-            {
               "id": "technology/architecture/instrumentation/instrumentation",
               "path": "/docs/technology/architecture/instrumentation/instrumentation"
             },
@@ -158,12 +395,16 @@
               "path": "/docs/technology/architecture/metrics/metrics"
             },
             {
+              "id": "technology/architecture/service-architecture/service-architecture",
+              "path": "/docs/technology/architecture/service-architecture/service-architecture"
+            },
+            {
               "id": "technology/architecture/service-mesh/service-mesh",
               "path": "/docs/technology/architecture/service-mesh/service-mesh"
             },
             {
-              "id": "technology/backend-services/authentication-service/auth-service",
-              "path": "/docs/technology/backend-services/authentication-service/auth-service"
+              "id": "technology/backend-services/authentication-service/authentication-service",
+              "path": "/docs/technology/backend-services/authentication-service/authentication-service"
             },
             {
               "id": "technology/backend-services/company-service/company-service",
@@ -178,128 +419,16 @@
               "path": "/docs/technology/backend-services/user-service/user-service"
             },
             {
-              "id": "technology/checklists/backend/backend-kubernetes/kubernetes-cluster-config",
-              "path": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-cluster-config"
+              "id": "technology/deployments/deployments",
+              "path": "/docs/technology/deployments/deployments"
             },
             {
-              "id": "technology/checklists/backend/backend-kubernetes/kubernetes-common",
-              "path": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-common"
-            },
-            {
-              "id": "technology/checklists/backend/backend-kubernetes/kubernetes-development",
-              "path": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-development"
-            },
-            {
-              "id": "technology/checklists/backend/backend-kubernetes/kubernetes-governance",
-              "path": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-governance"
-            },
-            {
-              "id": "technology/checklists/backend/backend-kubernetes/kubernetes-patterns",
-              "path": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-patterns"
-            },
-            {
-              "id": "technology/checklists/backend/backend-kubernetes/kubernetes-standards",
-              "path": "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-standards"
-            },
-            {
-              "id": "technology/checklists/backend/backend-production-ready/production-ready-checklist",
-              "path": "/docs/technology/checklists/backend/backend-production-ready/production-ready-checklist"
-            },
-            {
-              "id": "technology/checklists/backend/backend-security-checklist/CONTRIBUTING",
-              "path": "/docs/technology/checklists/backend/backend-security-checklist/CONTRIBUTING"
-            },
-            {
-              "id": "technology/checklists/backend/backend-security-checklist/production-security-checklist",
-              "path": "/docs/technology/checklists/backend/backend-security-checklist/production-security-checklist"
-            },
-            {
-              "id": "technology/checklists/frontend/frontend-design-checklist/CODE_OF_CONDUCT",
-              "path": "/docs/technology/checklists/frontend/frontend-design-checklist/CODE_OF_CONDUCT"
-            },
-            {
-              "id": "technology/checklists/frontend/frontend-design-checklist/frontend-design-checklist",
-              "path": "/docs/technology/checklists/frontend/frontend-design-checklist/frontend-design-checklist"
-            },
-            {
-              "id": "technology/checklists/frontend/frontend-performance-checklist/CODE_OF_CONDUCT",
-              "path": "/docs/technology/checklists/frontend/frontend-performance-checklist/CODE_OF_CONDUCT"
-            },
-            {
-              "id": "technology/checklists/frontend/frontend-performance-checklist/frontend-performance-checklist",
-              "path": "/docs/technology/checklists/frontend/frontend-performance-checklist/frontend-performance-checklist"
-            },
-            {
-              "id": "technology/checklists/frontend/frontend-prod-checklist/CHANGELOG",
-              "path": "/docs/technology/checklists/frontend/frontend-prod-checklist/CHANGELOG"
-            },
-            {
-              "id": "technology/checklists/frontend/frontend-prod-checklist/CODE_OF_CONDUCT",
-              "path": "/docs/technology/checklists/frontend/frontend-prod-checklist/CODE_OF_CONDUCT"
-            },
-            {
-              "id": "technology/checklists/frontend/frontend-prod-checklist/CONTRIBUTING",
-              "path": "/docs/technology/checklists/frontend/frontend-prod-checklist/CONTRIBUTING"
-            },
-            {
-              "id": "technology/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist",
-              "path": "/docs/technology/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist"
-            },
-            {
-              "id": "technology/checklists/readme",
-              "path": "/docs/technology/checklists/readme"
-            },
-            {
-              "id": "technology/deployments/deployment",
-              "path": "/docs/technology/deployments/deployment"
-            },
-            {
-              "id": "technology/roadmap/blackspace-analytics/blackspace-analytics-roadmap",
-              "path": "/docs/technology/roadmap/blackspace-analytics/blackspace-analytics-roadmap"
-            },
-            {
-              "id": "technology/roadmap/blackspace-ecommerce/blackspace-ecommerce-roadmap",
-              "path": "/docs/technology/roadmap/blackspace-ecommerce/blackspace-ecommerce-roadmap"
-            },
-            {
-              "id": "technology/roadmap/blackspace-roadmap",
-              "path": "/docs/technology/roadmap/blackspace-roadmap"
-            },
-            {
-              "id": "technology/roadmap/blackspace-social/blackspace-social-roadmap",
-              "path": "/docs/technology/roadmap/blackspace-social/blackspace-social-roadmap"
-            },
-            {
-              "id": "technology/system-benchmarks/system-benchmarks",
-              "path": "/docs/technology/system-benchmarks/system-benchmarks"
-            },
-            {
-              "id": "technology/technology",
-              "path": "/docs/technology/technology"
+              "id": "technology/system-benchmarks/system-benchmark",
+              "path": "/docs/technology/system-benchmarks/system-benchmark"
             },
             {
               "id": "technology/third-party-apis/third-party-apis",
               "path": "/docs/technology/third-party-apis/third-party-apis"
-            },
-            {
-              "id": "triggering-third-party-tools",
-              "path": "/docs/triggering-third-party-tools"
-            },
-            {
-              "id": "tuning-from-the-webapp",
-              "path": "/docs/tuning-from-the-webapp"
-            },
-            {
-              "id": "tuning-workflows",
-              "path": "/docs/tuning-workflows"
-            },
-            {
-              "id": "using-the-qa-cli",
-              "path": "/docs/using-the-qa-cli"
-            },
-            {
-              "id": "visualizations",
-              "path": "/docs/visualizations"
             }
           ]
         }

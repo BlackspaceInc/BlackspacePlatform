@@ -1,7 +1,5 @@
 ---
-id:  scalability
-sidebar_label: Scalable Systems Resources
-title:  Scalable SystemsLearning Resources
+title:  Scalable Systems Resources
 ---
 
 An updated and organized reading list for illustrating the patterns of scalable, reliable, and performant large-scale systems. Concepts are explained in the articles of prominent engineers and credible references. Case studies are taken from battle-tested systems that serve millions to billions of users.
@@ -17,12 +15,6 @@ An updated and organized reading list for illustrating the patterns of scalable,
 
 #### If you are building your dream team
 > The goal of scaling team is not growing team size but increasing team output and value. You can find out how tech companies reach that goal in various aspects: hiring, management, organization, culture, and communication in the [organization](#organization) section.
-
-#### Community power
-
-> Contributions are greatly welcome! You may want to take a look at the [contribution guidelines](CONTRIBUTING.md). If you see a link here that is no longer maintained or is not a good fit, please submit a pull request!
-
-> Many long hours of hard work have gone into this project. If you find it helpful, please share on Facebook, [on Twitter](https://ctt.ec/V8B2p), [on Weibo](http://t.cn/RnjFLCB), or on your chat groups! Knowledge is power, knowledge shared is power multiplied. Thank you!
 
 ## Content
 - [Content](#content)

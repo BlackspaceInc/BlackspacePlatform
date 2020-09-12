@@ -1,155 +1,678 @@
 {
-  "/-deb": {
-    "component": "component---site-src-pages-index-jsc-4-f-f99",
+  "/-f49": {
+    "component": "component---site-src-pages-index-tsx-1-df-d3e",
     "config": "config---5-e-9-4f3"
   },
-  "/__docusaurus/debug-fdd": {
-    "component": "component---theme-debugd-45-c28"
+  "/__docusaurus/debug-3d6": {
+    "component": "component---theme-debug-config-23-a-2ff"
   },
-  "/blog-e00": {
+  "/__docusaurus/debug/config-914": {
+    "component": "component---theme-debug-config-23-a-2ff"
+  },
+  "/__docusaurus/debug/content-c28": {
+    "component": "component---theme-debug-contentba-8-ce7",
+    "allContent": "allContent---docusaurus-debug-content-246-9aa"
+  },
+  "/__docusaurus/debug/globalData-3cf": {
+    "component": "component---theme-debug-global-dataede-0fa"
+  },
+  "/__docusaurus/debug/metadata-31b": {
+    "component": "component---theme-debug-site-metadata-68-e-3d4"
+  },
+  "/__docusaurus/debug/registry-0da": {
+    "component": "component---theme-debug-registry-679-501"
+  },
+  "/__docusaurus/debug/routes-244": {
+    "component": "component---theme-debug-routes-946-699"
+  },
+  "/blog-dd0": {
     "component": "component---theme-blog-list-pagea-6-a-7ba",
     "items": [
       {
-        "content": "content---blog-883-7b2"
+        "content": "content---blog-70-e-a2a"
+      },
+      {
+        "content": "content---blog-67-f-f9c"
+      },
+      {
+        "content": "content---blog-993-784"
+      },
+      {
+        "content": "content---blogd-4-d-843"
+      },
+      {
+        "content": "content---blog-49-d-3bf"
+      },
+      {
+        "content": "content---blogbe-5-f34"
+      },
+      {
+        "content": "content---blogafc-e05"
+      },
+      {
+        "content": "content---blogd-03-b2e"
+      },
+      {
+        "content": "content---blog-640-869"
+      },
+      {
+        "content": "content---blog-537-582"
       }
     ],
-    "metadata": "metadata---blogbbb-5f9"
+    "metadata": "metadata---blogb-2-b-df1"
   },
-  "/blog/2020/08/16/_system-design-841": {
+  "/blog/2019/12/19/lineprot-420": {
     "component": "component---theme-blog-post-pageccc-cab",
-    "content": "content---blog-2020-08-16-system-designdd-9-c6b"
+    "content": "content---blog-2019-12-19-lineprotad-2-8a0"
   },
-  "/blog/tags-3a8": {
+  "/blog/2020/03/15/interthread-b7f": {
+    "component": "component---theme-blog-post-pageccc-cab",
+    "content": "content---blog-2020-03-15-interthread-406-aa0"
+  },
+  "/blog/2020/04/02/using-simd-to-aggregate-billions-of-rows-per-second-536": {
+    "component": "component---theme-blog-post-pageccc-cab",
+    "content": "content---blog-2020-04-02-using-simd-to-aggregate-billions-of-rows-per-second-2-af-1ea"
+  },
+  "/blog/2020/05/12/interesting-things-we-learned-about-sums-dfc": {
+    "component": "component---theme-blog-post-pageccc-cab",
+    "content": "content---blog-2020-05-12-interesting-things-we-learned-about-sums-535-e2a"
+  },
+  "/blog/2020/06/05/iot-on-questdb-e6b": {
+    "component": "component---theme-blog-post-pageccc-cab",
+    "content": "content---blog-2020-06-05-iot-on-questdbdfb-8a9"
+  },
+  "/blog/2020/06/15/python-questdb-tutorial-2c1": {
+    "component": "component---theme-blog-post-pageccc-cab",
+    "content": "content---blog-2020-06-15-python-questdb-tutorialed-2-8eb"
+  },
+  "/blog/2020/07/01/we-put-a-sql-database-on-the-internet-289": {
+    "component": "component---theme-blog-post-pageccc-cab",
+    "content": "content---blog-2020-07-01-we-put-a-sql-database-on-the-internet-3-b-0-48a"
+  },
+  "/blog/2020/07/22/influxdb-lp-on-tcp-721": {
+    "component": "component---theme-blog-post-pageccc-cab",
+    "content": "content---blog-2020-07-22-influxdb-lp-on-tcpf-1-d-f54"
+  },
+  "/blog/2020/07/24/use-questdb-for-swag-3be": {
+    "component": "component---theme-blog-post-pageccc-cab",
+    "content": "content---blog-2020-07-24-use-questdb-for-swagcc-2-dc2"
+  },
+  "/blog/2020/08/06/my-journey-writing-questdb-245": {
+    "component": "component---theme-blog-post-pageccc-cab",
+    "content": "content---blog-2020-08-06-my-journey-writing-questdbb-8-e-8b8"
+  },
+  "/blog/2020/08/19/memory-mapping-deep-dive-b57": {
+    "component": "component---theme-blog-post-pageccc-cab",
+    "content": "content---blog-2020-08-19-memory-mapping-deep-dive-5-cf-c3c"
+  },
+  "/blog/2020/08/25/questitto-3e5": {
+    "component": "component---theme-blog-post-pageccc-cab",
+    "content": "content---blog-2020-08-25-questittoa-3-b-27e"
+  },
+  "/blog/page/2-704": {
+    "component": "component---theme-blog-list-pagea-6-a-7ba",
+    "items": [
+      {
+        "content": "content---blog-page-27-ee-5b7"
+      },
+      {
+        "content": "content---blog-page-278-b-d6c"
+      }
+    ],
+    "metadata": "metadata---blog-page-28-eb-625"
+  },
+  "/blog/tags-a25": {
     "component": "component---theme-blog-tags-list-page-01-a-d0b",
-    "tags": "tags---blog-tags-8-be-13d"
+    "tags": "tags---blog-tagsa-70-da2"
   },
-  "/blog/tags/distributed-systems-b43": {
+  "/blog/tags/about-d5c": {
     "component": "component---theme-blog-tags-posts-page-687-b6c",
     "items": [
       {
-        "content": "content---blog-883-7b2"
+        "content": "content---blog-993-784"
       }
     ],
-    "metadata": "metadata---blog-tags-distributed-systemsde-8-bf8"
+    "metadata": "metadata---blog-tags-aboutef-2-be1"
   },
-  "/blog/tags/engineering-0d3": {
+  "/blog/tags/community-written-d00": {
     "component": "component---theme-blog-tags-posts-page-687-b6c",
     "items": [
       {
-        "content": "content---blog-883-7b2"
+        "content": "content---blog-70-e-a2a"
       }
     ],
-    "metadata": "metadata---blog-tags-engineeringf-0-a-ab2"
+    "metadata": "metadata---blog-tags-community-written-44-a-82c"
   },
-  "/blog/tags/microservices-700": {
+  "/blog/tags/deep-dive-f73": {
     "component": "component---theme-blog-tags-posts-page-687-b6c",
     "items": [
       {
-        "content": "content---blog-883-7b2"
+        "content": "content---blog-67-f-f9c"
+      },
+      {
+        "content": "content---blog-640-869"
+      },
+      {
+        "content": "content---blog-page-27-ee-5b7"
       }
     ],
-    "metadata": "metadata---blog-tags-microservicesc-01-6b9"
+    "metadata": "metadata---blog-tags-deep-divea-40-2dc"
   },
-  "/blog/tags/software-267": {
+  "/blog/tags/demo-7ef": {
     "component": "component---theme-blog-tags-posts-page-687-b6c",
     "items": [
       {
-        "content": "content---blog-883-7b2"
+        "content": "content---blogbe-5-f34"
       }
     ],
-    "metadata": "metadata---blog-tags-software-40-b-c1f"
+    "metadata": "metadata---blog-tags-demo-15-d-57c"
   },
-  "/blog/tags/system-design-4b8": {
+  "/blog/tags/docker-536": {
     "component": "component---theme-blog-tags-posts-page-687-b6c",
     "items": [
       {
-        "content": "content---blog-883-7b2"
+        "content": "content---blog-70-e-a2a"
       }
     ],
-    "metadata": "metadata---blog-tags-system-design-759-8b6"
+    "metadata": "metadata---blog-tags-docker-859-ae4"
   },
-  "/help-416": {
-    "component": "component---site-src-pages-help-js-7-e-3-222",
+  "/blog/tags/hackernews-6ae": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blog-993-784"
+      },
+      {
+        "content": "content---blogbe-5-f34"
+      }
+    ],
+    "metadata": "metadata---blog-tags-hackernewsaf-7-665"
+  },
+  "/blog/tags/influxdb-488": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blog-page-278-b-d6c"
+      }
+    ],
+    "metadata": "metadata---blog-tags-influxdbdef-57a"
+  },
+  "/blog/tags/influxdb-line-protocol-a48": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blog-49-d-3bf"
+      },
+      {
+        "content": "content---blog-page-278-b-d6c"
+      }
+    ],
+    "metadata": "metadata---blog-tags-influxdb-line-protocolf-4-d-2f0"
+  },
+  "/blog/tags/iot-050": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blog-70-e-a2a"
+      },
+      {
+        "content": "content---blogd-03-b2e"
+      }
+    ],
+    "metadata": "metadata---blog-tags-iot-316-8ef"
+  },
+  "/blog/tags/jupyter-9a7": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blogafc-e05"
+      }
+    ],
+    "metadata": "metadata---blog-tags-jupyter-93-f-961"
+  },
+  "/blog/tags/messaging-49b": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blog-page-27-ee-5b7"
+      }
+    ],
+    "metadata": "metadata---blog-tags-messagingabf-895"
+  },
+  "/blog/tags/mqtt-239": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blog-70-e-a2a"
+      }
+    ],
+    "metadata": "metadata---blog-tags-mqttf-86-dae"
+  },
+  "/blog/tags/performance-b38": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blog-67-f-f9c"
+      },
+      {
+        "content": "content---blog-640-869"
+      },
+      {
+        "content": "content---blog-537-582"
+      },
+      {
+        "content": "content---blog-page-278-b-d6c"
+      }
+    ],
+    "metadata": "metadata---blog-tags-performancee-62-213"
+  },
+  "/blog/tags/postmorterm-4c8": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blogbe-5-f34"
+      }
+    ],
+    "metadata": "metadata---blog-tags-postmortermdd-1-af6"
+  },
+  "/blog/tags/projects-c23": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blogd-4-d-843"
+      }
+    ],
+    "metadata": "metadata---blog-tags-projects-0-e-2-152"
+  },
+  "/blog/tags/python-178": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blogafc-e05"
+      }
+    ],
+    "metadata": "metadata---blog-tags-python-232-db4"
+  },
+  "/blog/tags/simd-ad3": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blog-537-582"
+      }
+    ],
+    "metadata": "metadata---blog-tags-simd-4-f-1-686"
+  },
+  "/blog/tags/story-570": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blog-993-784"
+      }
+    ],
+    "metadata": "metadata---blog-tags-storyb-5-a-dbb"
+  },
+  "/blog/tags/swag-d14": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blogd-4-d-843"
+      }
+    ],
+    "metadata": "metadata---blog-tags-swag-5-ee-5fc"
+  },
+  "/blog/tags/tcp-b7f": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blog-49-d-3bf"
+      }
+    ],
+    "metadata": "metadata---blog-tags-tcp-244-cd9"
+  },
+  "/blog/tags/thread-model-baf": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blog-page-27-ee-5b7"
+      }
+    ],
+    "metadata": "metadata---blog-tags-thread-modele-65-b05"
+  },
+  "/blog/tags/tutorial-097": {
+    "component": "component---theme-blog-tags-posts-page-687-b6c",
+    "items": [
+      {
+        "content": "content---blogafc-e05"
+      }
+    ],
+    "metadata": "metadata---blog-tags-tutorial-77-e-b16"
+  },
+  "/getstarted-ebc": {
+    "component": "component---site-src-pages-getstarted-tsxe-1-e-16f",
     "config": "config---5-e-9-4f3"
   },
-  "/search-afc": {
-    "component": "component---users-yoanyomba-go-src-github-com-blackspace-inc-blackspace-platform-docs-node-modules-docusaurus-theme-search-algolia-src-pages-search-index-js-278-63a"
+  "/search-d1b": {
+    "component": "component---users-yoanyomba-go-src-github-com-blackspace-inc-blackspace-platform-docs-node-modules-docusaurus-theme-search-algolia-src-theme-search-page-index-jsd-0-f-6ba"
   },
-  "/docs-69c": {
+  "/docs-e36": {
     "component": "component---theme-doc-page-1-be-9be",
-    "docsMetadata": "docsMetadata---docs-20-a-426"
+    "versionMetadata": "versionMetadata---docs-935-398"
   },
-  "/docs/alternatives-807": {
+  "/docs/__guidelines/content-hierarchy-cd6": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-alternativescb-6-74c"
+    "content": "content---docs-guidelines-content-hierarchyd-3-c-c00"
   },
-  "/docs/apis-bd9": {
+  "/docs/__guidelines/influences-8c1": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-apis-861-37f"
+    "content": "content---docs-guidelines-influences-7-f-3-5ff"
   },
-  "/docs/auto-optimization-1e1": {
+  "/docs/__guidelines/lexicon-b88": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-auto-optimization-5-d-7-500"
+    "content": "content---docs-guidelines-lexicon-6-ec-8c3"
   },
-  "/docs/backend-admin/host-upgrades-0f5": {
+  "/docs/__guidelines/markdown-6be": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-backend-admin-host-upgrades-10-b-ca8"
+    "content": "content---docs-guidelines-markdownf-24-716"
   },
-  "/docs/backend-admin/troubleshooting-a07": {
+  "/docs/__guidelines/naming-convention-95a": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-backend-admin-troubleshooting-2-ee-3d2"
+    "content": "content---docs-guidelines-naming-convention-164-420"
   },
-  "/docs/batches-running-on-multiple-inputs-e0f": {
+  "/docs/__guidelines/template/function-ace": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-batches-running-on-multiple-inputsff-1-508"
+    "content": "content---docs-guidelines-template-function-682-81b"
   },
-  "/docs/bit-accuracy-f92": {
+  "/docs/__guidelines/template/guide-269": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-bit-accuracy-8-ae-878"
+    "content": "content---docs-guidelines-template-guide-462-f9e"
   },
-  "/docs/business/business-684": {
+  "/docs/__guidelines/template/sql-35c": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-business-business-564-50d"
+    "content": "content---docs-guidelines-template-sql-2-fb-5ad"
   },
-  "/docs/celery-integration-1c6": {
+  "/docs/__uneeded/api/influxdb-line-protocol-1bc": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-celery-integration-029-98e"
+    "content": "content---docs-uneeded-api-influxdb-line-protocol-7-a-3-9d3"
   },
-  "/docs/ci-integration-f0f": {
+  "/docs/__uneeded/api/java-008": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-ci-integrationdee-0e5"
+    "content": "content---docs-uneeded-api-javae-81-9be"
   },
-  "/docs/computing-quantitative-metrics-c73": {
+  "/docs/__uneeded/api/rest-517": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-computing-quantitative-metrics-069-1c3"
+    "content": "content---docs-uneeded-api-resta-1-e-e60"
   },
-  "/docs/creating-and-viewing-outputs-files-37d": {
+  "/docs/__uneeded/concept/designated-timestamp-a99": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-creating-and-viewing-outputs-files-520-f4f"
+    "content": "content---docs-uneeded-concept-designated-timestampf-7-f-af3"
   },
-  "/docs/dag-pipelines-e7b": {
+  "/docs/__uneeded/concept/indexes-351": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-dag-pipelines-6-de-c45"
+    "content": "content---docs-uneeded-concept-indexesc-8-f-3a7"
   },
-  "/docs/debugging-runs-with-an-IDE-3cb": {
+  "/docs/__uneeded/concept/partitions-f7a": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-debugging-runs-with-an-id-eac-8-b87"
+    "content": "content---docs-uneeded-concept-partitions-746-b34"
   },
-  "/docs/deploy-0a4": {
+  "/docs/__uneeded/concept/sql-execution-order-0a7": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-deploy-64-e-187"
+    "content": "content---docs-uneeded-concept-sql-execution-order-044-377"
   },
-  "/docs/faq-e60": {
+  "/docs/__uneeded/concept/sql-extensions-7ac": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-faq-048-db5"
+    "content": "content---docs-uneeded-concept-sql-extensions-593-45e"
   },
-  "/docs/inputs-d08": {
+  "/docs/__uneeded/concept/storage-model-c4e": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-inputs-5-e-9-b77"
+    "content": "content---docs-uneeded-concept-storage-model-57-a-cef"
   },
-  "/docs/installation-b2a": {
+  "/docs/__uneeded/concept/symbol-ccc": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-installation-3-b-8-7c6"
+    "content": "content---docs-uneeded-concept-symbol-1-e-9-bca"
+  },
+  "/docs/__uneeded/function/aggregation-078": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-function-aggregationf-9-e-7ce"
+  },
+  "/docs/__uneeded/function/date-time-a4e": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-function-date-time-8-e-7-2cc"
+  },
+  "/docs/__uneeded/function/meta-026": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-function-meta-651-168"
+  },
+  "/docs/__uneeded/function/numeric-87c": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-function-numericb-85-073"
+  },
+  "/docs/__uneeded/function/random-value-generator-4f3": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-function-random-value-generatorfcc-046"
+  },
+  "/docs/__uneeded/function/row-generator-ea9": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-function-row-generator-4-c-3-916"
+  },
+  "/docs/__uneeded/function/text-cb9": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-function-text-99-a-272"
+  },
+  "/docs/__uneeded/function/timestamp-8b5": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-function-timestamp-6-eb-e50"
+  },
+  "/docs/__uneeded/function/timestamp-generator-294": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-function-timestamp-generatorad-3-171"
+  },
+  "/docs/__uneeded/reference/configuration/root-directory-structure-008": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-configuration-root-directory-structure-679-683"
+  },
+  "/docs/__uneeded/reference/configuration/server-5cb": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-configuration-server-17-f-5af"
+  },
+  "/docs/__uneeded/reference/configuration/telemetry-431": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-configuration-telemetrye-69-aa5"
+  },
+  "/docs/__uneeded/reference/sql/alter-table-add-column-19a": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-alter-table-add-column-026-541"
+  },
+  "/docs/__uneeded/reference/sql/alter-table-alter-column-add-index-ded": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-alter-table-alter-column-add-index-596-2f6"
+  },
+  "/docs/__uneeded/reference/sql/alter-table-drop-column-f0e": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-alter-table-drop-columnea-7-d0e"
+  },
+  "/docs/__uneeded/reference/sql/alter-table-drop-partition-9c3": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-alter-table-drop-partition-9-ed-47d"
+  },
+  "/docs/__uneeded/reference/sql/backup-ab0": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-backupd-5-b-c3e"
+  },
+  "/docs/__uneeded/reference/sql/case-1ab": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-case-502-bb3"
+  },
+  "/docs/__uneeded/reference/sql/cast-441": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-cast-737-0a6"
+  },
+  "/docs/__uneeded/reference/sql/copy-340": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-copy-019-059"
+  },
+  "/docs/__uneeded/reference/sql/create-table-0ce": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-create-table-624-72a"
+  },
+  "/docs/__uneeded/reference/sql/datatypes-6f3": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-datatypes-22-f-7e0"
+  },
+  "/docs/__uneeded/reference/sql/distinct-c1f": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-distinctea-5-4ef"
+  },
+  "/docs/__uneeded/reference/sql/drop-c61": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-drop-604-b3f"
+  },
+  "/docs/__uneeded/reference/sql/except-intersect-587": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-except-intersecte-4-e-0ed"
+  },
+  "/docs/__uneeded/reference/sql/fill-5c0": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-fill-9-ea-4af"
+  },
+  "/docs/__uneeded/reference/sql/group-by-efe": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-group-byc-20-7b7"
+  },
+  "/docs/__uneeded/reference/sql/insert-1ed": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-insert-37-b-3fc"
+  },
+  "/docs/__uneeded/reference/sql/join-27d": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-join-315-935"
+  },
+  "/docs/__uneeded/reference/sql/latest-by-cad": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-latest-by-8-f-1-cdc"
+  },
+  "/docs/__uneeded/reference/sql/limit-67e": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-limit-916-942"
+  },
+  "/docs/__uneeded/reference/sql/order-by-d42": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-order-by-7-b-0-007"
+  },
+  "/docs/__uneeded/reference/sql/rename-ab3": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-renamef-7-c-44f"
+  },
+  "/docs/__uneeded/reference/sql/sample-by-8b8": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-sample-by-20-c-4c9"
+  },
+  "/docs/__uneeded/reference/sql/select-58e": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-select-31-a-f25"
+  },
+  "/docs/__uneeded/reference/sql/show-52b": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-show-305-133"
+  },
+  "/docs/__uneeded/reference/sql/truncate-9b4": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-truncate-5-bb-0c4"
+  },
+  "/docs/__uneeded/reference/sql/union-1f8": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-union-721-fc4"
+  },
+  "/docs/__uneeded/reference/sql/where-662": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-wherea-5-d-e1e"
+  },
+  "/docs/__uneeded/reference/sql/with-035": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-sql-with-845-154"
+  },
+  "/docs/__uneeded/reference/web-console-edf": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-uneeded-reference-web-console-6-b-0-0c3"
+  },
+  "/docs/checklists/backend/backend-kubernetes/application-development-166": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-checklists-backend-backend-kubernetes-application-development-04-b-0f5"
+  },
+  "/docs/checklists/backend/backend-kubernetes/best-practices-c72": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-checklists-backend-backend-kubernetes-best-practicesd-24-197"
+  },
+  "/docs/checklists/backend/backend-kubernetes/cluster-configuration-b5a": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-checklists-backend-backend-kubernetes-cluster-configuration-017-1c2"
+  },
+  "/docs/checklists/backend/backend-kubernetes/common-978": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-checklists-backend-backend-kubernetes-common-376-742"
+  },
+  "/docs/checklists/backend/backend-kubernetes/governance-aaa": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-checklists-backend-backend-kubernetes-governanceeec-937"
+  },
+  "/docs/checklists/backend/backend-kubernetes/patterns-e60": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-checklists-backend-backend-kubernetes-patterns-737-7e3"
+  },
+  "/docs/checklists/backend/backend-production-ready/production-ready-checklist-8bf": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-checklists-backend-backend-production-ready-production-ready-checklist-271-dc5"
+  },
+  "/docs/checklists/backend/backend-security-checklist/production-security-checklist-79a": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-checklists-backend-backend-security-checklist-production-security-checklist-2-fc-8d3"
+  },
+  "/docs/checklists/frontend/frontend-design-checklist/frontend-design-checklist-ff0": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-checklists-frontend-frontend-design-checklist-frontend-design-checklist-610-318"
+  },
+  "/docs/checklists/frontend/frontend-performance-checklist/frontend-performance-checklist-7e5": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-checklists-frontend-frontend-performance-checklist-frontend-performance-checklist-974-d50"
+  },
+  "/docs/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist-c09": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-checklists-frontend-frontend-prod-checklist-frontend-prod-checklistbc-8-403"
+  },
+  "/docs/guide/binaries-7e2": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-guide-binaries-131-7b7"
+  },
+  "/docs/guide/crud-ced": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-guide-crud-12-f-e46"
+  },
+  "/docs/guide/docker-def": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-guide-dockerfbd-915"
+  },
+  "/docs/guide/homebrew-12d": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-guide-homebrew-86-c-8ad"
+  },
+  "/docs/guide/kubernetes-2c3": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-guide-kubernetescd-8-86f"
+  },
+  "/docs/guide/my-first-database-e91": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-guide-my-first-databasef-63-363"
+  },
+  "/docs/guide/postgres-wire-ec4": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-guide-postgres-wireaab-2cc"
+  },
+  "/docs/guide/rest-01d": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-guide-resteed-125"
+  },
+  "/docs/guide/web-console-077": {
+    "component": "component---theme-doc-item-178-a40",
+    "content": "content---docs-guide-web-console-16-e-f22"
   },
   "/docs/introduction-fca": {
     "component": "component---theme-doc-item-178-a40",
@@ -171,37 +694,25 @@
     "component": "component---theme-doc-item-178-a40",
     "content": "content---docs-learning-scalability-scalability-6-e-5-cca"
   },
-  "/docs/lsf-integration-a87": {
+  "/docs/packages/docker-b34": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-lsf-integration-245-9a7"
+    "content": "content---docs-packages-docker-237-e5d"
   },
-  "/docs/metadata-integration-external-databases-1ef": {
+  "/docs/roadmap/blackspace-analytics/blackspace-analytics-roadmap-27c": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-metadata-integration-external-databases-980-ffc"
+    "content": "content---docs-roadmap-blackspace-analytics-blackspace-analytics-roadmap-8-bf-7df"
   },
-  "/docs/metrics-quantitative-outputs-73b": {
+  "/docs/roadmap/blackspace-ecommerce/blackspace-ecommerce-roadmap-9c9": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-metrics-quantitative-outputs-0-d-1-2a2"
+    "content": "content---docs-roadmap-blackspace-ecommerce-blackspace-ecommerce-roadmapdb-5-153"
   },
-  "/docs/monorepo-support-e4a": {
+  "/docs/roadmap/blackspace-roadmap-f1e": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-monorepo-supportab-3-4bf"
+    "content": "content---docs-roadmap-blackspace-roadmap-896-9e8"
   },
-  "/docs/project-init-74d": {
+  "/docs/roadmap/blackspace-social/blackspace-social-roadmap-f66": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-project-init-5-c-7-3a3"
-  },
-  "/docs/references-and-milestones-107": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-references-and-milestones-065-d22"
-  },
-  "/docs/running-your-code-dd8": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-running-your-codeda-3-839"
-  },
-  "/docs/specifying-configurations-a0f": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-specifying-configurationsa-8-b-029"
+    "content": "content---docs-roadmap-blackspace-social-blackspace-social-roadmapd-77-15d"
   },
   "/docs/storage/artifacts-8cc": {
     "component": "component---theme-doc-item-178-a40",
@@ -215,160 +726,48 @@
     "component": "component---theme-doc-item-178-a40",
     "content": "content---docs-storage-where-is-the-data-778-16d"
   },
-  "/docs/technology/architecture/backend-services/services-964": {
+  "/docs/technology/architecture/instrumentation/instrumentation-e4c": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-architecture-backend-services-services-580-e37"
+    "content": "content---docs-technology-architecture-instrumentation-instrumentationd-67-480"
   },
-  "/docs/technology/architecture/instrumentation/instrumentation-ad9": {
+  "/docs/technology/architecture/metrics/metrics-c39": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-architecture-instrumentation-instrumentation-3-a-9-2d3"
+    "content": "content---docs-technology-architecture-metrics-metrics-067-c86"
   },
-  "/docs/technology/architecture/metrics/metrics-fb0": {
+  "/docs/technology/architecture/service-architecture/service-architecture-cac": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-architecture-metrics-metricsbea-b26"
+    "content": "content---docs-technology-architecture-service-architecture-service-architecture-900-303"
   },
   "/docs/technology/architecture/service-mesh/service-mesh-c74": {
     "component": "component---theme-doc-item-178-a40",
     "content": "content---docs-technology-architecture-service-mesh-service-mesh-802-0b8"
   },
-  "/docs/technology/backend-services/authentication-service/auth-service-c65": {
+  "/docs/technology/backend-services/authentication-service/authentication-service-a5f": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-backend-services-authentication-service-auth-service-6-de-1a0"
+    "content": "content---docs-technology-backend-services-authentication-service-authentication-service-8-f-9-0fa"
   },
-  "/docs/technology/backend-services/company-service/company-service-992": {
+  "/docs/technology/backend-services/company-service/company-service-f39": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-backend-services-company-service-company-service-976-f6b"
+    "content": "content---docs-technology-backend-services-company-service-company-service-8-ee-d44"
   },
-  "/docs/technology/backend-services/email-service/email-service-e53": {
+  "/docs/technology/backend-services/email-service/email-service-b2f": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-backend-services-email-service-email-servicefa-1-05b"
+    "content": "content---docs-technology-backend-services-email-service-email-servicecfb-a93"
   },
-  "/docs/technology/backend-services/user-service/user-service-86a": {
+  "/docs/technology/backend-services/user-service/user-service-9d7": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-backend-services-user-service-user-servicee-46-321"
+    "content": "content---docs-technology-backend-services-user-service-user-service-0-e-5-6aa"
   },
-  "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-cluster-config-427": {
+  "/docs/technology/deployments/deployments-527": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-kubernetes-kubernetes-cluster-config-42-b-d07"
+    "content": "content---docs-technology-deployments-deployments-626-0a7"
   },
-  "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-common-6d1": {
+  "/docs/technology/system-benchmarks/system-benchmark-aab": {
     "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-kubernetes-kubernetes-common-7-fc-6cd"
-  },
-  "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-development-d9b": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-kubernetes-kubernetes-developmentf-83-c6f"
-  },
-  "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-governance-4bb": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-kubernetes-kubernetes-governanced-7-b-2ff"
-  },
-  "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-patterns-acd": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-kubernetes-kubernetes-patternsbd-1-0c8"
-  },
-  "/docs/technology/checklists/backend/backend-kubernetes/kubernetes-standards-456": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-kubernetes-kubernetes-standards-7-e-4-060"
-  },
-  "/docs/technology/checklists/backend/backend-production-ready/production-ready-checklist-184": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-production-ready-production-ready-checklist-1-ff-577"
-  },
-  "/docs/technology/checklists/backend/backend-security-checklist/CONTRIBUTING-70c": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-security-checklist-contributing-189-2e5"
-  },
-  "/docs/technology/checklists/backend/backend-security-checklist/production-security-checklist-df1": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-backend-backend-security-checklist-production-security-checklist-478-465"
-  },
-  "/docs/technology/checklists/frontend/frontend-design-checklist/CODE_OF_CONDUCT-0aa": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-frontend-frontend-design-checklist-code-of-conduc-tfc-9-0eb"
-  },
-  "/docs/technology/checklists/frontend/frontend-design-checklist/frontend-design-checklist-cdf": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-frontend-frontend-design-checklist-frontend-design-checklist-7-da-755"
-  },
-  "/docs/technology/checklists/frontend/frontend-performance-checklist/CODE_OF_CONDUCT-9c4": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-frontend-frontend-performance-checklist-code-of-conduct-17-f-f0a"
-  },
-  "/docs/technology/checklists/frontend/frontend-performance-checklist/frontend-performance-checklist-176": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-frontend-frontend-performance-checklist-frontend-performance-checklist-4-af-c34"
-  },
-  "/docs/technology/checklists/frontend/frontend-prod-checklist/CHANGELOG-529": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-frontend-frontend-prod-checklist-changelo-gf-5-f-c74"
-  },
-  "/docs/technology/checklists/frontend/frontend-prod-checklist/CODE_OF_CONDUCT-ff4": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-frontend-frontend-prod-checklist-code-of-conduct-064-68a"
-  },
-  "/docs/technology/checklists/frontend/frontend-prod-checklist/CONTRIBUTING-326": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-frontend-frontend-prod-checklist-contributin-gfe-9-869"
-  },
-  "/docs/technology/checklists/frontend/frontend-prod-checklist/frontend-prod-checklist-4b9": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-frontend-frontend-prod-checklist-frontend-prod-checklist-21-a-d5a"
-  },
-  "/docs/technology/checklists/readme-e58": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-checklists-readmeff-4-ad1"
-  },
-  "/docs/technology/deployments/deployment-f32": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-deployments-deployment-9-e-2-2fa"
-  },
-  "/docs/technology/roadmap/blackspace-analytics/blackspace-analytics-roadmap-742": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-roadmap-blackspace-analytics-blackspace-analytics-roadmapa-35-247"
-  },
-  "/docs/technology/roadmap/blackspace-ecommerce/blackspace-ecommerce-roadmap-db4": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-roadmap-blackspace-ecommerce-blackspace-ecommerce-roadmap-785-7f8"
-  },
-  "/docs/technology/roadmap/blackspace-roadmap-238": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-roadmap-blackspace-roadmap-298-4db"
-  },
-  "/docs/technology/roadmap/blackspace-social/blackspace-social-roadmap-4ee": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-roadmap-blackspace-social-blackspace-social-roadmap-9-a-6-85b"
-  },
-  "/docs/technology/system-benchmarks/system-benchmarks-f64": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-system-benchmarks-system-benchmarksebe-238"
-  },
-  "/docs/technology/technology-6a2": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-technology-technologye-0-c-c6b"
+    "content": "content---docs-technology-system-benchmarks-system-benchmark-4-ff-b5e"
   },
   "/docs/technology/third-party-apis/third-party-apis-41f": {
     "component": "component---theme-doc-item-178-a40",
     "content": "content---docs-technology-third-party-apis-third-party-apis-2-d-3-fab"
-  },
-  "/docs/triggering-third-party-tools-684": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-triggering-third-party-tools-918-556"
-  },
-  "/docs/tuning-from-the-webapp-641": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-tuning-from-the-webapp-446-fa0"
-  },
-  "/docs/tuning-workflows-ddb": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-tuning-workflows-3-f-8-90c"
-  },
-  "/docs/using-the-qa-cli-014": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-using-the-qa-clia-7-b-8a8"
-  },
-  "/docs/visualizations-410": {
-    "component": "component---theme-doc-item-178-a40",
-    "content": "content---docs-visualizations-708-67a"
   }
 }

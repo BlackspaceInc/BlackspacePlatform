@@ -1,209 +1,275 @@
-const publish_blackspace_private = process.env.PUBLISH === 'blackspace_private' 
-const publish_blackspace_public  = process.env.PUBLISH === 'blackspace_public' 
-const is_for_webapp = !publish_blackspace_private && !publish_blackspace_public
+const visit = require("unist-util-visit")
+const ssrTemplate = require("./src/internals/ssr.template")
 
-// See https://docusaurus.io/docs/site-config for all the possible site configuration options.
-const logo = {
-  alt: 'Blackspace Logo',
-  // https://commons.wikimedia.org/wiki/File:Twemoji_1f429.svg
-  src: 'img/twemoji_poodle.svg',
+const customFields = {
+  artifactHubUrl: "https://artifacthub.io/packages/helm/BlackspaceInc/BlackspacePlatform",
+  copyright: `Copyright © ${new Date().getFullYear()} Blackspace Platform`,
+  description:
+    "Blackspace is an ecommerce platform empowering minoriting owned businesses to achieve more",
+  dockerUrl: "https://hub.docker.com/repository/docker/blackspaceinc/frontend-service",
+  domain: "blackspaceInc.io",
+  githubUrl: "https://github.com/BlackspaceInc/",
+  helmVersion: "0.2.4",
+  linkedInUrl: "https://www.linkedin.com/company/blackspaceInc/",
+  oneLiner: "Ecommerce platform empowering minority owned businesses to achieve more",
+  slackUrl:
+    "https://blackspace.slack.com/join/shared_invite/enQtNzk4Nzg4Mjc2MTE2LTEzZThjMzliMjUzMTBmYzVjYWNmM2UyNWJmNDdkMDYyZmE0ZDliZTQxN2EzNzk5MDE3Zjc1ZmJiZmFiZTIwMGY#/",
+  twitterUrl: "https://twitter.com/blackspace",
+  version: "5.0.3",
 }
 
-var config = {
-  title: 'Blackspace Platform',
-  tagline: "Empowering minority owned businesses to better serve their clients <br/>and achieve more.",
-  // You may provide arbitrary config keys to be used as needed by your
-  // template. For example, if you need your repo's URL...
+function variable() {
+  const RE_VAR = /{@([\w-_]+)@}/g
+  const getVariable = (full, partial) =>
+    partial ? customFields[partial] : full
 
-  // scripts: [
-  // Add custom scripts here that would be placed in <script> tags.
-  //'https://buttons.github.io/buttons.js'
-  // ],
+  function textVisitor(node) {
+    node.value = node.value.replace(RE_VAR, getVariable)
+  }
 
-  // https://realfavicongenerator.net/
-  favicon: 'img/favicon/favicon-32x32.png',
-  customFields: {
-    description:
-      "Empowering minority owned businesses to better serve their clients and achieve more.",
-  },
-  onBrokenLinks: 'log',
+  function linkVisitor(node) {
+    node.url = node.url.replace(RE_VAR, getVariable)
+
+    if (node.title) {
+      node.title = node.title.replace(RE_VAR, getVariable)
+    }
+  }
+
+  function transformer(ast) {
+    visit(ast, "text", textVisitor)
+    visit(ast, "code", textVisitor)
+    visit(ast, "link", linkVisitor)
+  }
+
+  return transformer
+}
+
+const config = {
+  title: "Better Ecommerce",
+  tagline: "Blackspace is the fastest social ecommerce solution for minority owned business owners",
+  url: `https://${customFields.domain}`,
+  baseUrl: "/",
+  favicon: "/img/favicon.png",
+  organizationName: "Blackspace",
+  projectName: "blackspace",
+  customFields,
+  plugins: [
+    require.resolve("./plugins/fetch-release"),
+    require.resolve("./plugins/lint"),
+    require.resolve("./plugins/manifest"),
+    [
+      "@docusaurus/plugin-ideal-image",
+      {
+        quality: 100,
+        steps: 2, // the max number of images generated between min and max (inclusive)
+      },
+    ],
+    [
+      "@docusaurus/plugin-pwa",
+      {
+        pwaHead: [
+          {
+            tagName: "link",
+            rel: "icon",
+            href: "/img/favicon.png",
+          },
+          {
+            tagName: "link",
+            rel: "manifest",
+            href: "/manifest.webmanifest",
+          },
+          {
+            tagName: "meta",
+            name: "theme-color",
+            content: "#d14671",
+          },
+          {
+            tagName: "meta",
+            name: "apple-mobile-web-app-capable",
+            content: "yes",
+          },
+          {
+            tagName: "meta",
+            name: "apple-mobile-web-app-status-bar-style",
+            content: "#21222c",
+          },
+          {
+            tagName: "link",
+            rel: "apple-touch-icon",
+            href: "/img/favicon.png",
+          },
+          {
+            tagName: "link",
+            rel: "mask-icon",
+            href: "/img/favicon.png",
+            content: "#fff",
+          },
+          {
+            tagName: "meta",
+            name: "msapplication-TileImage",
+            content: "/img/favicon.png",
+          },
+          {
+            tagName: "meta",
+            name: "msapplication-TileColor",
+            content: "#21222c",
+          },
+        ],
+      },
+    ],
+  ],
   themeConfig: {
+    announcementBar: {
+      id: "github-star",
+    },
     colorMode: {
       defaultMode: 'light',
       disableSwitch: false,
       respectPrefersColorScheme: true,
-      switchConfig: {
-        darkIcon: '🌙',
-        darkIconStyle: {
-          // Style object passed to inline CSS
-          // For more information about styling options visit: https://reactjs.org/docs/dom-elements.html#style
-          marginLeft: '2px',
-        },
-        lightIcon: '\u2600',
-        lightIconStyle: {
-          marginLeft: '1px',
-        },
-      },
     },
-    image: "img/share.jpg",
     announcementBar: {
       id: 'supportus',
       backgroundColor: '#1064d3',
       textColor: 'white',
       content: '⭐️ If you like Blackspace, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/BlackspaceInc/BlackspacePlatform">GitHub</a>! ⭐️',
     },
-    prism: {
-      additionalLanguages: ['nginx'],
-      defaultLanguage: 'javascript',
-      theme: require('prism-react-renderer/themes/github'),
-      darkTheme: require('prism-react-renderer/themes/dracula'),
+    image: "/img/og.png",
+    gtag: {
+      trackingID: "GTM-PVR7M2G",
+      anonymizeIP: true,
     },
-    footer: {
-      logo,
-      links: [
-        {
-          title: 'Docs',
-          items: [
-            {
-              label: 'Introduction',
-              to: 'docs/introduction',
-            },
-            {
-              label: 'Technology',
-              to: 'docs/technology',
-            },
-          ],
-        },
-        {
-          title: 'Products',
-          items: [
-            {
-              label: 'Product Overview',
-              to: 'docs/technology/products/overview',
-            },
-            {
-              label: 'Marketplace',
-              to: 'docs/technology/products/marketplace',
-            },
-            {
-              label: ' Business',
-              to: 'docs/technology/products/business',
-            },
-            {
-              label: ' Analytics',
-              to: 'docs/technology/products/analytics',
-            },
-            {
-              label: ' Makers',
-              to: 'docs/technology/products/makers',
-            },
-            {
-              label: ' 3rd Party Integrations',
-              to: 'docs/technology/products/integrations',
-            },
-            {
-              label: ' Ads',
-              to: 'docs/technology/products/ads',
-            },
-            {
-              label: ' AI & Research',
-              to: 'docs/technology/products/research',
-            },
-            {
-              label: ' VC',
-              to: 'docs/technology/products/vc',
-            },
-          ],
-        },
-        {
-          title: 'Social',
-          items: [
-            {
-              label: 'Blog',
-              href: 'https://the-guild.dev/blog',
-            },
-            {
-              label: 'GitHub',
-              href: 'https://github.com/kamilkisiela/graphql-inspector',
-            },
-            {
-              label: 'Twitter',
-              href: 'https://twitter.com/kamilkisiela',
-            },
-            {
-              label: 'LinkedIn',
-              href: 'https://www.linkedin.com/company/the-guild-software',
-            },
-          ],
-        },],
-      copyright: "Made with ❤️ at Blackspace. Apache 2.0 License. Built with Docusaurus.",
+    prism: {
+      defaultLanguage: "blackspace",
+      theme: require("./src/internals/prism-dracula"),
+    },
+    algolia: {
+      apiKey: "b2a69b4869a2a85284a82fb57519dcda",
+      indexName: "blackspace",
     },
     navbar: {
-      title: 'Blackspace Platform',
-      logo,
-      hideOnScroll: true,
+      title: " ",
+      logo: {
+        alt: "Blackspace",
+        src: "/img/navbar/logo.ico",
+      },
       items: [
-        {to: 'blog', label: 'Blog', position: 'left'}, // or position: 'right'
-        {to: 'docs/introduction', label: 'Docs', position: 'left'},
         {
-          href: 'https://github.com/BlackspaceInc/BlackspacePlatform',
-          position: 'left',
-          label: 'Source',
+          label: "Getting Started",
+          position: "left",
+          items: [
+            {
+              label: "Docker",
+              to: "/docs/guide/docker/",
+            },
+            {
+              label: "Kubernetes",
+              to: "/docs/guide/kubernetes/",
+            }
+          ],
         },
         {
-          href: 'https://github.com/BlackspaceInc/BlackspacePlatform',
-          position: 'right',
-          className: 'header-github-link',
-          'aria-label': 'GitHub repository',
+          label: "Documentation",
+          position: "left",
+          to: "/docs/introduction/",
+          activeBasePath: "docs",
+        },
+        /** 
+        {
+          label: "Blog",
+          to: "/blog/",
+          position: "left",
+        },
+        */
+        {
+          label: "GitHub",
+          className: "navbar__item--github",
+          href: customFields.githubUrl,
+          position: "right",
+        },
+        {
+          label: "Join Slack",
+          className: "navbar__item--slack",
+          href: customFields.slackUrl,
+          position: "right",
         },
       ],
     },
-    // removes "active" color on parent sidebar categories :|
-    sidebarCollapsible: true,
+    footer: {
+      links: [
+        {
+          title: "Blackspace",
+          items: [
+            {
+              label: "Documentation",
+              to: "/docs/introduction/",
+            },
+            {
+              label: "Roadmap",
+              href: `${customFields.githubUrl}/projects/3`,
+            },
+          ],
+        },
+        {
+          title: "Community",
+          items: [
+            {
+              label: "Slack",
+              href: customFields.slackUrl,
+            },
+            {
+              label: "Twitter",
+              href: customFields.twitterUrl,
+            },
+          ],
+        },
+        {
+          title: "More",
+          items: [
+            /*
+            {
+              label: "Blog",
+              to: "/blog/",
+            },
+            */
+            {
+              label: "GitHub",
+              href: customFields.githubUrl,
+            },
+          ],
+        },
+      ],
+    },
   },
-};
-
-config = {
-  ...config,
   presets: [
     [
-      '@docusaurus/preset-classic',
+      "@docusaurus/preset-classic",
       {
-        theme: {
-          customCss: [require.resolve('./src/css/custom.css')],
+        docs: {
+          remarkPlugins: [variable],
+          sidebarPath: require.resolve("./sidebars.js"),
         },
         blog: {
-          path: 'blog/engineering',
-          routeBasePath: 'blog',
-          blogDescription: 'Blackspace Engineering',
+          remarkPlugins: [variable],
+          feedOptions: {
+            type: "all",
+            copyright: customFields.copyright,
+          },
+          showReadingTime: true,
         },
-        docs: {
-          path: 'docs',
-          routeBasePath: 'docs',
-          sidebarPath: require.resolve('./sidebars.js'),
-          editUrl: 'https://github.com/BlackspaceInc/BlackspacePlatform/edit/master/website/',
-          // admonitions: {},
-          // Show documentation's last contributor's name.
-          // enableUpdateBy: true,
-          // Show documentation's last update time.
-          // enableUpdateTime: true,        
+        sitemap: {
+          cacheTime: 600 * 1000, // 600 sec - cache purge period
+          changefreq: "daily",
+          priority: 0.7,
+        },
+        theme: {
+          customCss: require.resolve("./src/css/global.css"),
         },
       },
     ],
   ],
-  url: 'https://blackspaceinc.github.io',
-  baseUrl: '/',
-  organizationName: 'BlackspaceInc',
-  projectName: 'BlackspacePlatform',
 }
 
-
-config.themeConfig.algolia = {
-  apiKey: '7e47115263beea4eb52978a771750414',
-  indexName: 'docs',
-  algoliaOptions: {
-    // facetFilters: [`version:${versions[0]}`],
-  },
+module.exports = {
+  ...config,
+  ssrTemplate: ssrTemplate(config),
 }
-
-module.exports = config;

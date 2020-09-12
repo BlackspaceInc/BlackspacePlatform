@@ -1,10 +1,7 @@
 ---
-id:  distributed-systems
-sidebar_label: Distributed Systems Resources
 title: Distributed Systems Learning Resources
 ---
 
-# Distributed Systems Learning Resources.
 Most links tend to be readings on architecture itself rather than code itself.
 
 ## Bootcamp

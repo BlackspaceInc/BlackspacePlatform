@@ -1,10 +1,7 @@
 ---
-id:  patterns
-sidebar_label: Architectural Patterns
 title: Architectural Patterns
 ---
 
-# Software and Architectual Design Patterns 
 <br/>
 
 <img alt="PRs Welcome" src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" /> <a href="https://gitter.im/awesome-design-patterns/Lobby"><img src="https://badges.gitter.im/awesome-design-patterns/Lobby.svg" alt="awesome"/></a> <a href="http://awesome.re"><img src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg" alt="awesome"/></a> 
@@ -20,21 +17,20 @@ title: Architectural Patterns
 <br/>
 
 ## Contents
-- [Software and Architectual Design Patterns](#software-and-architectual-design-patterns)
-  - [Contents](#contents)
-  - [Programming Language Design Patterns](#programming-language-design-patterns)
-  - [General Architecture](#general-architecture)
-  - [Cloud Architecture](#cloud-architecture)
-  - [Serverless Architecture](#serverless-architecture)
-  - [Micro services & Distributed Systems](#micro-services--distributed-systems)
-  - [Internet of things](#internet-of-things)
-  - [Big Data](#big-data)
-  - [Databases](#databases)
-  - [Docker and DevOps](#docker-and-devops)
-  - [Mobile](#mobile)
-  - [Front-End Development](#front-end-development)
-  - [Security](#security)
-  - [Books](#books)
+- [Contents](#contents)
+- [Programming Language Design Patterns](#programming-language-design-patterns)
+- [General Architecture](#general-architecture)
+- [Cloud Architecture](#cloud-architecture)
+- [Serverless Architecture](#serverless-architecture)
+- [Micro services & Distributed Systems](#micro-services--distributed-systems)
+- [Internet of things](#internet-of-things)
+- [Big Data](#big-data)
+- [Databases](#databases)
+- [Docker and DevOps](#docker-and-devops)
+- [Mobile](#mobile)
+- [Front-End Development](#front-end-development)
+- [Security](#security)
+- [Books](#books)
 
 <br/>
 
