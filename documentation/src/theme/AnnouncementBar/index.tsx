@@ -1,4 +1,3 @@
-import useDocusaurusContext from "@docusaurus/useDocusaurusContext"
 import React from "react"
 
 import useUserPreferencesContext from "@theme/hooks/useUserPreferencesContext"
@@ -10,7 +9,6 @@ const AnnouncementBar = () => {
     isAnnouncementBarClosed,
     closeAnnouncementBar,
   } = useUserPreferencesContext()
-  const { siteConfig } = useDocusaurusContext()
 
   if (isAnnouncementBarClosed) {
     return null
@@ -18,19 +16,7 @@ const AnnouncementBar = () => {
 
   return (
     <div className={styles.announcement} role="banner">
-      <p className={styles.announcement__content}>
-        If you like QuestDB,&nbsp;
-        <a
-          className={styles.announcement__link}
-          href={siteConfig.customFields.githubUrl}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          give us a star on GitHub
-        </a>
-        &nbsp;⭐
-      </p>
-
+      <h1 className={styles.announcement__content}>Black Lives Matter</h1>
       <button
         aria-label="Close"
         className={styles.announcement__close}

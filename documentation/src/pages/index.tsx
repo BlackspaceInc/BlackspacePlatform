@@ -20,7 +20,9 @@ import seenOnStyles from "../css/seenOn.module.css"
 import whyStyles from "../css/why.module.css"
 
 const Why = () => {
-  const [opened, setOpened] = useState<"digital" | "realtime" | "integration">(
+  // eslint-disable-next-line prettier/prettier
+  const [opened, setOpened] = useState<"digital" | "realtime" | "integration" | "business">(
+    // eslint-disable-next-line prettier/prettier
     "digital",
   )
   const handleClickIs = useCallback(() => {
@@ -31,6 +33,9 @@ const Why = () => {
   }, [])
   const handleClickIsNot = useCallback(() => {
     setOpened("integration")
+  }, [])
+  const handleClickIsBusiness = useCallback(() => {
+    setOpened("business")
   }, [])
 
   return (
@@ -45,7 +50,7 @@ const Why = () => {
             "text--center",
           )}
         >
-          Why QuestDB?
+          Why Blackspace?
         </h2>
 
         <div className={whyStyles.why__footer}>
@@ -56,7 +61,7 @@ const Why = () => {
               size="small"
               variant={opened === "digital" ? "primary" : "tertiary"}
             >
-              Digital transformation
+              Real-time insights & Analytics
             </Button>
             <Button
               className={whyStyles["why__menu--item"]}
@@ -64,7 +69,7 @@ const Why = () => {
               size="small"
               variant={opened === "realtime" ? "primary" : "tertiary"}
             >
-              Real-time insights
+              MarketPlace & E-Commerce
             </Button>
             <Button
               className={whyStyles["why__menu--item"]}
@@ -72,7 +77,15 @@ const Why = () => {
               size="small"
               variant={opened === "integration" ? "primary" : "tertiary"}
             >
-              Enterprise integration
+              Businesse & Enterprise integration
+            </Button>
+            <Button
+              className={whyStyles["why__menu--item"]}
+              onClick={handleClickIsBusiness}
+              size="small"
+              variant={opened === "business" ? "primary" : "tertiary"}
+            >
+              Extensions & Connected Services
             </Button>
           </div>
 
@@ -82,15 +95,14 @@ const Why = () => {
                 [whyStyles["why__toggle--active"]]: opened === "digital",
               })}
             >
-              <p className={whyStyles.why__item}>Reduce hardware costs</p>
+              <p className={whyStyles.why__item}>Site Analytics</p>
+              <p className={whyStyles.why__item}>KPI Monitoring</p>
+              <p className={whyStyles.why__item}>Traffic & Sales Overview</p>
               <p className={whyStyles.why__item}>
-                Contain operational complexity
+                Visitor Insights & Analytics
               </p>
-              <p className={whyStyles.why__item}>Decrease development costs</p>
-              <p className={whyStyles.why__item}>
-                Cloud native (AWS, Azure, GCP)
-              </p>
-              <p className={whyStyles.why__item}>On premises or embedded</p>
+              <p className={whyStyles.why__item}>Page Views</p>
+              <p className={whyStyles.why__item}>Purchase Funnel</p>
             </div>
 
             <div
@@ -98,14 +110,27 @@ const Why = () => {
                 [whyStyles["why__toggle--active"]]: opened === "realtime",
               })}
             >
-              <p className={whyStyles.why__item}>Streaming</p>
+              <p className={whyStyles.why__item}>Multiple Payment Methods</p>
+              <p className={whyStyles.why__item}>Product Merchandising</p>
+              <p className={whyStyles.why__item}>Product Import</p>
+              <p className={whyStyles.why__item}>Optimized Checkout</p>
+              <p className={whyStyles.why__item}>Inventory Management</p>
+              <p className={whyStyles.why__item}>Flexible Shipping Options</p>
+            </div>
+
+            <div
+              className={clsx(whyStyles.why__toggle, {
+                [whyStyles["why__toggle--active"]]: opened === "business",
+              })}
+            >
+              <p className={whyStyles.why__item}>Business Product Analytics</p>
               <p className={whyStyles.why__item}>
-                Operational analytics / OLAP
+                Powerful Customizable Infrastructure
               </p>
-              <p className={whyStyles.why__item}>
-                Monitoring and observability
-              </p>
-              <p className={whyStyles.why__item}>Predictive analytics</p>
+              <p className={whyStyles.why__item}>High availability</p>
+              <p className={whyStyles.why__item}>Privacy Protected</p>
+              <p className={whyStyles.why__item}>Enterprise security</p>
+              <p className={whyStyles.why__item}>Marketing Campaigns & Ads </p>
             </div>
 
             <div
@@ -113,14 +138,15 @@ const Why = () => {
                 [whyStyles["why__toggle--active"]]: opened === "integration",
               })}
             >
-              <p className={whyStyles.why__item}>Active directory</p>
+              <p className={whyStyles.why__item}>Finance & Tax Extensions</p>
               <p className={whyStyles.why__item}>
-                High performance replication
+                Marketing & Sales Extensions
               </p>
-              <p className={whyStyles.why__item}>High availability</p>
-              <p className={whyStyles.why__item}>Clustering</p>
-              <p className={whyStyles.why__item}>Enterprise security</p>
-              <p className={whyStyles.why__item}>Postgres compatible/API</p>
+              <p className={whyStyles.why__item}>Shipping & Sales Extensions</p>
+              <p className={whyStyles.why__item}>
+                Inventory & Product Extensions
+              </p>
+              <p className={whyStyles.why__item}>Social Integrations</p>
             </div>
           </div>
         </div>
@@ -136,21 +162,7 @@ const SeenOn = () => (
       sectionStyles["section--inner"],
       seenOnStyles.section,
     )}
-  >
-    <a
-      className={seenOnStyles["product-hunt"]}
-      href="https://www.producthunt.com/posts/questdb?utm_source=badge-top-post-badge&utm_medium=badge&utm_souce=badge-questdb"
-      rel="noopener noreferrer"
-      target="_blank"
-    >
-      <img
-        src="https://api.producthunt.com/widgets/embed-image/v1/top-post-badge.svg?post_id=224674&theme=dark&period=daily"
-        alt="QuestDB - Fastest open source database for time-series and analytics | Product Hunt Embed"
-        width="250px"
-        height="54px"
-      />
-    </a>
-  </section>
+  />
 )
 
 const Jumbotron = () => {
@@ -165,7 +177,7 @@ const Jumbotron = () => {
     >
       <div className={jumbotronStyles.jumbotron__left}>
         <h1 className={clsx("jumbotron", jumbotronStyles.jumbotron__title)}>
-          Fast SQL for time series
+          Blackspace Platform
         </h1>
         <p className={clsx("jumbotron", jumbotronStyles.jumbotron__subtitle)}>
           {siteConfig.tagline}
@@ -198,15 +210,17 @@ const Jumbotron = () => {
           </Button>
         </div>
         <p className={jumbotronStyles.jumbotron__description}>
-          Query our demo dataset with 1.6 billion rows in milliseconds
+          Access our live demo.
         </p>
       </div>
 
       <div className={jumbotronStyles.jumbotron__right}>
         <pre className={jumbotronStyles.jumbotron__docker}>
           <code>
-            {`docker pull questdb/questdb
-docker run -p 9000:9000 questdb/questdb`}
+            {`git clone blackspaceInc/BlackspacePlatform
+cd BlackspacePlatform
+make clean
+make up`}
           </code>
           <a
             href={siteConfig.customFields.dockerUrl}
@@ -239,22 +253,22 @@ const Feature = () => (
           src="/img/pages/index/rawPower.svg"
         />
 
-        <h2 className={featureStyles.feature__title}>Built for performance</h2>
+        <h2 className={featureStyles.feature__title}>Built for scale</h2>
 
         <p className={featureStyles.feature__description}>
-          SIMD optimised analytics
+          Low Latency High Throughput System
         </p>
         <p className={featureStyles.feature__description}>
-          Rows and columns based access
+          Privacy Focused Platform
         </p>
         <p className={featureStyles.feature__description}>
-          Vectorized queries execution
+          Enforced Atomicity & Consistency
         </p>
         <p className={featureStyles.feature__description}>
-          Tiny memory footprint
+          Distributed Large Scale System
         </p>
         <p className={featureStyles.feature__description}>
-          C++ and zero-GC Java
+          Built in Typescript & Golang
         </p>
       </div>
 
@@ -266,22 +280,19 @@ const Feature = () => (
         />
 
         <h2 className={featureStyles.feature__title}>
-          Optimized for time series
+          Optimized To Serve Businesses
         </h2>
-
         <p className={featureStyles.feature__description}>
-          Relational model for time series
+          Rich Business Analytics
         </p>
         <p className={featureStyles.feature__description}>
-          Data stored in chronological order
-        </p>
-        <p className={featureStyles.feature__description}>Time partitioned</p>
-        <p className={featureStyles.feature__description}>Scalable ingestion</p>
-        <p className={featureStyles.feature__description}>
-          Immediate consistency
+          Granular Inference On Product Performance
         </p>
         <p className={featureStyles.feature__description}>
-          Fast InfluxDB line protocol
+          Historical Analysis Of Buy Patterns
+        </p>
+        <p className={featureStyles.feature__description}>
+          Immediate Consistency & Real Time Insights
         </p>
       </div>
 
@@ -292,22 +303,19 @@ const Feature = () => (
           src="/img/pages/index/featureRich.svg"
         />
 
-        <h2 className={featureStyles.feature__title}>Implemented with SQL</h2>
+        <h2 className={featureStyles.feature__title}>Social Commerce</h2>
 
         <p className={featureStyles.feature__description}>
-          Time series and relational joins
+          Community Based Shopping Experiences
         </p>
         <p className={featureStyles.feature__description}>
-          Postgres wire support
+          Community Driven Reviews
         </p>
         <p className={featureStyles.feature__description}>
-          Aggregations and down sampling
+          Intimate Feedback Loop
         </p>
         <p className={featureStyles.feature__description}>
-          Unlimited sub-queries
-        </p>
-        <p className={featureStyles.feature__description}>
-          Built-in SQL optimizer
+          Hyper Connected Customer Base
         </p>
       </div>
     </div>
@@ -329,55 +337,56 @@ const Cards = () => (
         "text--center",
       )}
     >
-      Why time series?
+      Use Cases
     </h3>
 
     <div className={cardsStyles.cards__footer}>
       <div className={cardsStyles.cards__wrapper}>
-        <h3 className={cardsStyles.cards__header}>DevOps monitoring</h3>
+        <h3 className={cardsStyles.cards__header}>Transaction monitoring</h3>
         <p className={cardsStyles.cards__content}>
-          Collect metrics and events from your infrastructure (CPU, memory,
-          networks, etc) and get real-time visibility into your entire stack.
+          Collect metrics and events from your account (Sales, Cart Behaviors,
+          Page Views, etc) and get real-time visibility into your entire product
+          suite.
         </p>
       </div>
 
       <div className={cardsStyles.cards__wrapper}>
-        <h3 className={cardsStyles.cards__header}>Financial market data</h3>
+        <h3 className={cardsStyles.cards__header}>Transactional data</h3>
         <p className={cardsStyles.cards__content}>
-          Store market data to identify historical trends and correlations using
-          statistical methods and generate trading signals.
+          Store Transactional data to identify historical trends and
+          correlations using statistical methods and generate better product
+          marketing decisions.
         </p>
       </div>
 
       <div className={cardsStyles.cards__wrapper}>
-        <h3 className={cardsStyles.cards__header}>Connected devices</h3>
+        <h3 className={cardsStyles.cards__header}>Connected Channels</h3>
         <p className={cardsStyles.cards__content}>
-          Capture, store and respond to data from sensors at any resolution in
-          industrial applications.
+          Capture, store and respond to data from various channels at any
+          resolution.
         </p>
       </div>
 
       <div className={cardsStyles.cards__wrapper}>
         <h3 className={cardsStyles.cards__header}>Application metrics</h3>
         <p className={cardsStyles.cards__content}>
-          Empower users of your application to track and visualise logs, api
-          calls and any application activity in real-time.
+          Empower business owners to track and visualise logs and any
+          application activity in real-time.
         </p>
       </div>
 
       <div className={cardsStyles.cards__wrapper}>
-        <h3 className={cardsStyles.cards__header}>CRUD for time series</h3>
+        <h3 className={cardsStyles.cards__header}>Flexibility </h3>
         <p className={cardsStyles.cards__content}>
-          Allows easy changes in historical data through fully ACID support for
-          CRUD APIs.
+          Allows easy changes to your account and product suite
         </p>
       </div>
 
       <div className={cardsStyles.cards__wrapper}>
         <h3 className={cardsStyles.cards__header}>Integrated data</h3>
         <p className={cardsStyles.cards__content}>
-          Pull together all your application, device, and infrastructure data
-          for a complete, 360º view of all aspects of your business.
+          Pull together all your account, consumers, and transactional
+          datapoints for a complete, 360º view of all aspects of your business.
         </p>
       </div>
     </div>
@@ -394,34 +403,6 @@ const Console = () => {
       <div
         className={clsx(sectionStyles["section--inner"], consoleStyles.console)}
       >
-        <h2
-          className={clsx(
-            sectionStyles.section__title,
-            consoleStyles.console__title,
-            "text--center",
-          )}
-        >
-          Interactive Console
-        </h2>
-        <p
-          className={clsx(
-            sectionStyles.section__subtitle,
-            consoleStyles.console__subtitle,
-            "text--center",
-          )}
-        >
-          Interactive console to import data (drag and drop) and start querying
-          right away. Check our&nbsp;
-          <a href="/docs/guide/web-console/">Web Console guide</a> to get
-          started.
-        </p>
-
-        <img
-          alt="Artistic view of QuestDB's Web Console split in 3 components: the navigation tree, the SQL code editor and data displayed as a chart"
-          className={consoleStyles.console__illustration}
-          src="/img/pages/index/console.svg"
-        />
-
         <div className={consoleStyles.console__footer}>
           <div
             className={clsx(
@@ -434,12 +415,9 @@ const Console = () => {
               src="/img/pages/index/pgwire.svg"
               title="Postgres"
             />
-            <h3 className={consoleStyles.console__label}>
-              Postgres wire support
-            </h3>
+            <h3 className={consoleStyles.console__label}>Subscribe</h3>
             <p className={consoleStyles.console__summary}>
-              Interact with QuestDB using the Postgres wire and any tool that
-              connects to it.
+              Try our live demo and get ready for our launch
             </p>
           </div>
 
@@ -449,10 +427,10 @@ const Console = () => {
               src="/img/pages/index/foss.svg"
               title="Open source"
             />
-            <h3 className={consoleStyles.console__label}>Open source</h3>
+            <h3 className={consoleStyles.console__label}>Blackspace</h3>
             <p className={consoleStyles.console__summary}>
-              QuestDB is open source. Follow us on GitHub. Watch the repo to get
-              notified of further releases and new features!
+              Follow us on GitHub. Watch the repo to get notified of further
+              releases and new features!
             </p>
 
             <div className={consoleStyles.console__actions}>
@@ -493,21 +471,20 @@ const getTopByIndex = (m: number[], index: 1 | 2 | 3 | 4): number => {
   return scale[index] || 0
 }
 
-const searchQuery = `SELECT timestamp, tempC
-FROM sensors
-WHERE timestamp = '2020-06-14;1M';`
+const searchQuery = `Sign Up/Login 
+Custom Auth. Or
+Sign Up Using OAUTH (Google/Github/...etc);`
 
-const sliceQuery = `SELECT timestamp, avg(tempC)
-FROM sensors
-SAMPLE BY 5m;`
+const sliceQuery = `Search Product
+Gain Insights & Learn
+Find Sellers Of Interest`
 
-const navigateQuery = `SELECT sensorName, tempC
-FROM sensors
-LATEST BY sensorName;`
+const navigateQuery = `Connect To Sellers
+Engage In Transactions;`
 
-const mergeQuery = `SELECT sensors.timestamp ts, rain1H
-FROM sensors
-ASOF JOIN weather;`
+const mergeQuery = `Review Products & Sellers
+Follow Seller Profiles
+Engage Community Discussions;`
 
 const Chevron = () => (
   <svg
@@ -575,7 +552,7 @@ const QueryScroller = () => {
           "text--center",
         )}
       >
-        Augmented SQL for time series
+        Blackspace Customer E2E Buy Experience
       </h2>
 
       <p
@@ -585,8 +562,10 @@ const QueryScroller = () => {
           "text--center",
         )}
       >
-        QuestDB enhances ANSI SQL with time series extensions to manipulate time
-        stamped data
+        Blackspace is attempting to revolutionize the shopping experience of
+        consumers by both enabling them to better find businesses of interested
+        as well as allowing such consumers to share ideas and shop in
+        communities
       </p>
 
       <div className={queryScrollerStyles.queryScroller__scroller}>
@@ -608,22 +587,22 @@ const QueryScroller = () => {
             >
               <CodeBlock>{`${searchQuery}`}</CodeBlock>
               <CodeBlock>
-                {`-- Search time
+                {`-- Onboard
 ${searchQuery}`}
               </CodeBlock>
               <CodeBlock>{`${sliceQuery}`}</CodeBlock>
               <CodeBlock>
-                {`-- Slice time
+                {`-- Search Products & Businesses
 ${sliceQuery}`}
               </CodeBlock>
               <CodeBlock>{`${navigateQuery}`}</CodeBlock>
               <CodeBlock>
-                {`-- Navigate time
+                {`-- Connect & Buy
 ${navigateQuery}`}
               </CodeBlock>
               <CodeBlock>{`${mergeQuery}`}</CodeBlock>
               <CodeBlock>
-                {`-- Merge time
+                {`-- Review & Follow
 ${mergeQuery}`}
               </CodeBlock>
             </div>
@@ -652,10 +631,10 @@ ${mergeQuery}`}
                   className={queryScrollerStyles.queryScroller__icon}
                   src="/img/pages/index/searchTime.svg"
                 />
-                Search Time
+                Onboard
               </h3>
               <p className={queryScrollerStyles.queryScroller__description}>
-                Filter and search for specific timestamps with “where”
+                Create a user account on the blackspace platform
               </p>
             </div>
 
@@ -672,10 +651,11 @@ ${mergeQuery}`}
                   className={queryScrollerStyles.queryScroller__icon}
                   src="/img/pages/index/sliceTime.svg"
                 />
-                Slice Time
+                Search Products & Businesses
               </h3>
               <p className={queryScrollerStyles.queryScroller__description}>
-                Create time buckets and aggregate by intervals with “sample by”
+                Query for businesses or products of interest & search associated
+                engaging in dialogue about the given product/business
               </p>
             </div>
 
@@ -692,11 +672,11 @@ ${mergeQuery}`}
                   className={queryScrollerStyles.queryScroller__icon}
                   src="/img/pages/index/navigateTime.svg"
                 />
-                Navigate Time
+                Connect & Buy
               </h3>
               <p className={queryScrollerStyles.queryScroller__description}>
-                Search time series from most recent values to oldest with
-                “latest by”
+                Connect with the business selling the product of interest if
+                interested. Engage in a transaction that fits your needs.
               </p>
             </div>
             <div
@@ -712,11 +692,12 @@ ${mergeQuery}`}
                   className={queryScrollerStyles.queryScroller__icon}
                   src="/img/pages/index/mergeTime.svg"
                 />
-                Merge Time
+                Review & Follow
               </h3>
               <p className={queryScrollerStyles.queryScroller__description}>
-                Join two tables based on timestamp where timestamps do not
-                exactly match with “asof join”
+                Continue engagement with the business both directly and
+                indirectly through the various blackspace communities discussing
+                the product you bought.
               </p>
             </div>
           </div>
@@ -728,7 +709,7 @@ ${mergeQuery}`}
 
 const Home = () => {
   const { siteConfig } = useDocusaurusContext()
-  const title = "QuestDB"
+  const title = "Blackspace"
 
   return (
     <MetadataContextProvider>

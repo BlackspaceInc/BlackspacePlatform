@@ -45,7 +45,7 @@ function variable() {
 }
 
 const config = {
-  title: "Better Ecommerce",
+  title: "Internal Documentation",
   tagline: "Blackspace is the fastest social ecommerce solution for minority owned business owners",
   url: `https://${customFields.domain}`,
   baseUrl: "/",
