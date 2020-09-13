@@ -134,11 +134,6 @@ module.exports = {
       ],
     },
     {
-      label: "API",
-      type: "category",
-      items: ["api/rest"],
-    },
-    {
       label: "Roadmap",
       type: "category",
       items: [ 

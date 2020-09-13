@@ -7,11 +7,9 @@ import React, { ReactNode, useEffect, useState } from "react"
 
 import CodeBlock from "@theme/CodeBlock"
 import Button from "@theme/Button"
-import IdealImage from "@theme/Image"
 import Layout from "@theme/Layout"
 import { MetadataContextProvider } from "@theme/useMetadataContext"
 
-import Console from "../../static/img/pages/getStarted/console.png"
 import { getAssets, getOs, Os, Release } from "../utils"
 import binaryStyles from "../css/binary.module.css"
 import instructionStyles from "../css/instruction.module.css"
@@ -102,7 +100,7 @@ Binary.defaultProps = {
 }
 
 const GetStartedPage = () => {
-  const title = "Download QuestDB"
+  const title = "Download The Blackspace Command Utility"
   const { siteConfig } = useDocusaurusContext()
   const { release } = usePluginData<{ release: Release }>("fetch-release")
   const [os, setOs] = useState<Os | undefined>()
@@ -175,7 +173,7 @@ const GetStartedPage = () => {
         <div />
         <CodeBlock className="language-shell">
           {`brew update
-brew install questdb`}
+brew install blackspace-cmd-utility`}
         </CodeBlock>
       </Binary>
     ),
@@ -214,7 +212,7 @@ brew install questdb`}
           <link rel="canonical" href={`${siteConfig.url}/getstarted/`} />
           <meta
             name="description"
-            content="An open source time series SQL database for fast ingestion and queries"
+            content="fastest social ecommerce solution for minority owned business owners"
           />
         </DocusaurusHead>
         <section
@@ -230,7 +228,7 @@ brew install questdb`}
                 getStartedStyles.getStarted__title,
               )}
             >
-              Get started with QuestDB
+              Get started with Blackspace
             </h1>
 
             <p
@@ -241,21 +239,9 @@ brew install questdb`}
               )}
             >
               You can find below download links for the latest version of
-              QuestDB ({siteConfig.customFields.version}). Once your download is
-              finished, run QuestDB and use the&nbsp;
-              <a href="/docs/guide/web-console/">Web Console guide</a> to get
-              started.
+              Blackspace Command Utility ({siteConfig.customFields.version}).
+              Once your download is finished, run `start` to get started.
             </p>
-
-            <IdealImage
-              alt="Screenshot of the Web Console showing various SQL statements and the result of one as a chart"
-              className={clsx(
-                "screenshot--shadow",
-                getStartedStyles.getStarted__console,
-              )}
-              img={Console}
-              src="/img/pages/getStarted/console.png"
-            />
 
             <div className={getStartedStyles.getStarted__cta}>
               <p
@@ -341,7 +327,7 @@ brew install questdb`}
             title="Docker"
           >
             <CodeBlock className="language-shell">
-              docker run -p 9000:9000 questdb/questdb
+              docker run -p 9000:9000 BlackspaceInc/BlackspacePlatform
             </CodeBlock>
             <p className={binaryStyles.binaries__description}>
               Documentation on&nbsp;
@@ -366,8 +352,8 @@ brew install questdb`}
             title="Kubernetes (via Helm)"
           >
             <CodeBlock className="language-shell">
-              {`helm repo add questdb https://helm.${siteConfig.customFields.domain}/
-helm install questdb/questdb --version ${siteConfig.customFields.helmVersion}`}
+              {`helm repo add blackspace https://helm.${siteConfig.customFields.domain}/
+helm install BlackspaceInc/BlackspacePlatform --version ${siteConfig.customFields.helmVersion}`}
             </CodeBlock>
             <p className={binaryStyles.binaries__description}>
               Documentation on&nbsp;
@@ -393,8 +379,8 @@ helm install questdb/questdb --version ${siteConfig.customFields.helmVersion}`}
           >
             <CodeBlock className="language-xml">
               {`<dependency>
-  <groupId>org.questdb</groupId>
-  <artifactId>questdb</artifactId>
+  <groupId>org.blackspace</groupId>
+  <artifactId>blackspace</artifactId>
   <version>${siteConfig.customFields.version}</version>
 </dependency>`}
             </CodeBlock>
@@ -411,25 +397,19 @@ helm install questdb/questdb --version ${siteConfig.customFields.helmVersion}`}
             title="Gradle"
           >
             <CodeBlock className="language-shell">
-              {`implementation 'org.questdb:questdb:${siteConfig.customFields.version}'`}
+              {`implementation 'org.blackspace:blackspace:${siteConfig.customFields.version}'`}
             </CodeBlock>
             <div style={{ height: "2.75rem" }} />
           </Binary>
         </div>
 
         <div className={instructionStyles.instructions}>
-          <img
-            alt="SQL statement in a code editor with an artistic view of the query result shown as a chart and a table"
-            className={instructionStyles.instructions__illustration}
-            src="/img/pages/getStarted/query.svg"
-          />
-
           <div className={instructionStyles.instructions__text}>
             <h2 className={instructionStyles.instructions__title}>
               How does it work
             </h2>
             <p>
-              QuestDB is distributed as a single binary. You can download
+              Blackspace Command Utility is distributed as a single binary. You
               either:
             </p>
             <p className={instructionStyles.instructions__bullet}>
