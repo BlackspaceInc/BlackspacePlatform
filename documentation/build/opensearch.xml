@@ -4,8 +4,8 @@
   <ShortName>Internal Documentation</ShortName>
   <Description>Search Internal Documentation</Description>
   <InputEncoding>UTF-8</InputEncoding>
-  <Image width="16" height="16" type="image/x-icon">https://BlackspaceInc.github.io/img/favicon.png</Image>
-  <Url type="text/html" method="get" template="https://BlackspaceInc.github.io/search?q={searchTerms}"/>
-  <Url type="application/opensearchdescription+xml" rel="self" template="https://BlackspaceInc.github.io/opensearch.xml" />
-  <moz:SearchForm>https://BlackspaceInc.github.io</moz:SearchForm>
+  <Image width="16" height="16" type="image/x-icon">https://blackspaceinc.github.io/img/favicon.png</Image>
+  <Url type="text/html" method="get" template="https://blackspaceinc.github.io/search?q={searchTerms}"/>
+  <Url type="application/opensearchdescription+xml" rel="self" template="https://blackspaceinc.github.io/opensearch.xml" />
+  <moz:SearchForm>https://blackspaceinc.github.io</moz:SearchForm>
 </OpenSearchDescription>
