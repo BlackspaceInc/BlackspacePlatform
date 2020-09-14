@@ -4,22 +4,12 @@
 
 # questdb.io
 
-[This website](https://questdb.io) is built using
+This website is built using
 [Docusaurus 2](https://v2.docusaurus.io/). Pages & components are written in
 TypeScript, the styles in vanilla CSS with variables using
 [CSS Modules](https://github.com/css-modules/css-modules).
 
 <!-- prettier-ignore-start -->
-<div align="center">
-  <a href="http://questdb.io">
-    <img src=".github/console.png" width="400" />
-  </a>
-</div>
-<div align="center">
-  <a href="http://questdb.io">
-    questdb.io
-  </a>
-</div>
 <!-- prettier-ignore-end -->
 
 ## Installation
@@ -51,22 +41,6 @@ use:
 yarn serve
 ```
 
-# Contributing
-
-Feel free to contribute to the project by forking the repository and submitting
-pull requests.
-
-## Guidelines
-
-Consult the
-[guidelines](https://github.com/questdb/questdb.io/blob/master/docs/__guidelines/markdown.md).
-
-## Lexicon
-
-Consult the
-[lexicon](https://github.com/questdb/questdb.io/blob/master/docs/__guidelines/lexicon.md)
-for terminology we commonly use
-
 ## Commits
 
 The commit messages must follow the
@@ -84,11 +58,6 @@ On top of this, we follow the rules set by the
 
 You do not need to run the linting task manually, Webpack will take care of that
 for you.
-
-## 2. Git Hooks
-
-We use [Husky](https://github.com/typicode/husky) to automatically deploy git
-hooks.
 
 On every `git commit` we check that images added to `static/img/*` do not exceed
 10MB.
