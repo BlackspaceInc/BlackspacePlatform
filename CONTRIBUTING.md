@@ -13,6 +13,7 @@ expanding into more specifics.
   - [Assumptions](#assumptions)
   - [Your First Contribution](#your-first-contribution)
   - [Change Control](#change-control)
+  - [Onboarding](#onboarding)
     - [Git Branches](#git-branches)
     - [Git Commits](#git-commits)
       - [Style](#style)
@@ -102,6 +103,13 @@ chmod +x .git/hooks/commit-msg
    longer.
 
 ## Change Control
+
+## Onboarding
+
+_Start_ documentation site locally to read onboarding resources.
+```shell
+make doc-site
+```
 
 ### Git Branches
 
