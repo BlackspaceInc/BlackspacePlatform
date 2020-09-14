@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[96],{164:function(p){p.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"jupyter","name":"jupyter","count":1,"permalink":"/blog/tags/jupyter"}')}}]);
