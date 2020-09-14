@@ -42,6 +42,7 @@ module.exports = {
               "learning/distributed-systems/distributed-systems",
               "learning/distributed-systems/patterns",
               "learning/scalability/scalability",
+              "learning/distributed-systems/concensus",
             ],
           },
         ],
