@@ -34,22 +34,22 @@ proto:
   - ./pb/*
   - ./pb/**/*
 
-@domain/gateway:
+domain/gateway:
   - ./src/api-gateway/*
   - ./src/api-gateway/**/*
 
-@domain/frontend:
+domain/frontend:
   - ./src/frontend/*
   - ./src/frontend/**/*
 
-@domain/backend:
+domain/backend:
   - ./src/services/*
   - ./src/services/**/*
 
-@domain/core:
+domain/core:
   - package/core/*
   - package/core/**/*
 
-@domain/performance-test:
+domain/performance-test:
   - ./test-harness/*
   - ./test-harness/**/*
