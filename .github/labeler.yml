@@ -1,0 +1,55 @@
+# Add 'repo' label to any root file changes
+repo:
+  - ./*
+
+docs:
+  - ./docs/*
+  - ./docs/**/*
+
+istio:
+  - ./istio-manifests/*
+  - ./istio-manifests/**/*
+
+kubernetes:
+  - ./kubernetes-manifests/*
+  - ./kubernetes-manifests/**/*
+
+linkerd:
+  - ./linkerd-manifests/*
+  - ./linkerd-manifests/**/*
+
+monitoring:
+  - ./monitoring/*
+  - ./monitoring/**/*
+
+release:
+  - ./release/*
+  - ./release/**/*
+
+scripts:
+  - ./scripts/*
+  - ./scripts/**/*
+
+proto:
+  - ./pb/*
+  - ./pb/**/*
+
+domain/gateway:
+  - ./src/api-gateway/*
+  - ./src/api-gateway/**/*
+
+domain/frontend:
+  - ./src/frontend/*
+  - ./src/frontend/**/*
+
+domain/backend:
+  - ./src/services/*
+  - ./src/services/**/*
+
+domain/core:
+  - package/core/*
+  - package/core/**/*
+
+domain/performance-test:
+  - ./test-harness/*
+  - ./test-harness/**/* 
