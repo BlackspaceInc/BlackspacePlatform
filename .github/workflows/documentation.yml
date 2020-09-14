@@ -15,6 +15,6 @@ jobs:
           node-version: '12'
       - name: Check types + linting + build
         run: |
-          cd documentation
+          cd docs
           yarn
           yarn build
