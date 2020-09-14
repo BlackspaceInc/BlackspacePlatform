@@ -11,7 +11,10 @@ on:
       - master
       - dev
 
-jobs:
-  steps:
-    - name: Check if commit conforms to policies listed in .conform.yaml
-      uses: talos-systems/conform@v0.1.0-alpha.20
+repos:
+  - repo: https://github.com/talos-systems/conform
+    rev: master
+    hooks:
+      - id: conform
+        stages:
+          - commit-msg
