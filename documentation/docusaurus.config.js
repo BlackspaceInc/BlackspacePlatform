@@ -7,7 +7,7 @@ const customFields = {
   description:
     "Blackspace is an ecommerce platform empowering minoriting owned businesses to achieve more",
   dockerUrl: "https://hub.docker.com/repository/docker/blackspaceinc/frontend-service",
-  domain: "BlackspaceInc.github.io",
+  domain: "blackspaceinc.github.io",
   githubUrl: "https://github.com/BlackspaceInc/",
   helmVersion: "0.2.4",
   linkedInUrl: "https://www.linkedin.com/company/blackspaceInc/",
