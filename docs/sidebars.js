@@ -14,6 +14,49 @@ if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "producti
           "__guidelines/template/sql",
         ],
       },
+      {
+        type: "category",
+        label: "Contributing",
+        items: [
+          "__guidelines/contributing",
+        ],
+      },
+      {
+        type: "category",
+        label: "Releases",
+        items: [
+          "__guidelines/releasing",
+        ],
+      },
+      {
+        type: "category",
+        label: "Reviewing",
+        items: [
+          "__guidelines/reviewing",
+        ],
+      },
+      {
+        type: "category",
+        label: "Security",
+        items: [
+          "__guidelines/security",
+        ],
+      },
+      {
+          label: "Style Guide",
+          type: "category",
+          items: [
+            {
+              type: "category",
+              label: "Golang",
+              items: [
+                "__guidelines/style_guide/golang/clean-code",
+                "__guidelines/style_guide/golang/common-review-comments",
+                "__guidelines/style_guide/golang/golang-styleguide",
+              ],
+            },
+          ],
+      },
       "__guidelines/naming-convention",
       "__guidelines/content-hierarchy",
       "__guidelines/lexicon",
@@ -42,7 +85,7 @@ module.exports = {
               "learning/distributed-systems/distributed-systems",
               "learning/distributed-systems/patterns",
               "learning/scalability/scalability",
-              "learning/distributed-systems/concensus",
+              "learning/distributed-systems/consensus",
             ],
           },
         ],
