@@ -1,5 +1,4 @@
-name: docs
-
+name: pre-commit
 
 on:
   pull_request:
@@ -10,7 +9,7 @@ on:
     branches:
       - master
       - dev
-      
+
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
