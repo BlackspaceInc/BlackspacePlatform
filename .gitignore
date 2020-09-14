@@ -34,3 +34,4 @@ tests/data/wasm/*/target
 ./*/node_modules
 
 ./documentation/*/.docusaurus
+./documentation/build

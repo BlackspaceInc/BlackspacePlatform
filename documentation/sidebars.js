@@ -1,6 +1,6 @@
 let guidelines
 
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "production" || process.env.NODE_ENV === "prod") {
   guidelines = {
     label: "Guidelines (DEV ONLY)",
     type: "category",

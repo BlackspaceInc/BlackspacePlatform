@@ -49,6 +49,7 @@ const config = {
   tagline: "Blackspace is the fastest social ecommerce solution for minority owned business owners",
   url: `https://${customFields.domain}`,
   baseUrl: "/",
+  onBrokenLinks: "warn",
   favicon: "/img/favicon.png",
   organizationName: "Blackspace",
   projectName: "blackspace",
@@ -64,6 +65,7 @@ const config = {
         steps: 2, // the max number of images generated between min and max (inclusive)
       },
     ],
+    /** 
     [
       "@docusaurus/plugin-pwa",
       {
@@ -116,7 +118,7 @@ const config = {
           },
         ],
       },
-    ],
+    ],*/
   ],
   themeConfig: {
     announcementBar: {

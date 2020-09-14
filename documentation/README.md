@@ -2,9 +2,9 @@
 [![Code Style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-green.svg)](https://conventionalcommits.org)
 
-# Blackspace
+# questdb.io
 
-[This website](https://blackspace.io) is built using
+[This website](https://questdb.io) is built using
 [Docusaurus 2](https://v2.docusaurus.io/). Pages & components are written in
 TypeScript, the styles in vanilla CSS with variables using
 [CSS Modules](https://github.com/css-modules/css-modules).
@@ -12,7 +12,12 @@ TypeScript, the styles in vanilla CSS with variables using
 <!-- prettier-ignore-start -->
 <div align="center">
   <a href="http://questdb.io">
-    blackspace.io
+    <img src=".github/console.png" width="400" />
+  </a>
+</div>
+<div align="center">
+  <a href="http://questdb.io">
+    questdb.io
   </a>
 </div>
 <!-- prettier-ignore-end -->
@@ -59,7 +64,7 @@ Consult the
 ## Lexicon
 
 Consult the
-[lexicon](https://github.com/blackspaceInc/BlackspacePlatform/blob/master/docs/__guidelines/lexicon.md)
+[lexicon](https://github.com/questdb/questdb.io/blob/master/docs/__guidelines/lexicon.md)
 for terminology we commonly use
 
 ## Commits

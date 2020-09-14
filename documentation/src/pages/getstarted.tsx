@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import clsx from "clsx"
 import { differenceInDays, format, formatDistanceToNowStrict } from "date-fns"
 import DocusaurusHead from "@docusaurus/Head"
@@ -116,8 +119,10 @@ const GetStartedPage = () => {
       return
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (differenceInDays(new Date(), new Date(release.published_at)) < 31) {
       setReleaseDate(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         `${formatDistanceToNowStrict(new Date(release.published_at))} ago`,
       )
     }
