@@ -1,5 +1,5 @@
 doc-site: # Spin us documentation site locally
-	cd documentation && yarn run serve --build --port 9999 --host 0.0.0.0
+	cd docs && yarn run serve --build --port 9999 --host 0.0.0.0
 
 signoff: ## Signsoff all previous commits since branch creation
 	scripts/signoff.sh
