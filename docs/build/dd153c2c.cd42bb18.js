@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[137],{204:function(o){o.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"postmorterm","name":"postmorterm","count":1,"permalink":"/blog/tags/postmorterm"}')}}]);

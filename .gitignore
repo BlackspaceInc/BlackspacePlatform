@@ -32,3 +32,8 @@ target
 node_modules
 tests/data/wasm/*/target
 ./*/node_modules
+.vercel
+
+./*/build
+./docs/build/*
+./docs/build
