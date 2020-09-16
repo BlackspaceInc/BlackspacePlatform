@@ -69,3 +69,4 @@ jobs:
           npm i
           fi
           npx docusaurus deploy
+          
