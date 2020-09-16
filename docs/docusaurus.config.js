@@ -47,7 +47,7 @@ function variable() {
 const config = {
   title: "Internal Documentation",
   tagline: "Blackspace is the fastest social ecommerce solution for minority owned business owners",
-  url: `https://${customFields.domain}`,
+  url: 'https://docusaurus-2.netlify.com', //`https://${customFields.domain}`,
   baseUrl: "/",
   onBrokenLinks: "warn",
   favicon: "/img/favicon.png",
