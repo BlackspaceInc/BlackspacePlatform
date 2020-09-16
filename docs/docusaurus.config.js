@@ -53,6 +53,7 @@ const config = {
   favicon: "/img/favicon.png",
   organizationName: "BlackspaceInc",
   projectName: "BlackspacePlatform",
+  customDocsPath: path.basename(__dirname) + '/docs',
   customFields,
   plugins: [
     require.resolve("./plugins/fetch-release"),
