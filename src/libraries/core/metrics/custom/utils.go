@@ -1,9 +1,11 @@
-package metrics
+package custom
 
 import (
 	"fmt"
 
 	"github.com/jinzhu/gorm"
+
+	"github.com/BlackspaceInc/common/metrics"
 )
 
 func registerCounter(serviceName string, db *gorm.DB, metricsExporter *MetricsExporter, value *CounterMetadata) {
@@ -25,7 +27,7 @@ func registerCounter(serviceName string, db *gorm.DB, metricsExporter *MetricsEx
 }
 
 func registerHistogramMetrics(serviceName string, value *CounterMetadata, metricsExporter *MetricsExporter) {
-	opts := HistogramOpts{
+	opts := metrics.HistogramOpts{
 		Name:     value.CounterName,
 		Namespace: value.CounterNameSpace(serviceName),
 		Subsystem: value.CounterSubSystem,
@@ -39,7 +41,7 @@ func registerHistogramMetrics(serviceName string, value *CounterMetadata, metric
 }
 
 func registerGaugeMetrics(serviceName string, value *CounterMetadata, metricsExporter *MetricsExporter) {
-	opts := GaugeOpts{
+	opts := metrics.GaugeOpts{
 		Name:      value.CounterName,
 		Namespace: value.CounterNameSpace(serviceName),
 		Subsystem: value.CounterSubSystem,
@@ -52,7 +54,7 @@ func registerGaugeMetrics(serviceName string, value *CounterMetadata, metricsExp
 }
 
 func registerCounterMetrics(serviceName string, value *CounterMetadata, metricsExporter *MetricsExporter) {
-	opts := CounterOpts{
+	opts := metrics.CounterOpts{
 		Name:      value.CounterName,
 		Namespace: value.CounterNameSpace(serviceName),
 		Subsystem: value.CounterSubSystem,
@@ -65,7 +67,7 @@ func registerCounterMetrics(serviceName string, value *CounterMetadata, metricsE
 }
 
 func registerSummaryMetrics(serviceName string, value *CounterMetadata, metricsExporter *MetricsExporter) {
-	opts := SummaryOpts{
+	opts := metrics.SummaryOpts{
 		Name:       value.CounterName,
 		Namespace:  value.CounterNameSpace(serviceName),
 		Subsystem:  value.CounterSubSystem,
@@ -79,7 +81,7 @@ func registerSummaryMetrics(serviceName string, value *CounterMetadata, metricsE
 }
 
 func registerGaugeFuncMetrics(serviceName string, db *gorm.DB, metricsExporter *MetricsExporter, value *CounterMetadata) {
-	opts := GaugeOpts{
+	opts := metrics.GaugeOpts{
 		Name:      value.CounterName,
 		Namespace: value.CounterNameSpace(serviceName),
 		Subsystem: value.CounterSubSystem,

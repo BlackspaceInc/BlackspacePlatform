@@ -1,13 +1,15 @@
-package metrics
+package custom
 
 import (
 	"fmt"
 
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/BlackspaceInc/common/metrics"
 )
 
 // CreateGauge creates a metric of type gauge
-func (c *MetricsExporter) CreateGauge(opts GaugeOpts) error {
+func (c *MetricsExporter) CreateGauge(opts metrics.GaugeOpts) error {
 	name := c.ServiceName + opts.Name
 	c.lg.RLock()
 	_, ok := c.gauges[name]
@@ -27,7 +29,7 @@ func (c *MetricsExporter) CreateGauge(opts GaugeOpts) error {
 }
 
 // CreateCounter creates a metric of type counter
-func (c *MetricsExporter) CreateCounter(opts CounterOpts) error{
+func (c *MetricsExporter) CreateCounter(opts metrics.CounterOpts) error{
 	name := c.ServiceName + opts.Name
 	c.lc.RLock()
 	_, ok := c.counters[name]
@@ -47,7 +49,7 @@ func (c *MetricsExporter) CreateCounter(opts CounterOpts) error{
 }
 
 // CreateSummary creates a metric of type summary
-func (c *MetricsExporter) CreateSummary(opts SummaryOpts) error {
+func (c *MetricsExporter) CreateSummary(opts metrics.SummaryOpts) error {
 	name := c.ServiceName + opts.Name
 	c.ls.RLock()
 	_, ok := c.summaries[name]
@@ -68,7 +70,7 @@ func (c *MetricsExporter) CreateSummary(opts SummaryOpts) error {
 }
 
 // CreateHistogram creates a metric of type histogram
-func (c *MetricsExporter) CreateHistogram(opts HistogramOpts) error {
+func (c *MetricsExporter) CreateHistogram(opts metrics.HistogramOpts) error {
 	name := c.ServiceName + opts.Name
 	c.ls.RLock()
 	_, ok := c.histograms[name]
@@ -88,7 +90,7 @@ func (c *MetricsExporter) CreateHistogram(opts HistogramOpts) error {
 	return nil
 }
 
-func (c *MetricsExporter) CreateGaugeFunc(opts GaugeOpts, f func() float64) error {
+func (c *MetricsExporter) CreateGaugeFunc(opts metrics.GaugeOpts, f func() float64) error {
 	name := c.ServiceName + opts.Name
 	c.lg.RLock()
 	_, ok := c.gaugeFuncs[name]

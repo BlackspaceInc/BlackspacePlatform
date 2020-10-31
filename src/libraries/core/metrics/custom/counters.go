@@ -1,4 +1,4 @@
-package metrics
+package custom
 
 import (
 	"github.com/jinzhu/gorm"

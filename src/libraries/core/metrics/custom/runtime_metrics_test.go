@@ -1,9 +1,7 @@
-package metrics_test
+package custom_test
 
 import (
 	"testing"
-
-	"github.com/BlackspaceInc/common/metrics"
 )
 
 func TestRuntimeCountersPresent(t *testing.T) {
@@ -11,6 +9,6 @@ func TestRuntimeCountersPresent(t *testing.T) {
 }
 
 func TestNumberOfGoRoutinesCounterExists(t *testing.T) {
-	var counterName = metrics.NumberOfGoRoutines
+	var counterName = NumberOfGoRoutines
 	validateGaugeFuncExists(t, counterName)
 }

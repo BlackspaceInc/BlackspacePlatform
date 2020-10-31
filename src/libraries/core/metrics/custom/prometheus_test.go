@@ -1,4 +1,4 @@
-package metrics_test
+package custom_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/BlackspaceInc/common/metrics"
+	"github.com/BlackspaceInc/common/metrics/custom"
 )
 
 func TestCounterMetrics(t *testing.T){
@@ -17,7 +18,7 @@ func TestCounterMetrics(t *testing.T){
 
 func TestGaugeSet(t *testing.T) {
 	// generate a random string
-	randMetricName := "_" + metrics.GenerateRandomString(10)
+	randMetricName := "_" + custom.GenerateRandomString(10)
 
 	err := metricExporter.GaugeSet(randMetricName, 1, map[string]string{
 		"service": "s",
@@ -45,7 +46,7 @@ func TestGaugeSet(t *testing.T) {
 
 func TestSummaryObserve(t *testing.T) {
 	// generate a random string
-	randMetricName := "_" + metrics.GenerateRandomString(10)
+	randMetricName := "_" + custom.GenerateRandomString(10)
 
 	err := metricExporter.SummaryObserve(randMetricName, 1, map[string]string{
 		"service": "s",
@@ -72,7 +73,7 @@ func TestSummaryObserve(t *testing.T) {
 
 func TestCreateHistogram(t *testing.T) {
 	// generate a random string
-	randMetricName := "_" + metrics.GenerateRandomString(10)
+	randMetricName := "_" + custom.GenerateRandomString(10)
 
 	err := metricExporter.HistogramObserve(randMetricName, 1, map[string]string{
 		"service": "s",
@@ -100,7 +101,7 @@ func TestCreateHistogram(t *testing.T) {
 
 func TestAddDatabaseOperationLatency(t *testing.T){
 	// generate a random string
-	randMetricName := "_" + metrics.GenerateRandomString(10)
+	randMetricName := "_" + custom.GenerateRandomString(10)
 	// error out since counter does not exist
 	err := metricExporter.CounterAdd(randMetricName, 1, map[string]string{
 		"service": "s",

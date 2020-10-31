@@ -1,4 +1,4 @@
-package metrics_test
+package custom_test
 
 import (
 	"testing"
@@ -7,16 +7,17 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/BlackspaceInc/common/metrics"
+	"github.com/BlackspaceInc/common/metrics/custom"
 )
 
 var (
 	serviceName = "test_service"
-	db = metrics.SetupTests()
+	db = custom.SetupTests()
 	option = metrics.Options{
 		FlushInterval:          0,
 		EnableGoRuntimeMetrics: false,
 		DbConn:                 db,
-		ServiceName:           serviceName,
+		ServiceName:            serviceName,
 	}
 	metricExporter = metrics.NewMetricsExporter(option)
 )
@@ -30,27 +31,27 @@ func TestDatabaseCountersPresent(t *testing.T) {
 }
 
 func TestOpenConnectionsCounterExists(t *testing.T) {
-	var counterName = metrics.OpenConnections
+	var counterName = custom.OpenConnections
 	validateGaugeFuncExists(t, counterName)
 }
 
 func TestIdleConnectionsCounterExists(t *testing.T) {
-	var counterName = metrics.IdleConnections
+	var counterName = custom.IdleConnections
 	validateGaugeFuncExists(t, counterName)
 }
 
 func TestConnectionsInUseCounterExists(t *testing.T) {
-	var counterName = metrics.ConnectionsInUse
+	var counterName = custom.ConnectionsInUse
 	validateGaugeFuncExists(t, counterName)
 }
 
 func TestDatabaseConnectionWaitDurationCounterExists(t *testing.T) {
-	var counterName = metrics.DatabaseConnectionWaitDuration
+	var counterName = custom.DatabaseConnectionWaitDuration
 	validateGaugeFuncExists(t, counterName)
 }
 
 func TestDatabaseOperationLatency(t *testing.T){
-	var counterName = metrics.DatabaseOperationLatency
+	var counterName = custom.DatabaseOperationLatency
 	label := map[string]string{
 		"operation" : "test_db",
 	}

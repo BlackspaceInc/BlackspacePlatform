@@ -1,4 +1,4 @@
-package metrics
+package custom
 
 var REQUEST_SUBSYSTEM = "Request"
 
@@ -15,6 +15,6 @@ var requestsCounters = map[string] *CounterMetadata{
 		CounterHelpString: "number of goroutines that currently exist",
 		CounterLabels:     []string{"size", "duration"},
 		CounterFunction:   nil,
-		CounterBuckets: nil,
+		CounterBuckets:    nil,
 	},
 }

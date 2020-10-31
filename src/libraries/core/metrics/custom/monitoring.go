@@ -1,16 +1,18 @@
-package metrics
+package custom
 
 import (
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/BlackspaceInc/common/metrics"
 )
 
 func (c *MetricsExporter) Monitor(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			routeName := r.RequestURI
 			counterName := c.ServiceName + "_" + r.RequestURI
-			_ = c.CreateSummary(SummaryOpts{
+			_ = c.CreateSummary(metrics.SummaryOpts{
 				Name:      counterName,
 				Namespace: c.ServiceName,
 				Subsystem: "Requests",

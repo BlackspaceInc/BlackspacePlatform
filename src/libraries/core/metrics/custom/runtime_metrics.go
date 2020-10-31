@@ -1,4 +1,4 @@
-package metrics
+package custom
 
 // RegisterCommonRuntimeCounters generate common runtime specific counters of interest for a given service
 func RegisterCommonRuntimeCounters(serviceName string, metricsExporter *MetricsExporter){
