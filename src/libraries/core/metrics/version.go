@@ -1,6 +1,10 @@
 package metrics
 
-import "k8s.io/component-base/version"
+import (
+	"k8s.io/component-base/version"
+
+	"github.com/BlackspaceInc/common/metrics/base"
+)
 
 var (
 	buildInfo = NewGaugeVec(
@@ -10,13 +14,35 @@ var (
 				"Go version, and compiler from which this library was built, and platform on which it is running.",
 			StabilityLevel: ALPHA,
 		},
-		[]string{"major", "minor", "gitVersion", "gitCommit", "gitTreeState", "buildDate", "goVersion", "compiler", "platform"},
+		[]string{"instanceName",
+			"instanceType",
+			"instanceVersion",
+			"major",
+			"minor",
+			"gitVersion",
+			"gitCommit",
+			"gitTreeState",
+			"buildDate",
+			"goVersion",
+			"compiler",
+			"platform"},
 	)
 )
 
 // RegisterBuildInfo registers the build and version info in a metadata metric in prometheus
-func RegisterBuildInfo(r PlatformRegistry) {
+func RegisterBuildInfo(r PlatformRegistry, instance base.InstanceMetadata) {
 	info := version.Get()
 	r.MustRegister(buildInfo)
-	buildInfo.WithLabelValues(info.Major, info.Minor, info.GitVersion, info.GitCommit, info.GitTreeState, info.BuildDate, info.GoVersion, info.Compiler, info.Platform).Set(1)
+	buildInfo.WithLabelValues(instance.InstanceName,
+		                    string(instance.InstanceType),
+		                    instance.InstanceVersion,info.Major,
+		                    info.Minor,
+		                    info.GitVersion,
+		                    info.GitCommit,
+							info.GitTreeState,
+							info.BuildDate,
+							info.GoVersion,
+							info.Compiler,
+							info.Platform).Set(1)
+
 }

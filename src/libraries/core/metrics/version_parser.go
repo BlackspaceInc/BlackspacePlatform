@@ -1,10 +1,13 @@
 package metrics
 
+
 import (
 	"fmt"
-	"github.com/blang/semver"
-	apimachineryversion "k8s.io/apimachinery/pkg/version"
 	"regexp"
+
+	"github.com/blang/semver"
+
+	apimachineryversion "k8s.io/apimachinery/pkg/version"
 )
 
 const (
@@ -20,15 +23,13 @@ func parseSemver(s string) *semver.Version {
 		sv := semver.MustParse(s)
 		return &sv
 	}
-
 	return nil
 }
-
 func parseVersion(ver apimachineryversion.Info) semver.Version {
 	matches := versionRe.FindAllStringSubmatch(ver.String(), -1)
 
 	if len(matches) != 1 {
-panic(fmt.Sprintf("version string \"%v\" doesn't match expected regular expression: \"%v\"", ver.String(), versionRe.String()))
-}
+		panic(fmt.Sprintf("version string \"%v\" doesn't match expected regular expression: \"%v\"", ver.String(), versionRe.String()))
+	}
 	return semver.MustParse(matches[0][1])
 }

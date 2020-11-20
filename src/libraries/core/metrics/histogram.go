@@ -43,7 +43,7 @@ func NewHistogram(opts *HistogramOpts) *Histogram {
 	return h
 }
 
-// setPrometheusHistogram sets the underlying KubeGauge object, i.e. the thing that does the measurement.
+// setPrometheusHistogram sets the underlying Gauge object, i.e. the thing that does the measurement.
 func (h *Histogram) setPrometheusHistogram(histogram prometheus.Histogram) {
 	h.ObserverMetric = histogram
 	h.initSelfCollection(histogram)
@@ -78,7 +78,7 @@ type HistogramVec struct {
 	originalLabels []string
 }
 
-// NewHistogramVec returns an object which satisfies kubeCollector and wraps the
+// NewHistogramVec returns an object which satisfies PlatformCollector and wraps the
 // prometheus.HistogramVec object. However, the object returned will not measure
 // anything unless the collector is first registered, since the metric is lazily instantiated.
 func NewHistogramVec(opts *HistogramOpts, labels []string) *HistogramVec {

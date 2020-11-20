@@ -33,13 +33,13 @@ func ShouldShowHidden() bool {
 }
 
 // Registerable is an interface for a collector metric which we
-// will register with KubeRegistry.
+// will register with PlatformRegistry.
 type Registerable interface {
 	prometheus.Collector
 	Create(version *semver.Version) bool
 }
 
-// KubeRegistry is an interface which implements a subset of prometheus.Registerer and
+// PlatformRegistry is an interface which implements a subset of prometheus.Registerer and
 // prometheus.Gatherer interfaces
 type PlatformRegistry interface {
 	// Deprecated
@@ -52,10 +52,10 @@ type PlatformRegistry interface {
 	Gather() ([]*dto.MetricFamily, error)
 }
 
-// kubeRegistry is a wrapper around a prometheus registry-type object. Upon initialization
-// the kubernetes binary version information is loaded into the registry object, so that
+// BlackspacePlatformRegistry is a wrapper around a prometheus registry-type object. Upon initialization
+// the binary version information and metadata is loaded into the registry object, so that
 // automatic behavior can be configured for metric versioning.
-type kubeRegistry struct {
+type BlackspacePlatformRegistry struct {
 	PromRegistry
 	version semver.Version
 }
@@ -65,7 +65,7 @@ type kubeRegistry struct {
 // Collector are invalid or if they — in combination with descriptors of
 // already registered Collectors — do not fulfill the consistency and
 // uniqueness criteria described in the documentation of metric.Desc.
-func (kr *kubeRegistry) Register(c Registerable) error {
+func (kr *BlackspacePlatformRegistry) Register(c Registerable) error {
 	if c.Create(&kr.version) {
 		return kr.PromRegistry.Register(c)
 	}
@@ -75,7 +75,7 @@ func (kr *kubeRegistry) Register(c Registerable) error {
 // MustRegister works like Register but registers any number of
 // Collectors and panics upon the first registration that causes an
 // error.
-func (kr *kubeRegistry) MustRegister(cs ...Registerable) {
+func (kr *BlackspacePlatformRegistry) MustRegister(cs ...Registerable) {
 	metrics := make([]prometheus.Collector, 0, len(cs))
 	for _, c := range cs {
 		if c.Create(&kr.version) {
@@ -90,7 +90,7 @@ func (kr *kubeRegistry) MustRegister(cs ...Registerable) {
 // to register custom prometheus collectors.
 //
 // Deprecated
-func (kr *kubeRegistry) RawRegister(c prometheus.Collector) error {
+func (kr *BlackspacePlatformRegistry) RawRegister(c prometheus.Collector) error {
 	return kr.PromRegistry.Register(c)
 }
 
@@ -99,7 +99,7 @@ func (kr *kubeRegistry) RawRegister(c prometheus.Collector) error {
 // to register custom prometheus collectors.
 //
 // Deprecated
-func (kr *kubeRegistry) RawMustRegister(cs ...prometheus.Collector) {
+func (kr *BlackspacePlatformRegistry) RawMustRegister(cs ...prometheus.Collector) {
 	kr.PromRegistry.MustRegister(cs...)
 }
 
@@ -109,7 +109,7 @@ func (kr *kubeRegistry) RawMustRegister(cs ...prometheus.Collector) {
 // returns whether a Collector was unregistered. Note that an unchecked
 // Collector cannot be unregistered (as its Describe method does not
 // yield any descriptor).
-func (kr *kubeRegistry) Unregister(collector Registerable) bool {
+func (kr *BlackspacePlatformRegistry) Unregister(collector Registerable) bool {
 	return kr.PromRegistry.Unregister(collector)
 }
 
@@ -120,21 +120,21 @@ func (kr *kubeRegistry) Unregister(collector Registerable) bool {
 // for valid exposition. As an exception to the strict consistency
 // requirements described for metric.Desc, Gather will tolerate
 // different sets of label names for metrics of the same metric family.
-func (kr *kubeRegistry) Gather() ([]*dto.MetricFamily, error) {
+func (kr *BlackspacePlatformRegistry) Gather() ([]*dto.MetricFamily, error) {
 	return kr.PromRegistry.Gather()
 }
 
-func newKubeRegistry(v apimachineryversion.Info) *kubeRegistry {
-	r := &kubeRegistry{
+func newPlatformRegistry(v apimachineryversion.Info) *BlackspacePlatformRegistry {
+	r := &BlackspacePlatformRegistry{
 		PromRegistry: prometheus.NewRegistry(),
 		version:      parseVersion(v),
 	}
 	return r
 }
 
-// NewKubeRegistry creates a new vanilla Registry without any Collectors
+// NewPlatformRegistry creates a new vanilla Registry without any Collectors
 // pre-registered.
-func NewKubeRegistry() KubeRegistry {
-	r := newKubeRegistry(version.Get())
+func NewPlatformRegistry() PlatformRegistry {
+	r := newPlatformRegistry(version.Get())
 	return r
 }

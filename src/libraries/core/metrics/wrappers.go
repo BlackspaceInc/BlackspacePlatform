@@ -26,7 +26,6 @@ type Metric interface {
 // goes up. That implies that it cannot be used to count items whose number can
 // also go down, e.g. the number of currently running goroutines. Those
 // "counters" are represented by Gauges.
-
 // CounterMetric is an interface which defines a subset of the interface provided by prometheus.Counter
 type CounterMetric interface {
 	Inc()

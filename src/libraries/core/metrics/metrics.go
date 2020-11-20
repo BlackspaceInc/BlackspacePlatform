@@ -16,7 +16,7 @@ method call depending on whether the metric is deprecated or not.
 */
 type PlatformCollector interface {
 	Collector
-	lazyKubeMetric
+	lazyPlatformMetric
 	DeprecatedVersion() *semver.Version
 	// Each collector metric should provide an initialization function
 	// for both deprecated and non-deprecated variants of a metric. This
@@ -27,11 +27,11 @@ type PlatformCollector interface {
 }
 
 /*
-lazyKubeMetric defines our metric registration interface. lazyKubeMetric objects are expected
+lazyPlatformMetric defines our metric registration interface. lazyPlatformMetric objects are expected
 to lazily instantiate metrics (i.e defer metric instantiation until when
 the Create() function is explicitly called).
 */
-type lazyKubeMetric interface {
+type lazyPlatformMetric interface {
 	Create(*semver.Version) bool
 	IsCreated() bool
 	IsHidden() bool
@@ -39,10 +39,10 @@ type lazyKubeMetric interface {
 }
 
 /*
-lazyMetric implements lazyKubeMetric. A lazy metric is lazy because it waits until metric
+lazyMetric implements lazyPlatformMetric. A lazy metric is lazy because it waits until metric
 registration time before instantiation. Add it as an anonymous field to a struct that
-implements kubeCollector to get deferred registration behavior. You must call lazyInit
-with the kubeCollector itself as an argument.
+implements PlatformCollector to get deferred registration behavior. You must call lazyInit
+with the PlatformCollector itself as an argument.
 */
 type lazyMetric struct {
 	isDeprecated        bool
@@ -60,9 +60,9 @@ func (r *lazyMetric) IsCreated() bool {
 	return r.isCreated
 }
 
-// lazyInit provides the lazyMetric with a reference to the kubeCollector it is supposed
+// lazyInit provides the lazyMetric with a reference to the metric it is supposed
 // to allow lazy initialization for. It should be invoked in the factory function which creates new
-// kubeCollector type objects.
+// metric type objects.
 func (r *lazyMetric) lazyInit(self PlatformCollector) {
 	r.self = self
 }

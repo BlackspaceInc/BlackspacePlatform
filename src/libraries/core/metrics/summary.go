@@ -71,7 +71,7 @@ type SummaryVec struct {
 	originalLabels []string
 }
 
-// NewSummaryVec returns an object which satisfies kubeCollector and wraps the
+// NewSummaryVec returns an object which satisfies Collector interface and wraps the
 // prometheus.SummaryVec object. However, the object returned will not measure
 // anything unless the collector is first registered, since the metric is lazily instantiated.
 //

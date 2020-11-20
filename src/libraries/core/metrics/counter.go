@@ -66,7 +66,7 @@ type CounterVec struct {
 	originalLabels []string
 }
 
-// NewCounterVec returns an object which satisfies the kubeCollector and CounterVecMetric interfaces.
+// NewCounterVec returns an object which satisfies the metrics and CounterVecMetric interfaces.
 // However, the object returned will not measure anything unless the collector is first
 // registered, since the metric is lazily instantiated.
 func NewCounterVec(opts *CounterOpts, labels []string) *CounterVec {
