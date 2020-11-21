@@ -13,4 +13,4 @@ jobs:
           PROJECT_PATH: "./src/libraries/core/core-metrics"
           GO111MODULE: "on"
         with:
-          args: make run-tests
+          args: go test github.com/BlackspaceInc/common/core-metrics
