@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/talos-systems/conform
-    rev: master
+    rev: dev
     hooks:
       - id: conform
         stages:
