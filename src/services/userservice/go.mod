@@ -24,7 +24,6 @@ require (
 	github.com/infobloxopen/protoc-gen-gorm v0.20.0
 	github.com/jinzhu/gorm v1.9.12
 	github.com/keratin/authn-go v1.1.0
-	github.com/magiconair/properties v1.8.1
 	github.com/mwitkow/go-proto-validators v0.3.0
 	github.com/prometheus/client_golang v1.6.0
 	github.com/spf13/cobra v1.0.0

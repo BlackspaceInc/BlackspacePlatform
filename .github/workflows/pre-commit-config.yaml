@@ -13,6 +13,8 @@ on:
 jobs:
   label:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: talos-systems/conform@v0.1.0-alpha.20
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Conform Action
+      uses: talos-systems/conform@v0.1.0-alpha.20
