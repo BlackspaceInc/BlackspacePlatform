@@ -1,5 +1,5 @@
 on: push
-name: My cool Action
+name: Blackspace Core
 jobs:
   checks:
     name: run
