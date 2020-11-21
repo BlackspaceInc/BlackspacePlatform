@@ -17,3 +17,7 @@ contracts:
 		protoc -I. \
     			-I=$(GOPATH)/src \
     			--go_out=plugins=grpc:./schema/models/ ./schema/proto/contracts/*.proto
+
+run-tests:
+	@echo "running core-library tests"
+	go test github.com/BlackspaceInc/common/core-metrics
