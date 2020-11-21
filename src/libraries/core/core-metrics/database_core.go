@@ -17,6 +17,7 @@ package core_metrics
 
 import (
 	"github.com/jinzhu/gorm"
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 const (
@@ -34,6 +35,7 @@ var (
 	DatabaseConnectionsInUse            GaugeFunc
 	DatabaseConnectionsWaitDuration     GaugeFunc
 	DatabaseConnectionsOperationLatency *HistogramVec
+	database_metrics []prometheus.Collector
 )
 
 func initializeCoreDatabaseCounters(namespace string, db *gorm.DB) {
@@ -107,4 +109,9 @@ func initializeCoreDatabaseCounters(namespace string, db *gorm.DB) {
 		},
 		[]string{"operation"},
 	)
+
+	database_metrics = []prometheus.Collector{
+		DatabaseConnectionsInUse, DatabaseConnectionsOperationLatency, DatabaseConnectionsWaitDuration,idleDatabaseConnections,
+		openDatabaseConnections,
+	}
 }

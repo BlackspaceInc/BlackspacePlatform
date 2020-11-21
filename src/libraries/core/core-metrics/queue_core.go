@@ -15,6 +15,10 @@ limitations under the License.
 */
 package core_metrics
 
+import (
+	"github.com/prometheus/client_golang/prometheus"
+)
+
 // Metrics subsystem and keys used by the workqueue.
 const (
 	WorkQueueSubsystem         = "workqueue"
@@ -76,7 +80,7 @@ var (
 		Help:      "Total number of retries handled by workqueue",
 	}, []string{"name"})
 
-	queue_metrics = []Registerable{
+	queue_metrics = []prometheus.Collector{
 		depth, adds, latency, workDuration, unfinished, longestRunningProcessor, retries,
 	}
 )
