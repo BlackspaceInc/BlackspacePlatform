@@ -1,18 +1,7 @@
-name: pre-commit
-
-on:
-  pull_request:
-    branches:
-      - master
-      - dev
-  push:
-    branches:
-      - master
-      - dev
-
-jobs:
-  label:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: talos-systems/conform@v0.1.0-alpha.20
+repos:
+  - repo: https://github.com/talos-systems/conform
+    rev: master
+    hooks:
+      - id: conform
+        stages:
+          - commit-msg
