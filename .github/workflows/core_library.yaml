@@ -10,7 +10,7 @@ jobs:
       - name: run
         uses: cedrickring/golang-action@1.6.0
         env:
-          PROJECT_PATH: "./src/libraries/core/core-metrics"
+          PROJECT_PATH: "./src/libraries/core"
           GO111MODULE: "on"
         with:
-          args: go test github.com/BlackspaceInc/common/core-metrics
+          args: make run-tests
