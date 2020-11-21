@@ -4,11 +4,12 @@ This document outlines how to effectively make use of this library.
 
 ```go
 // define a core engine registry object to which the version info would be tied to
-CoreEngine := NewCoreMetricsEngineInstance(namespace string, db *gorm.DB)
+CoreEngine := NewCoreMetricsEngineInstance("blackspace_platform",nil)
 
 // Define a
 LoginRequestCounter = NewGaugeVec(&GaugeOpts{
-		Subsystem: "Authentication Service",
+        Namespace: "blackspace_platform"
+		Subsystem:  "authentication_service",
 		Name:      "login_request_counter",
 		Help:      "Number of log in requests",
 	}, []string{"Request"})

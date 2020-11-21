@@ -24,13 +24,11 @@ require (
 	github.com/infobloxopen/protoc-gen-gorm v0.20.0
 	github.com/jinzhu/gorm v1.9.12
 	github.com/keratin/authn-go v1.1.0
-	github.com/magiconair/properties v1.8.1
 	github.com/mwitkow/go-proto-validators v0.3.0
 	github.com/prometheus/client_golang v1.6.0
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.7.0
-	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.6.1
 	github.com/swaggo/http-swagger v0.0.0-20200308142732-58ac5e232fba
 	go.uber.org/zap v1.15.0
