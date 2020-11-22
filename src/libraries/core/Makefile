@@ -20,4 +20,11 @@ contracts:
 
 run-tests:
 	@echo "running core-library tests"
-	go test github.com/BlackspaceInc/common/core-metrics
+	@echo "----- running core-metrics tests"
+	go test github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics
+	@echo "----- running core-logging tests"
+	go test github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/datapol
+	go test github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json
+	go test github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/logreduction
+	go test github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/sanitization
+
