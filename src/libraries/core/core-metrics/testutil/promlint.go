@@ -17,88 +17,134 @@ limitations under the License.
 package testutil
 
 import (
+	"fmt"
+	"io"
 	"strings"
-	"testing"
+
+	"github.com/prometheus/client_golang/prometheus/testutil/promlint"
 )
 
-func TestLinter(t *testing.T) {
-	var tests = []struct {
-		name   string
-		metric string
-		expect string
-	}{
-		{
-			name: "problematic metric should be reported",
-			metric: `
-				# HELP test_problematic_total [ALPHA] non-counter metrics should not have total suffix
-				# TYPE test_problematic_total gauge
-				test_problematic_total{some_label="some_value"} 1
-				`,
-			expect: `non-counter metrics should not have "_total" suffix`,
-		},
-		// Don't need to test metrics in exception list, they will be covered by e2e test.
-		// In addition, we don't need to update this test when we remove metrics from exception list in the future.
+// exceptionMetrics is an exception list of metrics which violates promlint rules.
+//
+// The original entries come from the existing metrics when we introduce promlint.
+// We setup this list for allow and not fail on the current violations.
+// Generally speaking, you need to fix the problem for a new metric rather than add it into the list.
+var exceptionMetrics = []string{
+	"apiserver_egress_dialer_dial_failure_count", // counter metrics should have "_total" suffix
+
+	"apiserver_request_total", // label names should be written in 'snake_case' not 'camelCase'
+
+	"authenticated_user_requests", // counter metrics should have "_total" suffix
+	"authentication_attempts",     // counter metrics should have "_total" suffix
+
+	"aggregator_openapi_v2_regeneration_count",
+	"apiserver_admission_step_admission_duration_seconds_summary",
+	"apiserver_current_inflight_requests",
+	"apiserver_longrunning_gauge",
+	"get_token_count",
+	"get_token_fail_count",
+	"ssh_tunnel_open_count",
+	"ssh_tunnel_open_fail_count",
+
+	"attachdetach_controller_forced_detaches",
+	"authenticated_user_requests",
+	"authentication_attempts",
+	"get_token_count",
+	"get_token_fail_count",
+	"node_collector_evictions_number",
+
+	// The two metrics have been deprecated and will be removed in release v1.20+.
+	"container_cpu_usage_seconds_total", // non-counter metrics should not have "_total" suffix
+	"node_cpu_usage_seconds_total",      // non-counter metrics should not have "_total" suffix
+}
+
+// A Problem is an issue detected by a Linter.
+type Problem promlint.Problem
+
+func (p *Problem) String() string {
+	return fmt.Sprintf("%s:%s", p.Metric, p.Text)
+}
+
+// A Linter is a Prometheus metrics linter.  It identifies issues with metric
+// names, types, and metadata, and reports them to the caller.
+type Linter struct {
+	promLinter *promlint.Linter
+}
+
+// Lint performs a linting pass, returning a slice of Problems indicating any
+// issues found in the metrics stream.  The slice is sorted by metric name
+// and issue description.
+func (l *Linter) Lint() ([]Problem, error) {
+	promProblems, err := l.promLinter.Lint()
+	if err != nil {
+		return nil, err
 	}
 
-	for _, test := range tests {
-		tc := test
-		t.Run(tc.name, func(t *testing.T) {
-			linter := NewPromLinter(strings.NewReader(tc.metric))
-			problems, err := linter.Lint()
-			if err != nil {
-				t.Fatalf("unexpected error: %v", err)
-			}
+	// Ignore problems those in exception list
+	problems := make([]Problem, 0, len(promProblems))
+	for i := range promProblems {
+		if !l.shouldIgnore(promProblems[i].Metric) {
+			problems = append(problems, Problem(promProblems[i]))
+		}
+	}
 
-			if len(problems) == 0 {
-				t.Fatalf("expecte a problem but got none")
-			}
+	return problems, nil
+}
 
-			if problems[0].Text != tc.expect {
-				t.Fatalf("expect: %s, but got: %s", tc.expect, problems[0])
-			}
-		})
+// shouldIgnore returns true if metric in the exception list, otherwise returns false.
+func (l *Linter) shouldIgnore(metricName string) bool {
+	for i := range exceptionMetrics {
+		if metricName == exceptionMetrics[i] {
+			return true
+		}
+	}
+
+	return false
+}
+
+// NewPromLinter creates a new Linter that reads an input stream of Prometheus metrics.
+// Only the text exposition format is supported.
+func NewPromLinter(r io.Reader) *Linter {
+	return &Linter{
+		promLinter: promlint.New(r),
 	}
 }
 
-func TestMergeProblems(t *testing.T) {
-	problemOne := Problem{
-		Metric: "metric_one",
-		Text:   "problem one",
-	}
-	problemTwo := Problem{
-		Metric: "metric_two",
-		Text:   "problem two",
+func mergeProblems(problems []Problem) string {
+	var problemsMsg []string
+
+	for index := range problems {
+		problemsMsg = append(problemsMsg, problems[index].String())
 	}
 
-	var tests = []struct {
-		name     string
-		problems []Problem
-		expected string
-	}{
-		{
-			name:     "no problem",
-			problems: nil,
-			expected: "",
-		},
-		{
-			name:     "one problem",
-			problems: []Problem{problemOne},
-			expected: "metric_one:problem one",
-		},
-		{
-			name:     "more than one problem",
-			problems: []Problem{problemOne, problemTwo},
-			expected: "metric_one:problem one,metric_two:problem two",
-		},
+	return strings.Join(problemsMsg, ",")
+}
+
+// shouldIgnore returns true if metric in the exception list, otherwise returns false.
+func shouldIgnore(metricName string) bool {
+	for i := range exceptionMetrics {
+		if metricName == exceptionMetrics[i] {
+			return true
+		}
 	}
 
-	for _, test := range tests {
-		tc := test
-		t.Run(tc.name, func(t *testing.T) {
-			got := mergeProblems(tc.problems)
-			if tc.expected != got {
-				t.Errorf("expected: %s, but got: %s", tc.expected, got)
-			}
-		})
+	return false
+}
+
+// getLintError will ignore the metrics in exception list and converts lint problem to error.
+func getLintError(problems []promlint.Problem) error {
+	var filteredProblems []Problem
+	for _, problem := range problems {
+		if shouldIgnore(problem.Metric) {
+			continue
+		}
+
+		filteredProblems = append(filteredProblems, Problem(problem))
 	}
+
+	if len(filteredProblems) == 0 {
+		return nil
+	}
+
+	return fmt.Errorf("lint error: %s", mergeProblems(filteredProblems))
 }

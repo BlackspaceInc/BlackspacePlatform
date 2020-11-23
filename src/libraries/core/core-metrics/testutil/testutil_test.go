@@ -79,7 +79,7 @@ func TestNewFakeKubeRegistry(t *testing.T) {
 	for _, test := range tests {
 		tc := test
 		t.Run(tc.name, func(t *testing.T) {
-			registry := NewFakeKubeRegistry(registryVersion)
+			registry := NewFakeRegistry(registryVersion)
 			registry.MustRegister(tc.metric)
 			if err := GatherAndCompare(registry, strings.NewReader(tc.expected), tc.metric.FQName()); err != nil {
 				t.Fatal(err)

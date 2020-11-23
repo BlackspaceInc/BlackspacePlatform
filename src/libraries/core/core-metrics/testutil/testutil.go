@@ -23,7 +23,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus/testutil"
 
 	apimachineryversion "k8s.io/apimachinery/pkg/version"
-	"k8s.io/component-base/metrics"
+
+	metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
 )
 
 // CollectAndCompare registers the provided Collector with a newly created
@@ -61,7 +62,7 @@ func GatherAndCompare(g metrics.Gatherer, expected io.Reader, metricNames ...str
 // registry. It then does the same as GatherAndCompare, gathering the
 // metrics from the pedantic Registry.
 func CustomCollectAndCompare(c metrics.StableCollector, expected io.Reader, metricNames ...string) error {
-	registry := metrics.NewKubeRegistry()
+	registry := metrics.NewPlatformRegistry()
 	registry.CustomMustRegister(c)
 
 	return GatherAndCompare(registry, expected, metricNames...)
@@ -70,7 +71,7 @@ func CustomCollectAndCompare(c metrics.StableCollector, expected io.Reader, metr
 // NewFakeKubeRegistry creates a fake `KubeRegistry` that takes the input version as `build in version`.
 // It should only be used in testing scenario especially for the deprecated metrics.
 // The input version format should be `major.minor.patch`, e.g. '1.18.0'.
-func NewFakeKubeRegistry(ver string) metrics.KubeRegistry {
+func NewFakeRegistry(ver string) metrics.PlatformRegistry {
 	backup := metrics.BuildVersion
 	defer func() {
 		metrics.BuildVersion = backup
@@ -82,5 +83,5 @@ func NewFakeKubeRegistry(ver string) metrics.KubeRegistry {
 		}
 	}
 
-	return metrics.NewKubeRegistry()
+	return metrics.NewPlatformRegistry()
 }

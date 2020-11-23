@@ -22,6 +22,7 @@ run-tests:
 	@echo "running core-library tests"
 	@echo "----- running core-metrics tests"
 	go test github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics
+	go test github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics/testutil
 	@echo "----- running core-logging tests"
 	go test github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/datapol
 	go test github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json
