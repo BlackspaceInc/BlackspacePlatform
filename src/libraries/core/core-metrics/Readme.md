@@ -1,5 +1,13 @@
 ## Blackspace Core Metrics Library
 ---
+```bash
+go get github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics
+```
+
+Requires:
+
+* Go >= 1.12
+
 This document outlines how to effectively make use of this library.
 
 ```go
