@@ -126,7 +126,7 @@ func runCodeInit(cmd *cobra.Command, args []string) error {
 	projFrom := "stefanprodan/podinfo"
 	projTo := fmt.Sprintf("%s/%s", codeGitUser, codeProjectName)
 
-	makeFiles := []string{"Makefile.gh", "Dockerfile.gh"}
+	makeFiles := []string{"additive-make.txt.gh", "Dockerfile.gh"}
 	for _, file := range makeFiles {
 		fileContent, err := ioutil.ReadFile(path.Join(tmpPath, versionName, file))
 		if err != nil {

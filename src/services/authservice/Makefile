@@ -18,7 +18,7 @@ init:
 linux-builder:
 	docker build -f Dockerfile.linux -t $(NAME)-linux-builder .
 
-# The Linux target is built using a special Docker image, because this Makefile assumes the host
+# The Linux target is built using a special Docker image, because this additive-make.txt assumes the host
 # machine is running MacOS.
 dist/authn-linux64: init
 	make linux-builder

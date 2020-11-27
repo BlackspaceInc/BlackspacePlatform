@@ -1,4 +1,4 @@
-# Makefile for releasing podinfo
+# additive-make.txt for releasing podinfo
 #
 # The release version is controlled from pkg/version
 TAG?=latest
@@ -330,6 +330,6 @@ start:
 	@echo "spinning up all required containers"
 	./scripts/composeup.sh
 
-client: swagger 
+client: swagger
 	@echo "starting service client generation"
 	GO111MODULE=off cd sdk && swagger generate client -f ../pkg/api/docs/swagger.json -a operationa -m models, -s server -c client -A user-management-client

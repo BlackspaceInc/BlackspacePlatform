@@ -1,4 +1,4 @@
-# Makefile for releasing podinfo
+# additive-make.txt for releasing podinfo
 #
 # The release version is controlled from pkg/version
 

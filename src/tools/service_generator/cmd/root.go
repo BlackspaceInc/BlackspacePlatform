@@ -17,7 +17,11 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
+
 	"os"
 	"strings"
 
@@ -25,6 +29,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+var logger *zap.Logger
 var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
@@ -49,6 +54,13 @@ func Execute() {
 }
 
 func init() {
+	var err error
+	logger, err = zap.NewDevelopment()
+	if err != nil {
+		log.Fatalf("can't initialize zap logger: %v", err)
+	}
+	defer logger.Sync()
+
 	cobra.OnInitialize(initConfig)
 
 	// Here you will define your flags and configuration settings.
