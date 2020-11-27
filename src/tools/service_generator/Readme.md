@@ -1,9 +1,8 @@
 ## Blackspace Service Generator Tool
+To generate a service perform the below operations
+```bash
+make create-service servicename="cart_service"
+```
 
-### TODO
-- [ ] fix import path in golang files
-- [ ] fix service name read from cmd line
-- [ ] define golang file templates
-- [ ] generate default metrics, logging, and alerts + tracing utilities
-- [ ] handle protocol buffers to graphql schema convention generation
-- [ ] add extensive test cases
+Note: Please ensure the service is written in snake case and please ensure the service name has the `service` suffix
+and keep in mind the resulting service will be copied into the services folder located at `src/services`

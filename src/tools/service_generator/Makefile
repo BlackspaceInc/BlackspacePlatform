@@ -1,11 +1,9 @@
 build:
 	go build -o bin/main main.go
 
-create-service:
-	./bin/main generateBlackspaceServiceTemplate -a "REST" -s "test"
-
-run:
-	go run main.go
+create-service: build
+	./bin/main generateBlackspaceServiceTemplate -a "REST" -s $(servicename)
+	mv $(servicename) ~/go/src/github.com/BlackspaceInc/BlackspacePlatform/src/services
 
 compile:
 	echo "Compiling for every OS and Platform"
