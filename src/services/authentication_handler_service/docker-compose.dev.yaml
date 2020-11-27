@@ -1,0 +1,20 @@
+version: '3.7'
+
+services:
+  # authentication_handler_service for the blackspace platform
+  authentication_handler_service:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: authentication_handler_service
+    ports:
+      - "9898:9898"
+    restart: unless-stopped
+    networks:
+      - net
+    volumes:
+      - '.:/go/src/github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service'
+
+networks:
+  net:
+    driver: bridge

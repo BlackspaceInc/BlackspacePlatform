@@ -1,13 +1,13 @@
 package generator
 
 
-const blackspaceRepo string = "github.com/blackspaceInc/BlackspacePlatform"
-const templateRepoUrl string = "https://github.com/stefanprodan/podinfo.git"
-const repoName string = "podinfo"
+const blackspaceRepo string = "github.com/BlackspaceInc/BlackspacePlatform"
+const templateRepoUrl string = "https://github.com/stefanprodan/authentication_handler_service.git"
+const repoName string = "authentication_handler_service"
 const EMPTY string = ""
 
 var podInfoStrToRemove = []string{
-	"podinfo", "Podinfo","PODINFO",
+	"authentication_handler_service", "Podinfo","PODINFO",
 }
 
 var fileMap = map[string]string{

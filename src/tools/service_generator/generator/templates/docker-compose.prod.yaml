@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   #service for the blackspace platform
-  company-service:
+  service:
     build:
       context: .
       dockerfile: Dockerfile.dev
