@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[42],{97:function(s){s.exports=JSON.parse('{"allTagsPath":"/blog/tags","slug":"system-design","name":"system design","count":1,"permalink":"/blog/tags/system-design"}')}}]);

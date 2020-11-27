@@ -1,5 +1,4 @@
 # Security Policy
-
 ---
 
 <p align="center">
@@ -15,38 +14,38 @@ possible on our security efforts.
 
 <!-- MarkdownTOC autolink="true" style="ordered" indent="   " -->
 
-- [Security Policy](#security-policy)
-  - [Project Structure](#project-structure)
-    - [Transparency](#transparency)
-      - [Open Source](#open-source)
-      - [Workflow](#workflow)
-    - [Version Control](#version-control)
-      - [Git](#git)
-      - [Signed Commits](#signed-commits)
-      - [Protected Branches](#protected-branches)
-  - [Personnel](#personnel)
-    - [Education](#education)
-    - [Policies](#policies)
-    - [Two-factor Authentication](#two-factor-authentication)
-  - [Development](#development)
-    - [Design & Architecture](#design--architecture)
-      - [Golang](#golang)
-      - [Unsafe Code](#unsafe-code)
-      - [User Privileges](#user-privileges)
-    - [Dependencies](#dependencies)
-    - [Change Control](#change-control)
-      - [Pull Requests](#pull-requests)
-      - [Reviews & Approvals](#reviews--approvals)
-      - [Merge Policies](#merge-policies)
-      - [Automated Checks](#automated-checks)
-        - [Vulnerability Scans](#vulnerability-scans)
-        - [Fuzz Testing](#fuzz-testing)
-  - [Building & Releasing](#building--releasing)
-    - [Network Security](#network-security)
-    - [Runtime Isolation](#runtime-isolation)
-    - [Asset Audit Logging](#asset-audit-logging)
-    - [Asset Signatures & Checksums](#asset-signatures--checksums)
-  - [Vulnerability Reporting](#vulnerability-reporting)
+- [# Security Policy](#h1-idsecurity-policy-1security-policyh1)
+- [Project Structure](#project-structure)
+  - [Transparency](#transparency)
+    - [Open Source](#open-source)
+    - [Workflow](#workflow)
+  - [Version Control](#version-control)
+    - [Git](#git)
+    - [Signed Commits](#signed-commits)
+    - [Protected Branches](#protected-branches)
+- [Personnel](#personnel)
+  - [Education](#education)
+  - [Policies](#policies)
+  - [Two-factor Authentication](#two-factor-authentication)
+- [Development](#development)
+  - [Design & Architecture](#design--architecture)
+    - [Golang](#golang)
+    - [Unsafe Code](#unsafe-code)
+    - [User Privileges](#user-privileges)
+  - [Dependencies](#dependencies)
+  - [Change Control](#change-control)
+    - [Pull Requests](#pull-requests)
+    - [Reviews & Approvals](#reviews--approvals)
+    - [Merge Policies](#merge-policies)
+    - [Automated Checks](#automated-checks)
+      - [Vulnerability Scans](#vulnerability-scans)
+      - [Fuzz Testing](#fuzz-testing)
+- [Building & Releasing](#building--releasing)
+  - [Network Security](#network-security)
+  - [Runtime Isolation](#runtime-isolation)
+  - [Asset Audit Logging](#asset-audit-logging)
+  - [Asset Signatures & Checksums](#asset-signatures--checksums)
+- [Vulnerability Reporting](#vulnerability-reporting)
 
 <!-- /MarkdownTOC -->
 
@@ -127,7 +126,7 @@ decisions around design and architecture.
 #### Golang
 
 The [Golang programming language][urls.go] is not memory and thread-safe; it will
-not catch many common sources of vulnerabilities at compile time. Hence, it is the responsibility of the developer
+not catch many common sources of concurency vulnerabilities at compile time. Hence, it is the responsibility of the developer
 to properly account for any potential race conditions.
 
 #### Unsafe Code
