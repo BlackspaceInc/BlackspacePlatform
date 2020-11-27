@@ -6,7 +6,7 @@ gqlproto:
 		-I=$(GOPATH)/src/github.com/lyft/protoc-gen-validate/validate/validate.proto \
 		-I=$(GOPATH)/src/github.com/infobloxopen/protoc-gen-gorm/options \
 		-I=$(GOPATH)/src/github.com/protobuf/src/google/protobuf/timestamp.proto \
-		--gogoopsee_out=plugins=grpc+graphql,Mopsee/protobuf/opsee.proto=github.com/opsee/protobuf/opseeproto,Mgoogle/protobuf/descriptor.proto=github.com/gogo/protobuf/protoc-gen-gogo/descriptor:./graphql/ --proto_path=$(GOPATH)/src:. ./model/*.proto
+		--gogoopsee_out=plugins=grpc+graphql,Mopsee/protobuf/opsee.proto=github.com/opsee/protobuf/opseeproto,Mgoogle/protobuf/descriptor.proto=github.com/gogo/protobuf/protoc-gen-gogo/descriptor:./graphql/ --proto_path=$(GOPATH)/src:. ./models/*.proto
 
 protogen: gqlproto
 	@echo "setting up service schema definition via protobuf"
@@ -19,7 +19,7 @@ protogen: gqlproto
 			-I=$(GOPATH)/src/github.com/protobuf/src/google/protobuf/timestamp.proto \
 			--proto_path=${GOPATH}/src/github.com/gogo/protobuf/protobuf \
 			--govalidators_out=./graphql/ \
-			--go_out=plugins=grpc:./graphql/ --gorm_out="engine=postgres:./graphql/" ./model/schema.proto
+			--go_out=plugins=grpc:./graphql/ --gorm_out="engine=postgres:./graphql/" ./models/schema.proto
 
 updateSchema: protogen gqlproto
 	go run github.com/99designs/gqlgen
