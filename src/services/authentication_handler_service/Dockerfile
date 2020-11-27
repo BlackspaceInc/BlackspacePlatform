@@ -11,11 +11,11 @@ COPY . .
 RUN go mod download
 
 RUN CGO_ENABLED=0 go build -ldflags "-s -w \
-    -X github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version.REVISION=${REVISION}" \
+    -X github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version.REVISION=${REVISION}" \
     -a -o bin/authentication_handler_service cmd/authentication_handler_service/*
 
 RUN CGO_ENABLED=0 go build -ldflags "-s -w \
-    -X github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version.REVISION=${REVISION}" \
+    -X github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version.REVISION=${REVISION}" \
     -a -o bin/podcli cmd/podcli/*
 
 FROM alpine:3.12
@@ -24,7 +24,7 @@ ARG BUILD_DATE
 ARG VERSION
 ARG REVISION
 
-LABEL maintainer="github.com/blackspaceInc/BlackspacePlatform"
+LABEL maintainer="github.com/BlackspaceInc/BlackspacePlatform"
 
 RUN addgroup -S app \
     && adduser -S -g app app \

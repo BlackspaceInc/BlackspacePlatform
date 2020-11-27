@@ -132,3 +132,9 @@ deploy-production:
 
 deploy: deploy-dev deploy-staging
 	@echo "deploying"
+
+start:
+	docker-compose -f docker-compose.dev.yaml build && docker-compose -f docker-compose.dev.yaml up --remove-orphans
+
+stop:
+	docker-compose -f docker-compose.dev.yaml down
