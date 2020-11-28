@@ -26,10 +26,15 @@ import (
 )
 
 // Inspired from https://github.com/go-logr/zapr, some functions is copy from the repo.
+type ILog interface {
+	logr.Logger
+	InfoM(msg string, zapKeysAndVals ...zap.Field)
+	ErrorM(err error, msg string)
+}
 
 var (
 	// JSONLogger is global json log format logr
-	JSONLogger logr.Logger
+	JSONLogger ILog
 
 	// timeNow stubbed out for testing
 	timeNow = time.Now
@@ -44,11 +49,21 @@ type zapLogger struct {
 }
 
 // implement logr.Logger
-var _ logr.Logger = &zapLogger{}
+var _ ILog = &zapLogger{}
 
 // Enabled should always return true
 func (l *zapLogger) Enabled() bool {
 	return true
+}
+
+// InfoM write zap log message to error level log
+func (l *zapLogger) InfoM(msg string, zapKeysAndVals ...zap.Field) {
+	entry := zapcore.Entry{
+		Time:    timeNow(),
+		Message: msg,
+	}
+	checkedEntry := l.l.Core().Check(entry, nil)
+	checkedEntry.Write(zapKeysAndVals...)
 }
 
 // Info write message to error level log
@@ -124,6 +139,17 @@ func (l *zapLogger) Error(err error, msg string, keysAndVals ...interface{}) {
 	checkedEntry.Write(l.handleFields(keysAndVals, handleError(err))...)
 }
 
+// ErrorM writes zap  log message to error level
+func (l *zapLogger) ErrorM(err error, msg string) {
+	entry := zapcore.Entry{
+		Level:   zapcore.ErrorLevel,
+		Time:    timeNow(),
+		Message: msg,
+	}
+	checkedEntry := l.l.Core().Check(entry, nil)
+	checkedEntry.Write(handleError(err))
+}
+
 // V return info logr.Logger  with specified level
 func (l *zapLogger) V(level int) logr.Logger {
 	return &zapLogger{
@@ -153,7 +179,7 @@ var encoderConfig = zapcore.EncoderConfig{
 }
 
 // NewJSONLogger creates a new json logr.Logger using the given Zap Logger to log.
-func NewJSONLogger(w zapcore.WriteSyncer) logr.Logger {
+func NewJSONLogger(w zapcore.WriteSyncer) ILog {
 	l, _ := zap.NewProduction()
 	if w == nil {
 		w = os.Stdout
@@ -175,3 +201,4 @@ func handleError(err error) zap.Field {
 func init() {
 	JSONLogger = NewJSONLogger(nil)
 }
+
