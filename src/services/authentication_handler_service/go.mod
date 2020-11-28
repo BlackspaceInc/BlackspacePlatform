@@ -14,19 +14,18 @@ require (
 	github.com/gomodule/redigo v1.8.3
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.4.2
-	github.com/jinzhu/gorm v1.9.16
 	github.com/keratin/authn-go v1.1.0
 	github.com/prometheus/client_golang v1.8.0
 	github.com/sony/gobreaker v0.4.1
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.7.1
+	github.com/stretchr/testify v1.6.1
 	github.com/swaggo/http-swagger v0.0.0-20200308142732-58ac5e232fba
 	github.com/swaggo/swag v1.6.9
 	go.uber.org/zap v1.16.0
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
 	google.golang.org/grpc v1.33.2
-	gopkg.in/gormigrate.v1 v1.6.0
 	gopkg.in/square/go-jose.v2 v2.5.1
 	k8s.io/klog/v2 v2.4.0
 )

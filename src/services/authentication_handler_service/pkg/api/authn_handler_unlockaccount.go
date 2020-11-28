@@ -58,7 +58,7 @@ func (s *Server) unlockAccountHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: perform this operation in a circuit breaker, emit a metric, and trace this
+	// TODO: emit a metric, and trace this
 	if err = s.authnClient.Client.UnlockAccount(strconv.Itoa(int(authnID))); err != nil {
 		// TODO: emit metrics
 		klog.Error("failed to lock created account", "error", err.Error())

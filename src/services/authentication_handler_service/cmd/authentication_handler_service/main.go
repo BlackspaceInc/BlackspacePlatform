@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	"github.com/keratin/authn-go/authn"
 	"github.com/sony/gobreaker"
 	"github.com/spf13/pflag"
@@ -63,8 +64,8 @@ func main() {
 	fs.String("AUTHN_ISSUER", "http://localhost", "authentication service issuer")
 	fs.String("AUTHN_DOMAINS", "localhost", "authentication service domains")
 	fs.String("AUTHN_PRIVATE_BASE_URL", "http://authentication_service",
-		"authentication service private url. should be local host if these are not running on docker containers. " +
-		"However if running in docker container with a configured docker network, the url should be equal to the service name")
+		"authentication service private url. should be local host if these are not running on docker containers. "+
+			"However if running in docker container with a configured docker network, the url should be equal to the service name")
 	fs.String("AUTHN_INTERNAL_PORT", "3000", "authentication service port")
 	fs.Bool("ENABLE_AUTH_SERVICE_PRIVATE_INTEGRATION", true, "enables communication with authentication service")
 	// logging specific configurations
@@ -116,10 +117,10 @@ func main() {
 		}
 	}
 
-	logging.ConfigureStructuredLogging()
-	defer klog.Flush()
+	logger := core_logging.JSONLogger
 
 	authnServiceClient := NewAuthServiceClient(err)
+	logger.
 	klog.Info("successfully initialized authentication service client")
 
 	// start stress tests if any
@@ -154,7 +155,7 @@ func main() {
 	// load gRPC server config
 	var grpcCfg grpc.Config
 	if err := viper.Unmarshal(&grpcCfg); err != nil {
-		klog.Fatal("config unmarshal failed", "error", err.Error())
+		klog.Fatal("config unmarshal failed", zap.Error(err))
 	}
 
 	// start gRPC server
@@ -166,14 +167,14 @@ func main() {
 	// load HTTP server config
 	var srvCfg api.Config
 	if err := viper.Unmarshal(&srvCfg); err != nil {
-		klog.Fatal("config unmarshal failed", "error", err.Error())
+		klog.Fatal("config unmarshal failed", zap.Error(err))
 	}
 
 	// log version and revisions
 	klog.Info("Starting authentication_handler_service",
-		"version", viper.GetString("version"),
-		"revision", viper.GetString("revision"),
-		"port", srvCfg.Port)
+		zap.String("version", viper.GetString("version")),
+		zap.String("revision", viper.GetString("revision")),
+		zap.String("port", srvCfg.Port))
 
 	// start HTTP server
 	srv, _ := api.NewServer(&srvCfg, authnServiceClient)
@@ -196,13 +197,13 @@ func NewAuthServiceClient(err error) *api.AuthServiceClientWrapper {
 	authnClient, err := initAuthnClient(authUsername, authPassword, domains, issuer, privateURL)
 	// crash the process if we cannot connect to the authentication service
 	if err != nil {
-		klog.Fatal("failed to initialized authentication service client", "error", err.Error())
+		klog.Fatal("failed to initialized authentication service client", zap.Error(err))
 	}
 
 	// perform a test request to the authentication service
 	_, err = authnClient.ServerStats()
 	if err != nil {
-		klog.Fatal("failed to connect to authentication service", "error", err.Error())
+		klog.Fatal("failed to connect to authentication service", zap.Error(err))
 	}
 
 	klog.Info("successfullly established connection to authentication service")
@@ -219,9 +220,9 @@ func NewAuthServiceClient(err error) *api.AuthServiceClientWrapper {
 
 // initAuthnHandler initializes connection to custom authentication service wrapper
 func initAuthnHandler(authnUrl, authSrvPort string,
-							timeout time.Duration,
-							username, password string,
-							cb *gobreaker.CircuitBreaker) *authentication.Authentication {
+	timeout time.Duration,
+	username, password string,
+	cb *gobreaker.CircuitBreaker) *authentication.Authentication {
 	enableAuth := viper.GetBool("ENABLE_AUTH_SERVICE_PRIVATE_INTEGRATION")
 
 	// create a connection wrapper to the authentication service
@@ -281,7 +282,7 @@ var stressMemoryPayload []byte
 func beginStressTest(cpus int, mem int) {
 	done := make(chan int)
 	if cpus > 0 {
-		klog.Info("starting CPU stress", "cores", cpus)
+		klog.Info("starting CPU stress", zap.Any("cores", cpus))
 		for i := 0; i < cpus; i++ {
 			go func() {
 				for {
@@ -314,10 +315,9 @@ func beginStressTest(cpus int, mem int) {
 		if err != nil {
 			klog.Error("memory stress failed", "error", err.Error())
 		}
-		klog.Info("starting CPU stress", "memory", len(stressMemoryPayload))
+		klog.Info("starting CPU stress", zap.Any("memory", len(stressMemoryPayload)))
 	}
 }
-
 
 // initAuthnClient initializes an instance of the authn client primarily useful in
 // communicating with the authentication service securely

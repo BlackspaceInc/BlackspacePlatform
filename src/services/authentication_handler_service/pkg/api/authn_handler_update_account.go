@@ -4,13 +4,14 @@ import (
 	"net/http"
 	"strconv"
 
+	"go.uber.org/zap"
 	"k8s.io/klog/v2"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
 
 type UpdateAccountRequest struct {
-	Username string
+	Email string
 }
 
 type UpdateAccountResponse struct {
@@ -23,9 +24,9 @@ type UpdateAccountRequestSwagger struct {
 	// user account to update
 	// in: body
 	Body struct {
-		// username to update
+		// Email to update
 		// required: true
-		Username string `json:"username"`
+		Email string `json:"email"`
 	}
 	// id of account to update
 	// in: query
@@ -86,9 +87,9 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 
 	// TODO: emit metrics
 	authnID, err := helper.ExtractIDFromRequest(r)
-	if err != nil{
+	if err != nil {
 		// TODO: emit metrics
-		klog.Error("failed to parse account id from url", "error", err.Error())
+		klog.Error("failed to parse account id from url", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -97,23 +98,23 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 	// decode the update user request
 	if err := helper.DecodeJSONBody(w, r, &updateAccountReq); err != nil {
 		// TODO: emit metrics
-		klog.Error("failed to decode request body", "error", err.Error())
+		klog.Error("failed to decode request body", zap.Error(err))
 		helper.ProcessMalformedRequest(w, err)
 		return
 	}
 
-	// assert password and username fields are present.
-	if updateAccountReq.Username == "" {
+	// assert password and email field is present.
+	if updateAccountReq.Email == "" {
 		// TODO: emit metrics
-		errMsg := "invalid input parameters. please specify a username"
-		klog.Error(errMsg, "err", err.Error())
+		errMsg := "invalid input parameters. please specify a email"
+		klog.Error(errMsg, zap.Error(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// TODO: perform this in a circuibreaker, emit metrics, and trace
-	if err := s.authnClient.Client.Update(strconv.Itoa(int(authnID)), updateAccountReq.Username); err != nil {
-		klog.Error("failed to update the account through the authentication service", "id", authnID, "error", err.Error())
+	// TODO: emit metrics, and trace
+	if err := s.authnClient.Client.Update(strconv.Itoa(int(authnID)), updateAccountReq.Email); err != nil {
+		klog.Error("failed to update the account through the authentication service", "id", authnID, zap.Error(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

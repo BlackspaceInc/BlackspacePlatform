@@ -3,19 +3,20 @@ package api
 import (
 	"net/http"
 
+	"go.uber.org/zap"
 	"k8s.io/klog/v2"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
 
 type LoginAccountRequest struct {
-	Username  string `json:"username"`
-	Password  string `json:"password"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type LoginAccountResponse struct {
 	Error error  `json:"error"`
-	Token    string `json:"token"`
+	Token string `json:"token"`
 }
 
 // Log into account request
@@ -23,9 +24,9 @@ type LoginAccountResponse struct {
 type loginAccountRequest struct {
 	// in: body
 	Body struct {
-		// account username to log into
+		// account email to log into
 		// required : true
-		Username string `json:"username"`
+		Email string `json:"email"`
 		// account password to log into
 		// required : true
 		Password string `json:"password"`
@@ -81,23 +82,23 @@ func (s *Server) loginAccountHandler(w http.ResponseWriter, r *http.Request) {
 	err := helper.DecodeJSONBody(w, r, &loginAccountReq)
 	if err != nil {
 		// TODO: emit a metric
-		klog.Error("failed to decode request", "error", err.Error())
+		klog.Error("failed to decode request", zap.Error(err))
 		helper.ProcessMalformedRequest(w, err)
 		return
 	}
 
-	if loginAccountReq.Password == "" || loginAccountReq.Username == "" {
+	if loginAccountReq.Password == "" || loginAccountReq.Email == "" {
 		// TODO: emit a metric
-		errMsg := "invalid input parameters. please specify a username and password"
+		errMsg := "invalid input parameters. please specify a email and password"
 		klog.Error("invalid input parameters", "error", errMsg)
 		http.Error(w, errMsg, http.StatusBadRequest)
 		return
 	}
 
 	// TODO: perform this operation in a circuit breaker, emit a metric, and trace this
-	token, customErr := s.authnClient.Handler.Login(loginAccountReq.Username, loginAccountReq.Password)
+	token, customErr := s.authnClient.Handler.Login(loginAccountReq.Email, loginAccountReq.Password)
 	if _, err := helper.ProcessAggregatedErrors(w, customErr); err != nil {
-		klog.Error("failed to login user", "error", err.Error())
+		klog.Error("failed to login user", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 

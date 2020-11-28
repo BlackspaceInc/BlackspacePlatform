@@ -3,15 +3,18 @@ package api
 import (
 	"net/http"
 	"strconv"
+
 	"github.com/keratin/authn-go/authn"
+	"go.uber.org/zap"
 	"k8s.io/klog/v2"
+
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
 
 // GetAccountResponse is struct providing errors tied to get account operations
 type GetAccountResponse struct {
-	Account *authn.Account	 `json:"account"`
-	Error error `json:"error"`
+	Account *authn.Account `json:"account"`
+	Error   error          `json:"error"`
 }
 
 // Get account by id request
@@ -52,24 +55,24 @@ func (s *Server) getAccountHandler(w http.ResponseWriter, r *http.Request) {
 	// we extract the user id from the url initially
 	// TODO: emit metrics
 	authnID, err := helper.ExtractIDFromRequest(r)
-	if err != nil{
+	if err != nil {
 		// TODO: emit metrics
-		klog.Error("failed to parse account id from url", "error", err.Error())
+		klog.Error("failed to parse account id from url", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// TODO: perform this operation in a circuit breaker, emit a metric, and trace this
+	// TODO: emit a metric, and trace this
 	account, err := s.authnClient.Client.GetAccount(strconv.Itoa(int(authnID)))
 	if err != nil {
 		// TODO: emit metrics
-		klog.Error("failed to get account", "error", err.Error())
+		klog.Error("failed to get account", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
 	var getAccountResp = GetAccountResponse{
 		Account: account,
-		Error: err,
+		Error:   err,
 	}
 
 	s.JSONResponse(w, r, getAccountResp)

@@ -4,13 +4,15 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
+	"go.uber.org/zap"
 	"k8s.io/klog/v2"
+
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
 
 type CreateAccountRequest struct {
-	Username  string `json:"username"`
-	Password  string `json:"password"`
+	Email    string `json:"username"`
+	Password string `json:"password"`
 }
 
 type CreateAccountResponse struct {
@@ -25,7 +27,7 @@ type createAccountRequest struct {
 	Body struct {
 		// user username to create
 		// required : true
-		Username string `json:"username"`
+		Email string `json:"email"`
 		// user password to create
 		// required : true
 		Password string `json:"password"`
@@ -84,12 +86,12 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 	err := helper.DecodeJSONBody(w, r, &createAccountReq)
 	if err != nil {
 		// TODO: emit a metric
-		klog.Error("failed to decode request", "error", err.Error())
+		klog.Error("failed to decode request", zap.Error(err))
 		helper.ProcessMalformedRequest(w, err)
 		return
 	}
 
-	if createAccountReq.Password == "" || createAccountReq.Username == "" {
+	if createAccountReq.Password == "" || createAccountReq.Email == "" {
 		// TODO: emit a metric
 		errMsg := "invalid input parameters. please specify a username and password"
 		klog.Error("invalid input parameters", "error", errMsg)
@@ -97,11 +99,11 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: perform this operation in a circuit breaker, emit a metric, and trace this
-	authnID, err := s.authnClient.Client.ImportAccount(createAccountReq.Username, createAccountReq.Password, false)
+	// TODO: emit a metric, and trace this
+	authnID, err := s.authnClient.Client.ImportAccount(createAccountReq.Email, createAccountReq.Password, false)
 	if err != nil {
 		// TODO: emit a metric
-		klog.Error("failed to create account via authentication service", "error", err.Error())
+		klog.Error("failed to create account via authentication service", zap.Error(err))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -111,9 +113,9 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		if err != nil {
 			// TODO: perform this operation in a circuit breaker, emit a metric, and trace this
-			klog.Error("unable to create user account in authentication service. archiving account", "error", err.Error())
+			klog.Error("unable to create user account in authentication service. archiving account", zap.Error(err))
 			if err = s.authnClient.Client.ArchiveAccount(strconv.Itoa(authnID)); err != nil {
-				klog.Error("failed to archive created account", "error", err.Error())
+				klog.Error("failed to archive created account", zap.Error(err))
 			}
 		}
 	}()
