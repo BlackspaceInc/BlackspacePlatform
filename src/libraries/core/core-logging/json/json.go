@@ -30,6 +30,7 @@ type ILog interface {
 	logr.Logger
 	InfoM(msg string, zapKeysAndVals ...zap.Field)
 	ErrorM(err error, msg string)
+	FatalM(err error, msg string)
 }
 
 var (
@@ -148,6 +149,18 @@ func (l *zapLogger) ErrorM(err error, msg string) {
 	}
 	checkedEntry := l.l.Core().Check(entry, nil)
 	checkedEntry.Write(handleError(err))
+}
+
+// FatalM writes zap  log message to error level and calls os.exit(255)
+func (l *zapLogger) FatalM(err error, msg string) {
+	entry := zapcore.Entry{
+		Level:   zapcore.ErrorLevel,
+		Time:    timeNow(),
+		Message: msg,
+	}
+	checkedEntry := l.l.Core().Check(entry, nil)
+	checkedEntry.Write(handleError(err))
+	os.Exit(255)
 }
 
 // V return info logr.Logger  with specified level
