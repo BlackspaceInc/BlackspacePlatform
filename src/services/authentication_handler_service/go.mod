@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/BlackspaceInc/Backend/user-management-service v0.0.0-20200610031650-f616806382e1
-	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201127005626-a404922db5c0
+	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201128235402-e3c5de0690b3
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible

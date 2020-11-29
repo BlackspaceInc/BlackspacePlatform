@@ -48,17 +48,18 @@ import (
 	"github.com/keratin/authn-go/authn"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/viper"
-
-	_ "github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/api/docs"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/authentication"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/fscache"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/middleware"
-
 	httpSwagger "github.com/swaggo/http-swagger"
 	"github.com/swaggo/swag"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 	"k8s.io/klog/v2"
+
+	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
+	_ "github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/api/docs"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/authentication"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/fscache"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/logging"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/middleware"
 )
 
 // @title authentication_handler_service API
@@ -80,7 +81,6 @@ var (
 	ready   int32
 	watcher *fscache.Watcher
 )
-
 
 type AuthServiceClientWrapper struct {
 	Client  *authn.Client
@@ -116,18 +116,20 @@ type Config struct {
 }
 
 type Server struct {
-	router  *mux.Router
-	config  *Config
-	pool    *redis.Pool
-	handler http.Handler
+	router      *mux.Router
+	config      *Config
+	pool        *redis.Pool
+	handler     http.Handler
 	authnClient *AuthServiceClientWrapper
+	logger      core_logging.ILog
 }
 
-func NewServer(config *Config, client *AuthServiceClientWrapper) (*Server, error) {
+func NewServer(config *Config, client *AuthServiceClientWrapper, svcCore *logging.ServiceCore) (*Server, error) {
 	srv := &Server{
-		router: mux.NewRouter(),
-		config: config,
+		router:      mux.NewRouter(),
+		config:      config,
 		authnClient: client,
+		logger:      svcCore.Logger,
 	}
 
 	return srv, nil
@@ -161,7 +163,7 @@ func (s *Server) registerHandlers() {
 	s.router.HandleFunc("/swagger.json", func(w http.ResponseWriter, r *http.Request) {
 		doc, err := swag.ReadDoc()
 		if err != nil {
-			klog.Error("swagger error", "error", err,"path", "/swagger.json")
+			s.logger.Error("swagger error", "error", err, "path", "/swagger.json")
 		}
 		w.Write([]byte(doc))
 	})
@@ -202,7 +204,7 @@ func (s *Server) ListenAndServe(stopCh <-chan struct{}) {
 		var err error
 		watcher, err = fscache.NewWatch(s.config.ConfigPath)
 		if err != nil {
-			klog.Error("config watch error", "error", err.Error(), "path", s.config.ConfigPath)
+			s.logger.Error("config watch error", "error", err.Error(), "path", s.config.ConfigPath)
 		} else {
 			watcher.Watch()
 		}
@@ -240,7 +242,7 @@ func (s *Server) ListenAndServe(stopCh <-chan struct{}) {
 		_ = s.pool.Close()
 	}
 
-	klog.Info("Shutting down HTTP/HTTPS server","timeout", s.config.HttpServerShutdownTimeout)
+	s.logger.Info("Shutting down HTTP/HTTPS server", "timeout", s.config.HttpServerShutdownTimeout)
 
 	// wait for Kubernetes readiness probe to remove this instance from the load balancer
 	// the readiness check interval must be lower than the timeout
@@ -251,14 +253,14 @@ func (s *Server) ListenAndServe(stopCh <-chan struct{}) {
 	// determine if the http server was started
 	if srv != nil {
 		if err := srv.Shutdown(ctx); err != nil {
-			klog.Error("HTTP server graceful shutdown failed",err)
+			s.logger.ErrorM(err, "HTTP server graceful shutdown failed")
 		}
 	}
 
 	// determine if the secure server was started
 	if secureSrv != nil {
 		if err := secureSrv.Shutdown(ctx); err != nil {
-			klog.Error("HTTPS server graceful shutdown failed",err)
+			s.logger.Error(err, "HTTPS server graceful shutdown failed")
 		}
 	}
 }
