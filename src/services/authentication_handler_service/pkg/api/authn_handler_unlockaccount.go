@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 	"strconv"
-	"k8s.io/klog/v2"
+
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
 
@@ -51,9 +51,9 @@ func (s *Server) unlockAccountHandler(w http.ResponseWriter, r *http.Request) {
 	// we extract the user id from the url initially
 	// TODO: emit metrics
 	authnID, err := helper.ExtractIDFromRequest(r)
-	if err != nil{
+	if err != nil {
 		// TODO: emit metrics
-		klog.Error("failed to parse account id from url", "error", err.Error())
+		s.logger.ErrorM(err, "failed to parse account id from url")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -61,11 +61,10 @@ func (s *Server) unlockAccountHandler(w http.ResponseWriter, r *http.Request) {
 	// TODO: emit a metric, and trace this
 	if err = s.authnClient.Client.UnlockAccount(strconv.Itoa(int(authnID))); err != nil {
 		// TODO: emit metrics
-		klog.Error("failed to lock created account", "error", err.Error())
+		s.logger.ErrorM(err, "failed to lock created account")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
 	unlockAccountResp.Error = err
 	s.JSONResponse(w, r, unlockAccountResp)
 }
-

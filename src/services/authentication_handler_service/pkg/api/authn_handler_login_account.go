@@ -3,9 +3,6 @@ package api
 import (
 	"net/http"
 
-	"go.uber.org/zap"
-	"k8s.io/klog/v2"
-
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
 
@@ -82,7 +79,7 @@ func (s *Server) loginAccountHandler(w http.ResponseWriter, r *http.Request) {
 	err := helper.DecodeJSONBody(w, r, &loginAccountReq)
 	if err != nil {
 		// TODO: emit a metric
-		klog.Error("failed to decode request", zap.Error(err))
+		s.logger.ErrorM(err, "failed to decode request")
 		helper.ProcessMalformedRequest(w, err)
 		return
 	}
@@ -90,7 +87,7 @@ func (s *Server) loginAccountHandler(w http.ResponseWriter, r *http.Request) {
 	if loginAccountReq.Password == "" || loginAccountReq.Email == "" {
 		// TODO: emit a metric
 		errMsg := "invalid input parameters. please specify a email and password"
-		klog.Error("invalid input parameters", "error", errMsg)
+		s.logger.ErrorM(err, "invalid input parameters")
 		http.Error(w, errMsg, http.StatusBadRequest)
 		return
 	}
@@ -98,7 +95,7 @@ func (s *Server) loginAccountHandler(w http.ResponseWriter, r *http.Request) {
 	// TODO: perform this operation in a circuit breaker, emit a metric, and trace this
 	token, customErr := s.authnClient.Handler.Login(loginAccountReq.Email, loginAccountReq.Password)
 	if _, err := helper.ProcessAggregatedErrors(w, customErr); err != nil {
-		klog.Error("failed to login user", zap.Error(err))
+		s.logger.ErrorM(err, "failed to login user")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 

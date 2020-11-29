@@ -52,13 +52,11 @@ import (
 	"github.com/swaggo/swag"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
-	"k8s.io/klog/v2"
 
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	_ "github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/api/docs"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/authentication"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/fscache"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/logging"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/middleware"
 )
 
@@ -124,12 +122,12 @@ type Server struct {
 	logger      core_logging.ILog
 }
 
-func NewServer(config *Config, client *AuthServiceClientWrapper, svcCore *logging.ServiceCore) (*Server, error) {
+func NewServer(config *Config, client *AuthServiceClientWrapper, logging core_logging.ILog) (*Server, error) {
 	srv := &Server{
 		router:      mux.NewRouter(),
 		config:      config,
 		authnClient: client,
-		logger:      svcCore.Logger,
+		logger:      logging,
 	}
 
 	return srv, nil
@@ -163,7 +161,7 @@ func (s *Server) registerHandlers() {
 	s.router.HandleFunc("/swagger.json", func(w http.ResponseWriter, r *http.Request) {
 		doc, err := swag.ReadDoc()
 		if err != nil {
-			s.logger.Error("swagger error", "error", err, "path", "/swagger.json")
+			s.logger.Error(err, "swagger error", "path", "/swagger.json")
 		}
 		w.Write([]byte(doc))
 	})
@@ -204,7 +202,7 @@ func (s *Server) ListenAndServe(stopCh <-chan struct{}) {
 		var err error
 		watcher, err = fscache.NewWatch(s.config.ConfigPath)
 		if err != nil {
-			s.logger.Error("config watch error", "error", err.Error(), "path", s.config.ConfigPath)
+			s.logger.Error(err, "config watch error", "path", s.config.ConfigPath)
 		} else {
 			watcher.Watch()
 		}
@@ -260,7 +258,7 @@ func (s *Server) ListenAndServe(stopCh <-chan struct{}) {
 	// determine if the secure server was started
 	if secureSrv != nil {
 		if err := secureSrv.Shutdown(ctx); err != nil {
-			s.logger.Error(err, "HTTPS server graceful shutdown failed")
+			s.logger.ErrorM(err, "HTTPS server graceful shutdown failed")
 		}
 	}
 }
@@ -285,7 +283,7 @@ func (s *Server) startServer() *http.Server {
 	// start the server in the background
 	go func() {
 		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
-			klog.Fatal("HTTP server crashed", err)
+			s.logger.FatalM(err, "HTTP server crashed")
 		}
 	}()
 
@@ -316,7 +314,7 @@ func (s *Server) startSecureServer() *http.Server {
 	// start the server in the background
 	go func() {
 		if err := srv.ListenAndServeTLS(cert, key); err != http.ErrServerClosed {
-			klog.Fatal("HTTPS server crashed", err)
+			s.logger.FatalM(err, "HTTPS server crashed")
 		}
 	}()
 

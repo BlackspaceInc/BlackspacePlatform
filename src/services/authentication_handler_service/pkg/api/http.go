@@ -8,8 +8,6 @@ import (
 	"time"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version"
-	"go.uber.org/zap"
-	"k8s.io/klog/v2"
 )
 
 func randomErrorMiddleware(next http.Handler) http.Handler {
@@ -59,7 +57,7 @@ func (s *Server) JSONResponse(w http.ResponseWriter, r *http.Request, result int
 	body, err := json.Marshal(result)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		klog.Error("JSON marshal failed", zap.Error(err))
+		s.logger.ErrorM(err, "JSON marshal failed")
 		return
 	}
 
@@ -73,7 +71,7 @@ func (s *Server) JSONResponseCode(w http.ResponseWriter, r *http.Request, result
 	body, err := json.Marshal(result)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		klog.Error("JSON marshal failed", zap.Error(err))
+		s.logger.ErrorM(err, "JSON marshal failed")
 		return
 	}
 
@@ -95,7 +93,7 @@ func (s *Server) ErrorResponse(w http.ResponseWriter, r *http.Request, error str
 	body, err := json.Marshal(data)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		klog.Error("JSON marshal failed", zap.Error(err))
+		s.logger.ErrorM(err, "JSON marshal failed")
 		return
 	}
 

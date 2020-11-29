@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/gomodule/redigo/redis"
-	"k8s.io/klog/v2"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version"
 )
@@ -29,7 +28,7 @@ func (s *Server) startCachePool(ticker *time.Ticker, stopCh <-chan struct{}) {
 	setVersion := func() {
 		conn := s.pool.Get()
 		if _, err := conn.Do("SET", s.config.Hostname, version.VERSION, "EX", 60); err != nil {
-			klog.Error("cache server is offline", "error", err.Error(), "server", s.config.CacheServer)
+			s.logger.Error(err, "cache server is offline", "error", err.Error(), "server", s.config.CacheServer)
 		}
 		_ = conn.Close()
 	}

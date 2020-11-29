@@ -3,9 +3,6 @@ package api
 import (
 	"net/http"
 
-	"go.uber.org/zap"
-	"k8s.io/klog/v2"
-
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
 
@@ -16,7 +13,7 @@ func (s *Server) logoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	if authErr != nil {
 		if _, err := helper.ProcessAggregatedErrors(w, authErr); err != nil {
-			klog.Error("failed to perform log out request", zap.Error(err))
+			s.logger.ErrorM(err, "failed to perform log out request")
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}

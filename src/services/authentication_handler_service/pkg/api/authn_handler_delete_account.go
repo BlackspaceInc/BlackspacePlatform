@@ -4,9 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"go.uber.org/zap"
-	"k8s.io/klog/v2"
-
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
 
@@ -56,7 +53,7 @@ func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 	authnID, err := helper.ExtractIDFromRequest(r)
 	if err != nil {
 		// TODO: emit metrics
-		klog.Error("failed to parse account id from url", zap.Error(err))
+		s.logger.ErrorM(err, "failed to parse account id from url")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -64,7 +61,7 @@ func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 	// TODO: perform this operation in a circuit breaker, emit a metric, and trace this
 	if err = s.authnClient.Client.ArchiveAccount(strconv.Itoa(int(authnID))); err != nil {
 		// TODO: emit metrics
-		klog.Error("failed to archive created account", zap.Error(err))
+		s.logger.ErrorM(err, "failed to archive created account")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 

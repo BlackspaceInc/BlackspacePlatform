@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"k8s.io/klog/v2"
+	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 )
 
 type LoggingMiddleware struct {
@@ -15,7 +15,7 @@ func NewLoggingMiddleware() *LoggingMiddleware {
 
 func (m *LoggingMiddleware) Handler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		klog.Info(
+		core_logging.JSONLogger.Info(
 			"request started",
 			"proto", r.Proto,
 			"uri", r.RequestURI,

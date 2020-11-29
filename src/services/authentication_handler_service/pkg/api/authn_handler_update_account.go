@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"go.uber.org/zap"
-	"k8s.io/klog/v2"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
@@ -89,7 +88,7 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 	authnID, err := helper.ExtractIDFromRequest(r)
 	if err != nil {
 		// TODO: emit metrics
-		klog.Error("failed to parse account id from url", zap.Error(err))
+		s.logger.ErrorM(err, "failed to parse account id from url")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -98,7 +97,7 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 	// decode the update user request
 	if err := helper.DecodeJSONBody(w, r, &updateAccountReq); err != nil {
 		// TODO: emit metrics
-		klog.Error("failed to decode request body", zap.Error(err))
+		s.logger.ErrorM(err, "failed to decode request body")
 		helper.ProcessMalformedRequest(w, err)
 		return
 	}
@@ -107,19 +106,19 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 	if updateAccountReq.Email == "" {
 		// TODO: emit metrics
 		errMsg := "invalid input parameters. please specify a email"
-		klog.Error(errMsg, zap.Error(err))
+		s.logger.ErrorM(err, errMsg)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	// TODO: emit metrics, and trace
 	if err := s.authnClient.Client.Update(strconv.Itoa(int(authnID)), updateAccountReq.Email); err != nil {
-		klog.Error("failed to update the account through the authentication service", "id", authnID, zap.Error(err))
+		s.logger.ErrorM(err, "failed to update the account through the authentication service", "id", authnID)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	klog.Info("successfully updated account through authentication service", "id", authnID)
+	s.logger.InfoM("successfully updated account through authentication service", zap.Any("id", authnID))
 	updateAccountResp.Error = err
 	s.JSONResponse(w, r, updateAccountResp)
 }

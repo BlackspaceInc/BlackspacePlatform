@@ -4,9 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"go.uber.org/zap"
-	"k8s.io/klog/v2"
-
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
 
@@ -86,7 +83,7 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 	err := helper.DecodeJSONBody(w, r, &createAccountReq)
 	if err != nil {
 		// TODO: emit a metric
-		klog.Error("failed to decode request", zap.Error(err))
+		s.logger.ErrorM(err, "failed to decode request")
 		helper.ProcessMalformedRequest(w, err)
 		return
 	}
@@ -94,7 +91,7 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 	if createAccountReq.Password == "" || createAccountReq.Email == "" {
 		// TODO: emit a metric
 		errMsg := "invalid input parameters. please specify a username and password"
-		klog.Error("invalid input parameters", "error", errMsg)
+		s.logger.ErrorM(err, errMsg)
 		http.Error(w, errMsg, http.StatusBadRequest)
 		return
 	}
@@ -103,7 +100,7 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 	authnID, err := s.authnClient.Client.ImportAccount(createAccountReq.Email, createAccountReq.Password, false)
 	if err != nil {
 		// TODO: emit a metric
-		klog.Error("failed to create account via authentication service", zap.Error(err))
+		s.logger.ErrorM(err, "failed to create account via authentication service")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -113,9 +110,9 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		if err != nil {
 			// TODO: perform this operation in a circuit breaker, emit a metric, and trace this
-			klog.Error("unable to create user account in authentication service. archiving account", zap.Error(err))
+			s.logger.ErrorM(err, "unable to create user account in authentication service. archiving account")
 			if err = s.authnClient.Client.ArchiveAccount(strconv.Itoa(authnID)); err != nil {
-				klog.Error("failed to archive created account", zap.Error(err))
+				s.logger.ErrorM(err, "failed to archive created account")
 			}
 		}
 	}()

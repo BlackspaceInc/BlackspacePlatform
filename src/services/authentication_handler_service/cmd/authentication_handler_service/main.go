@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	"github.com/keratin/authn-go/authn"
 	"github.com/sony/gobreaker"
 	"github.com/spf13/pflag"
@@ -20,7 +21,6 @@ import (
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/api"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/authentication"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/grpc"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/logging"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/signals"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version"
 )
@@ -116,13 +116,13 @@ func main() {
 		}
 	}
 
-	svcCore := logging.SvcCore
+	logger := core_logging.JSONLogger
 
-	authnServiceClient := NewAuthServiceClient(err, svcCore)
-	svcCore.Logger.InfoM("successfully initialized authentication service client")
+	authnServiceClient := NewAuthServiceClient(err, logger)
+	logger.InfoM("successfully initialized authentication service client")
 
 	// start stress tests if any
-	beginStressTest(viper.GetInt("stress-cpu"), viper.GetInt("stress-memory"), svcCore)
+	beginStressTest(viper.GetInt("stress-cpu"), viper.GetInt("stress-memory"), logger)
 
 	// validate port
 	if _, err := strconv.Atoi(viper.GetString("port")); err != nil {
@@ -139,7 +139,7 @@ func main() {
 	// validate random delay options
 	if viper.GetInt("random-delay-max") < viper.GetInt("random-delay-min") {
 		err := errors.New("`--random-delay-max` should be greater than `--random-delay-min`")
-		svcCore.Fatal(err, "please fix configurations")
+		logger.FatalM(err, "please fix configurations")
 	}
 
 	switch delayUnit := viper.GetString("random-delay-unit"); delayUnit {
@@ -149,41 +149,41 @@ func main() {
 		break
 	default:
 		err := errors.New("random-delay-unit` accepted values are: s|ms")
-		svcCore.Fatal(err, "please fix configurations")
+		logger.FatalM(err, "please fix configurations")
 	}
 
 	// load gRPC server config
 	var grpcCfg grpc.Config
 	if err := viper.Unmarshal(&grpcCfg); err != nil {
 		err := errors.New("config unmarshal failed")
-		svcCore.Fatal(err, "please fix configurations")
+		logger.FatalM(err, "please fix configurations")
 	}
 
 	// start gRPC server
 	if grpcCfg.Port > 0 {
-		grpcSrv, _ := grpc.NewServer(&grpcCfg)
+		grpcSrv, _ := grpc.NewServer(&grpcCfg, logger)
 		go grpcSrv.ListenAndServe()
 	}
 
 	// load HTTP server config
 	var srvCfg api.Config
 	if err := viper.Unmarshal(&srvCfg); err != nil {
-		svcCore.Fatal(err, "config unmarshal failed")
+		logger.FatalM(err, "config unmarshal failed")
 	}
 
 	// log version and revisions
-	svcCore.Logger.InfoM("Starting authentication_handler_service",
+	logger.InfoM("Starting authentication_handler_service",
 		zap.String("version", viper.GetString("version")),
 		zap.String("revision", viper.GetString("revision")),
 		zap.String("port", srvCfg.Port))
 
 	// start HTTP server
-	srv, _ := api.NewServer(&srvCfg, authnServiceClient, svcCore)
+	srv, _ := api.NewServer(&srvCfg, authnServiceClient, logger)
 	stopCh := signals.SetupSignalHandler()
 	srv.ListenAndServe(stopCh)
 }
 
-func NewAuthServiceClient(err error, svc *logging.ServiceCore) *api.AuthServiceClientWrapper {
+func NewAuthServiceClient(err error, logger core_logging.ILog) *api.AuthServiceClientWrapper {
 	// initialize authentication client in order to establish communication with the
 	// authentication service. This serves as a singular source of truth for authentication needs
 	authUsername := viper.GetString("AUTHN_USERNAME")
@@ -198,19 +198,19 @@ func NewAuthServiceClient(err error, svc *logging.ServiceCore) *api.AuthServiceC
 	authnClient, err := initAuthnClient(authUsername, authPassword, domains, issuer, privateURL)
 	// crash the process if we cannot connect to the authentication service
 	if err != nil {
-		svc.Fatal(err, "failed to initialized authentication service client")
+		logger.FatalM(err, "failed to initialized authentication service client")
 	}
 
 	// perform a test request to the authentication service
 	_, err = authnClient.ServerStats()
 	if err != nil {
-		svc.Fatal(err, "failed to connect to authentication service")
+		logger.FatalM(err, "failed to connect to authentication service")
 	}
 
-	svc.Logger.InfoM("successfullly established connection to authentication service")
+	logger.InfoM("successfullly established connection to authentication service")
 
 	authnHandler := initAuthnHandler(authnUrl, authSrvPort, duration, authUsername, authPassword, nil)
-	svc.Logger.InfoM("initialized custom authentication service wrapper client")
+	logger.InfoM("initialized custom authentication service wrapper client")
 
 	// attempt to connect to the authentication service if not then crash process
 	return &api.AuthServiceClientWrapper{
@@ -280,10 +280,10 @@ func initZap(logLevel string) (*zap.Logger, error) {
 
 var stressMemoryPayload []byte
 
-func beginStressTest(cpus int, mem int, svc *logging.ServiceCore) {
+func beginStressTest(cpus int, mem int, logger core_logging.ILog) {
 	done := make(chan int)
 	if cpus > 0 {
-		svc.Logger.InfoM("starting CPU stress", zap.Any("cores", cpus))
+		logger.InfoM("starting CPU stress", zap.Any("cores", cpus))
 		for i := 0; i < cpus; i++ {
 			go func() {
 				for {
@@ -303,20 +303,20 @@ func beginStressTest(cpus int, mem int, svc *logging.ServiceCore) {
 		f, err := os.Create(path)
 
 		if err != nil {
-			svc.Logger.Error(err, "memory stress failed", "error")
+			logger.Error(err, "memory stress failed", "error")
 		}
 
 		if err := f.Truncate(1000000 * int64(mem)); err != nil {
-			svc.Logger.Error(err, "memory stress failed", "error")
+			logger.Error(err, "memory stress failed", "error")
 		}
 
 		stressMemoryPayload, err = ioutil.ReadFile(path)
 		f.Close()
 		os.Remove(path)
 		if err != nil {
-			svc.Logger.Error(err, "memory stress failed", "error")
+			logger.Error(err, "memory stress failed", "error")
 		}
-		svc.Logger.InfoM("starting CPU stress", zap.Any("memory", len(stressMemoryPayload)))
+		logger.InfoM("starting CPU stress", zap.Any("memory", len(stressMemoryPayload)))
 	}
 }
 
