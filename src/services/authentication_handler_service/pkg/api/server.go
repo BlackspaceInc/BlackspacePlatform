@@ -150,7 +150,9 @@ func (s *Server) registerHandlers() {
 	s.router.HandleFunc("/v1/account/delete/{id:[0-9]+}", s.deleteAccountHandler).Methods("DELETE")
 	s.router.HandleFunc("/v1/account/lock/{id:[0-9]+}", s.lockAccountHandler).Methods("POST")
 	s.router.HandleFunc("/v1/account/unlock/{id:[0-9]+}", s.unlockAccountHandler).Methods("POST")
-	s.router.HandleFunc("/v1/account/{id:[0-9]+}", s.unlockAccountHandler).Methods("GET")
+	s.router.HandleFunc("/v1/account/{id:[0-9]+}", s.getAccountHandler).Methods("GET")
+	s.router.HandleFunc("/v1/account/login", s.loginAccountHandler).Methods("POST")
+	s.router.HandleFunc("/v1/account/logout", s.logoutHandler).Methods("POST")
 
 	s.router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
 		httpSwagger.URL("/swagger/doc.json"),

@@ -1,6 +1,7 @@
 package grpc
 
 import (
+	"errors"
 	"fmt"
 	"net"
 
@@ -8,7 +9,6 @@ import (
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
-	"google.golang.org/protobuf/internal/errors"
 
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 )

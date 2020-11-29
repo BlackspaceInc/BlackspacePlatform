@@ -134,7 +134,8 @@ deploy: deploy-dev deploy-staging
 	@echo "deploying"
 
 start:
-	docker-compose -f docker-compose.dev.yaml build && docker-compose -f docker-compose.dev.yaml up --remove-orphans
+	docker-compose -f docker-compose.dev.yaml build
+	docker-compose -f docker-compose.dev.yaml up --remove-orphans
 
 stop:
-	docker-compose -f docker-compose.dev.yaml down
+	docker-compose -f docker-compose.dev.yaml -f docker-compose-authentication_service.yml down

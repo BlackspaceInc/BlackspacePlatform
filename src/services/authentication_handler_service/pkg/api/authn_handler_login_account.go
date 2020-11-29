@@ -94,11 +94,12 @@ func (s *Server) loginAccountHandler(w http.ResponseWriter, r *http.Request) {
 
 	// TODO: perform this operation in a circuit breaker, emit a metric, and trace this
 	token, customErr := s.authnClient.Handler.Login(loginAccountReq.Email, loginAccountReq.Password)
+	s.logger.Info("status of login", "err",customErr)
 	if _, err := helper.ProcessAggregatedErrors(w, customErr); err != nil {
 		s.logger.ErrorM(err, "failed to login user")
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
-	response := LoginAccountResponse{Token: *token, Error: err}
+	response := LoginAccountResponse{Token: token, Error: err}
 	s.JSONResponse(w, r, response)
 }

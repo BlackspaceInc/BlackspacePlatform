@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	"github.com/sony/gobreaker"
 	"golang.org/x/net/context"
 	"gopkg.in/square/go-jose.v2"
@@ -17,7 +18,7 @@ import (
 )
 
 const (
-	Origin      = "http://authentication_service"
+	Origin      = "http://localhost"
 )
 
 type Authentication struct {
@@ -33,18 +34,20 @@ type Authentication struct {
 	AuthUsername                     string
 	AuthPassword                     string
 	CircuitBreaker  *gobreaker.CircuitBreaker
+	Logger core_logging.ILog
 }
 
 // Obtain authentication service
-func NewAuthenticationService(origin, authPort string,
+func NewAuthenticationService(origin, url, authPort string,
 	                          enablePrivateEndpointInteraction bool,
 	                          httpClientTimeout time.Duration,
-	                          username, password string, cb *gobreaker.CircuitBreaker) *Authentication {
-	if origin == "" {
-		origin = Origin
+	                          username, password string, cb *gobreaker.CircuitBreaker,
+	                          logger core_logging.ILog) *Authentication {
+	if url == "" {
+		url = Origin
 	}
 
-	srvAddr := origin + ":" + authPort
+	srvAddr := url + ":" + authPort
 
 	return &Authentication{
 		Origin:                           origin,
@@ -59,6 +62,7 @@ func NewAuthenticationService(origin, authPort string,
 		AuthUsername:                     username,
 		AuthPassword:                     password,
 		CircuitBreaker: cb,
+		Logger: logger,
 	}
 }
 

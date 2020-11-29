@@ -182,27 +182,32 @@ func (a *Authentication) UpdateAccount(username, password string, locked bool) (
 	return nil, id
 }
 
-func (a *Authentication) Login(username, password string) (*string, *CustomError) {
+func (a *Authentication) Login(username, password string) (string, *CustomError) {
 	var (
 		accountResponse UpdateAccountResponse
 	)
 	jsonStr, err := json.Marshal(&LoginAccount{Username: username, Password: password})
 	request, err := http.NewRequest("POST", a.SessionBase, bytes.NewBuffer(jsonStr))
 	if err != nil {
-		return nil, &CustomError{Error: err, AuthErrorMsg: nil}
+		a.Logger.Error(err, "failed to create request object")
+		return "", &CustomError{Error: err, AuthErrorMsg: nil}
 	}
 
 	body,err := a.SetHeadersAndPerformRequest(request, username, password, true)
 	if err != nil {
-		return nil, &CustomError{Error: err, AuthErrorMsg: nil}
+		a.Logger.Error(err, "failed to perform request")
+		return "", &CustomError{Error: err, AuthErrorMsg: nil}
 	}
+	a.Logger.Info("response", "body", body)
 
 	err = json.Unmarshal(body, &accountResponse)
 	if err != nil {
-		return nil, &CustomError{Error: err, AuthErrorMsg: nil}
+		a.Logger.Error(err, "failed to unmarshal request response")
+		return "", &CustomError{Error: err, AuthErrorMsg: nil}
 	}
+	a.Logger.Info("response", "body", accountResponse)
 
-	return &accountResponse.Result.Id, nil
+	return accountResponse.Result.Id, nil
 }
 
 func (a *Authentication) RefreshToken() (*CustomError, *TokenId) {

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -113,7 +114,7 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 
 	// TODO: emit metrics, and trace
 	if err := s.authnClient.Client.Update(strconv.Itoa(int(authnID)), updateAccountReq.Email); err != nil {
-		s.logger.ErrorM(err, "failed to update the account through the authentication service", "id", authnID)
+		s.logger.ErrorM(err, fmt.Sprintf("failed to update the account through the authentication service, id: %s", strconv.Itoa(int(authnID))))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

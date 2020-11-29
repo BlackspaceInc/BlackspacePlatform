@@ -11,19 +11,21 @@ import (
 
 // ProcessAggregatedErrors processes aggregated errors
 func ProcessAggregatedErrors(w http.ResponseWriter, aggregatedErr *authentication.CustomError) (bool, error) {
-	if aggregatedErr.Error != nil {
-		err := aggregatedErr.Error
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return true, err
-	} else if aggregatedErr.AuthErrorMsg != nil {
-		jsonStr, err := json.Marshal(&aggregatedErr.AuthErrorMsg)
-		if err != nil {
+	if aggregatedErr != nil {
+		if aggregatedErr.Error != nil {
+			err := aggregatedErr.Error
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return true, err
-		}
+		} else if aggregatedErr.AuthErrorMsg != nil {
+			jsonStr, err := json.Marshal(&aggregatedErr.AuthErrorMsg)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return true, err
+			}
 
-		http.Error(w, string(jsonStr), http.StatusBadRequest)
-		return true, errors.New(string(jsonStr))
+			http.Error(w, string(jsonStr), http.StatusBadRequest)
+			return true, errors.New(string(jsonStr))
+		}
 	}
 	return false, nil
 }

@@ -65,7 +65,9 @@ func main() {
 	fs.String("AUTHN_PRIVATE_BASE_URL", "http://authentication_service",
 		"authentication service private url. should be local host if these are not running on docker containers. "+
 			"However if running in docker container with a configured docker network, the url should be equal to the service name")
+	fs.String("AUTHN_PUBLIC_BASE_URL", "http://localhost", "authentication service public endpoint")
 	fs.String("AUTHN_INTERNAL_PORT", "3000", "authentication service port")
+	fs.String("AUTHN_PORT", "8404", "authentication service external port")
 	fs.Bool("ENABLE_AUTH_SERVICE_PRIVATE_INTEGRATION", true, "enables communication with authentication service")
 	// logging specific configurations
 	fs.String("ENABLE_LOG_TO_STDERR", "false", `feature flag used to toggle on or off wether or not to log to stderr or to log to a
@@ -190,9 +192,8 @@ func NewAuthServiceClient(err error, logger core_logging.ILog) *api.AuthServiceC
 	authPassword := viper.GetString("AUTHN_PASSWORD")
 	issuer := viper.GetString("AUTHN_ISSUER")
 	domains := viper.GetString("AUTHN_DOMAINS")
-	authnUrl := viper.GetString("AUTHN_PRIVATE_BASE_URL")
-	privateURL := authnUrl + ":" + viper.GetString("AUTHN_INTERNAL_PORT")
-	authSrvPort := viper.GetString("AUTHN_PORT")
+	privateURL :=  viper.GetString("AUTHN_PRIVATE_BASE_URL") + ":" + viper.GetString("AUTHN_INTERNAL_PORT")
+	authSrvPort := viper.GetString("AUTHN_INTERNAL_PORT")
 	duration := viper.GetDuration("HTTP_CLIENT_TIMEOUT")
 
 	authnClient, err := initAuthnClient(authUsername, authPassword, domains, issuer, privateURL)
@@ -201,15 +202,32 @@ func NewAuthServiceClient(err error, logger core_logging.ILog) *api.AuthServiceC
 		logger.FatalM(err, "failed to initialized authentication service client")
 	}
 
-	// perform a test request to the authentication service
-	_, err = authnClient.ServerStats()
-	if err != nil {
-		logger.FatalM(err, "failed to connect to authentication service")
+	// TODO: make this a retryable operation
+	retries := 1
+	for retries < 4 {
+		// perform a test request to the authentication service
+		_, err = authnClient.ServerStats()
+		if err != nil {
+			if retries != 4 {
+				logger.ErrorM(err, "failed to connect to authentication service")
+			} else {
+				logger.FatalM(err, "failed to connect to authentication service")
+			}
+		}
+
+		retries += 1
+		time.Sleep(1 * time.Second)
 	}
+
 
 	logger.InfoM("successfullly established connection to authentication service")
 
-	authnHandler := initAuthnHandler(authnUrl, authSrvPort, duration, authUsername, authPassword, nil)
+	authnHandler := initAuthnHandler(viper.GetString("AUTHN_PRIVATE_BASE_URL") , authSrvPort, duration, authUsername, authPassword, nil, logger)
+	customErr, _ := authnHandler.GetJwtPublicKey()
+	if customErr != nil {
+		logger.ErrorM(customErr.Error, "error occured while initializing authn handler")
+	}
+
 	logger.InfoM("initialized custom authentication service wrapper client")
 
 	// attempt to connect to the authentication service if not then crash process
@@ -223,11 +241,14 @@ func NewAuthServiceClient(err error, logger core_logging.ILog) *api.AuthServiceC
 func initAuthnHandler(authnUrl, authSrvPort string,
 	timeout time.Duration,
 	username, password string,
-	cb *gobreaker.CircuitBreaker) *authentication.Authentication {
+	cb *gobreaker.CircuitBreaker, logger core_logging.ILog) *authentication.Authentication {
 	enableAuth := viper.GetBool("ENABLE_AUTH_SERVICE_PRIVATE_INTEGRATION")
+	origin := viper.GetString("AUTHN_ISSUER")
 
 	// create a connection wrapper to the authentication service
-	auth := authentication.NewAuthenticationService(authnUrl, authSrvPort, enableAuth, timeout, username, password, cb)
+	auth := authentication.NewAuthenticationService(origin ,authnUrl, authSrvPort, enableAuth, timeout,
+		username, password,
+		cb, logger)
 	return auth
 }
 
