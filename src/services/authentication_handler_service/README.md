@@ -127,6 +127,7 @@ docker run -dp 9898:9898 github.com/blackspaceInc/BlackspacePlatform/authenticat
 - [ ] spec out how third party business details table will look and pull from yelp (third party businesses)
 - [ ] Build user details service, business details service (first party and 3rd party businesses), api gateway --> complete registration and login
  from backend context
+- [ ] Implement linkerd side care deployment config (k8 and docker-compose) [link](https://github.com/LensPlatform/linkerd-examples)
 
 #### Non Technical
 - [ ] Reach out to 15 potential customers and follow the rubric specified in your product markdown file.
