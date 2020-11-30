@@ -108,12 +108,32 @@ docker run -dp 9898:9898 github.com/blackspaceInc/BlackspacePlatform/authenticat
 ```
 
 ---
-### API Operation
-- [X] CreateAccount
-- [X] UpdateAccount
-- [X] DeleteAccount
-- [X] LockAccount
-- [X] UnlockAccount
-- [X] GetAccount
+### TODO (This Week)
+#### Technical
+- [ ] pull authn client library and enhance it with the custom impl. in the authentication folder
+- [ ] emit metrics for this service and fix errors
+- [ ] implement circuit breaker [link](https://github.com/cep21/circuit) in core library
+- [ ] implement retryable operation in core library [link](https://github.com/avast/retry-go)
+- [ ] implement distributed request tracing
+- [ ] define graffana views, circuit breaker views, traces, ... etc to visualize metrics, circuit breaker, and traces and ensure
+      template service has this implementation
+- [ ] implement unit tests for all api's and new authn library client
+- [ ] implement load testing for service and automate this flow
+- [ ] configure github actions to run all service tests, run load tests, and end to end tests via docker end to end setup
+- [ ] define minikube and docker-compose local test flows and test local deployments
+- [ ] spec out user details and company details data for the registration flow
+    - [ ] model after square space account registration, square business account registration, shopify account registration, quora and pinterest
+     account registration
+- [ ] spec out how third party business details table will look and pull from yelp (third party businesses)
+- [ ] Build user details service, business details service (first party and 3rd party businesses), api gateway --> complete registration and login
+ from backend context
+
+#### Non Technical
+- [ ] Reach out to 15 potential customers and follow the rubric specified in your product markdown file.
+    - [ ] talk to them about your solution and ask what needs they may have and how you can better solve them
+    - [ ] go on linkedIn find black owned businesses, get their emails and contact the entrepreneurs (either through email or through phone)
+        - [ ] make note of the trends
+- [ ] Watch 15 YCombinator Videos (1 Hour Long) & think
+- [ ] Plan out sprint and allocate tasks
 
 

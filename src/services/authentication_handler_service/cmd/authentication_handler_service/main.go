@@ -11,6 +11,7 @@ import (
 	"time"
 
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
+	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
 	"github.com/keratin/authn-go/authn"
 	"github.com/sony/gobreaker"
 	"github.com/spf13/pflag"
@@ -23,6 +24,7 @@ import (
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/grpc"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/signals"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/metrics"
 )
 
 func main() {
@@ -70,15 +72,7 @@ func main() {
 	fs.String("AUTHN_PORT", "8404", "authentication service external port")
 	fs.Bool("ENABLE_AUTH_SERVICE_PRIVATE_INTEGRATION", true, "enables communication with authentication service")
 	// logging specific configurations
-	fs.String("ENABLE_LOG_TO_STDERR", "false", `feature flag used to toggle on or off wether or not to log to stderr or to log to a
-																specific location. the location must be a log file`)
-	fs.String("ENABLE_LOG_TO_STDERR_AND_FILES", "false", `feature flag used to toggle on or off wether or not to log to stderr and to log to a
-																specific location. the location must be a log file`)
-	fs.String("LOG_DIR", "./logs", `the directory at which the application should write
-																					log entries.`)
-	fs.String("LOG_FILE", "authentication_handler_service.log", `the file at which the application should write
-																					log entries.`)
-	fs.Int("LOG_LEVEL_VERBOSITY", 3, `number for log level verbosity`)
+	fs.String("SERVICE_NAME", "authentication_handler_service", "service name")
 
 	versionFlag := fs.BoolP("version", "v", false, "get version number")
 
@@ -118,8 +112,11 @@ func main() {
 		}
 	}
 
-	logger := core_logging.JSONLogger
+	serviceName := viper.GetString("SERVICE_NAME")
+	coreMetrics := core_metrics.NewCoreMetricsEngineInstance(serviceName,nil)
+	serviceMetrics := metrics.NewMetricsEngine(coreMetrics)
 
+	logger := core_logging.JSONLogger
 	authnServiceClient := NewAuthServiceClient(err, logger)
 	logger.InfoM("successfully initialized authentication service client")
 
@@ -180,7 +177,7 @@ func main() {
 		zap.String("port", srvCfg.Port))
 
 	// start HTTP server
-	srv, _ := api.NewServer(&srvCfg, authnServiceClient, logger)
+	srv, _ := api.NewServer(&srvCfg, authnServiceClient, logger, serviceMetrics)
 	stopCh := signals.SetupSignalHandler()
 	srv.ListenAndServe(stopCh)
 }

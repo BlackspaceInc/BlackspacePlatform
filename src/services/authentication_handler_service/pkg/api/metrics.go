@@ -11,39 +11,21 @@ import (
 	"strings"
 	"time"
 
+	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
 	"github.com/gorilla/mux"
-	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/metrics"
 )
 
 type PrometheusMiddleware struct {
-	Histogram *prometheus.HistogramVec
-	Counter   *prometheus.CounterVec
+	Histogram *core_metrics.HistogramVec
+	Counter   *core_metrics.CounterVec
 }
 
-func NewPrometheusMiddleware() *PrometheusMiddleware {
-	// used for monitoring and alerting (RED method)
-	histogram := prometheus.NewHistogramVec(prometheus.HistogramOpts{
-		Subsystem: "http",
-		Name:      "request_duration_seconds",
-		Help:      "Seconds spent serving HTTP requests.",
-		Buckets:   prometheus.DefBuckets,
-	}, []string{"method", "path", "status"})
-	// used for horizontal pod auto-scaling (Kubernetes HPA v2)
-	counter := prometheus.NewCounterVec(
-		prometheus.CounterOpts{
-			Subsystem: "http",
-			Name:      "requests_total",
-			Help:      "The total number of HTTP requests.",
-		},
-		[]string{"status"},
-	)
-
-	prometheus.MustRegister(histogram)
-	prometheus.MustRegister(counter)
-
+func NewPrometheusMiddleware(engine *metrics.MetricsEngine) *PrometheusMiddleware {
 	return &PrometheusMiddleware{
-		Histogram: histogram,
-		Counter:   counter,
+		Histogram: engine.MicroServiceMetrics.HttpRequestLatencyCounter,
+		Counter:   engine.MicroServiceMetrics.HttpRequestCounter,
 	}
 }
 

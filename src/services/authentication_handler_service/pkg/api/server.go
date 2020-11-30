@@ -57,6 +57,7 @@ import (
 	_ "github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/api/docs"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/authentication"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/fscache"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/metrics"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/middleware"
 )
 
@@ -120,14 +121,16 @@ type Server struct {
 	handler     http.Handler
 	authnClient *AuthServiceClientWrapper
 	logger      core_logging.ILog
+	serviceMetrics *metrics.MetricsEngine
 }
 
-func NewServer(config *Config, client *AuthServiceClientWrapper, logging core_logging.ILog) (*Server, error) {
+func NewServer(config *Config, client *AuthServiceClientWrapper, logging core_logging.ILog, serviceMetrics *metrics.MetricsEngine) (*Server, error) {
 	srv := &Server{
 		router:      mux.NewRouter(),
 		config:      config,
 		authnClient: client,
 		logger:      logging,
+		serviceMetrics: serviceMetrics,
 	}
 
 	return srv, nil
@@ -170,7 +173,7 @@ func (s *Server) registerHandlers() {
 }
 
 func (s *Server) registerMiddlewares() {
-	prom := NewPrometheusMiddleware()
+	prom := NewPrometheusMiddleware(s.serviceMetrics)
 	s.router.Use(prom.Handler)
 	httpLogger := NewLoggingMiddleware()
 	s.router.Use(httpLogger.Handler)
