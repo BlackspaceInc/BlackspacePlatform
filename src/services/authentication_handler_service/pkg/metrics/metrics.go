@@ -79,8 +79,8 @@ func NewExtractIdOperationCounter(engine *core_metrics.CoreMetricsEngine) *core_
 		Namespace: ServiceName,
 		Subsystem: "HTTP",
 		Name:      fmt.Sprintf("%s_status_of_extract_id_operation_from_requests_total", ServiceName),
-		Help:      "The status of the extract the id operation from the HTTP requests processed partitioned by handlerName and operation status",
-	}, []string{"handlerName, status"})
+		Help:      "The status of the extract the id operation from the HTTP requests processed partitioned by operation name and operation status",
+	}, []string{"operation_name", "status"})
 	engine.RegisterMetric(newCounter)
 	return newCounter
 }
