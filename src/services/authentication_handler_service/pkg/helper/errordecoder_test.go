@@ -11,10 +11,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/api"
 	"github.com/BlackspaceInc/Backend/user-management-service/pkg/helper"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/api"
 	"github.com/stretchr/testify/assert"
-
 )
 
 func TestValidJsonBody(t *testing.T) {

@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/go-openapi/runtime/middleware/header"
 	"io"
 	"net/http"
 	"strings"
-	"github.com/go-openapi/runtime/middleware/header"
 )
 
 const MAX_REQUEST_READ_SIZE int64 = 1048576

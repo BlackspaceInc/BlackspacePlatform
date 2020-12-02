@@ -1,12 +1,14 @@
 package api
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/keratin/authn-go/authn"
 
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
 )
 
 // GetAccountResponse is struct providing errors tied to get account operations
@@ -51,20 +53,32 @@ type GetAccountRequest struct {
 // deletes an by account id
 func (s *Server) getAccountHandler(w http.ResponseWriter, r *http.Request) {
 	// we extract the user id from the url initially
-	// TODO: emit metrics
-	authnID, err := helper.ExtractIDFromRequest(r)
+	authnID, err := s.ExtractIdOperationAndInstrument(r, constants.GET_ACCOUNT)
 	if err != nil {
-		// TODO: emit metrics
 		s.logger.ErrorM(err, "failed to parse account id from url")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// TODO: emit a metric, and trace this
-	account, err := s.authnClient.Client.GetAccount(strconv.Itoa(int(authnID)))
+	var (
+		begin = time.Now()
+		took  = time.Since(begin)
+		f = func() (interface{}, error){
+			return s.authnClient.Client.GetAccount(strconv.Itoa(int(authnID)))
+		}
+	)
+
+	result, err := s.RemoteOperationAndInstrumentWithResult(f, constants.GET_ACCOUNT, &took)
 	if err != nil {
-		// TODO: emit metrics
 		s.logger.ErrorM(err, "failed to get account")
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+
+	account, ok := result.(*authn.Account)
+	if !ok {
+		s.metrics.CastingOperationFailureCounter.WithLabelValues(constants.GET_ACCOUNT)
+		err  := errors.New("failed to cast response to account object")
+		s.logger.ErrorM(err, "casting failure")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 

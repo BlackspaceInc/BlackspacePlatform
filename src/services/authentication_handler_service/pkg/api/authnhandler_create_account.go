@@ -1,9 +1,12 @@
 package api
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
+	"time"
 
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
 
@@ -55,11 +58,9 @@ type createAccountResponse struct {
 //
 //     Consumes:
 //     - application/json
-//     - application/x-protobuf
 //
 //     Produces:
 //     - application/json
-//     - application/x-protobuf
 //
 //     Schemes: http, https, ws, wss
 //
@@ -80,27 +81,41 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 		createAccountReq CreateAccountRequest
 	)
 
-	err := helper.DecodeJSONBody(w, r, &createAccountReq)
+	err := s.DecodeRequestAndInstrument(w, r, &createAccountReq, constants.CREATE_ACCOUNT)
 	if err != nil {
-		// TODO: emit a metric
 		s.logger.ErrorM(err, "failed to decode request")
 		helper.ProcessMalformedRequest(w, err)
 		return
 	}
 
 	if createAccountReq.Password == "" || createAccountReq.Email == "" {
-		// TODO: emit a metric
+		s.metrics.InvalidRequestParametersCounter.WithLabelValues(constants.CREATE_ACCOUNT).Inc()
 		errMsg := "invalid input parameters. please specify a username and password"
 		s.logger.ErrorM(err, errMsg)
 		http.Error(w, errMsg, http.StatusBadRequest)
 		return
 	}
 
-	// TODO: emit a metric, and trace this
-	authnID, err := s.authnClient.Client.ImportAccount(createAccountReq.Email, createAccountReq.Password, false)
+	var (
+		begin = time.Now()
+		took  = time.Since(begin)
+		f = func() (interface{}, error){
+			return  s.authnClient.Client.ImportAccount(createAccountReq.Email, createAccountReq.Password, false)
+		}
+	)
+
+	result, err := s.RemoteOperationAndInstrumentWithResult(f, constants.CREATE_ACCOUNT, &took)
 	if err != nil {
-		// TODO: emit a metric
 		s.logger.ErrorM(err, "failed to create account via authentication service")
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	authnID, ok := result.(int)
+	if !ok {
+		s.metrics.CastingOperationFailureCounter.WithLabelValues(constants.CREATE_ACCOUNT)
+		err := errors.New("failed to convert result to uint32 id value")
+		s.logger.ErrorM(err, "casting error")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -109,9 +124,15 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 	// service in an inconsistent state
 	defer func() {
 		if err != nil {
-			// TODO: perform this operation in a circuit breaker, emit a metric, and trace this
+			startTime := time.Now()
+			elapsedTime  := time.Since(startTime)
+			op := func() error {
+				return s.authnClient.Client.ArchiveAccount(strconv.Itoa(int(authnID)))
+			}
+
+			// TODO: perform this operation in a circuit breaker, and trace this
 			s.logger.ErrorM(err, "unable to create user account in authentication service. archiving account")
-			if err = s.authnClient.Client.ArchiveAccount(strconv.Itoa(authnID)); err != nil {
+			if err = s.RemoteOperationAndInstrument(op, constants.DELETE_ACCOUNT, &elapsedTime); err != nil {
 				s.logger.ErrorM(err, "failed to archive created account")
 			}
 		}

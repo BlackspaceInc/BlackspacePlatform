@@ -22,10 +22,10 @@ type PrometheusMiddleware struct {
 	Counter   *core_metrics.CounterVec
 }
 
-func NewPrometheusMiddleware(engine *metrics.MetricsEngine) *PrometheusMiddleware {
+func NewPrometheusMiddleware(m *metrics.CoreMetrics) *PrometheusMiddleware {
 	return &PrometheusMiddleware{
-		Histogram: engine.MicroServiceMetrics.HttpRequestLatencyCounter,
-		Counter:   engine.MicroServiceMetrics.HttpRequestCounter,
+		Histogram: m.HttpRequestLatencyCounter,
+		Counter:   m.HttpRequestCounter,
 	}
 }
 
@@ -47,7 +47,7 @@ func (p *PrometheusMiddleware) Handler(next http.Handler) http.Handler {
 			took   = time.Since(begin)
 		)
 		p.Histogram.WithLabelValues(r.Method, path, status).Observe(took.Seconds())
-		p.Counter.WithLabelValues(status).Inc()
+		p.Counter.WithLabelValues(path, status).Inc()
 	})
 }
 

@@ -3,8 +3,9 @@ package api
 import (
 	"net/http"
 	"strconv"
+	"time"
 
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
 )
 
 // DeleteAccountResponse is struct providing errors tied to delete account operations
@@ -48,21 +49,28 @@ type DeleteAccountRequest struct {
 // deletes an by account id
 func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 	var deleteAccountResp DeleteAccountResponse
+
 	// we extract the user id from the url initially
-	// TODO: emit metrics
-	authnID, err := helper.ExtractIDFromRequest(r)
+	authnID, err := s.ExtractIdOperationAndInstrument(r, constants.DELETE_ACCOUNT)
 	if err != nil {
-		// TODO: emit metrics
 		s.logger.ErrorM(err, "failed to parse account id from url")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// TODO: perform this operation in a circuit breaker, emit a metric, and trace this
-	if err = s.authnClient.Client.ArchiveAccount(strconv.Itoa(int(authnID))); err != nil {
-		// TODO: emit metrics
+	var (
+		begin = time.Now()
+		took  = time.Since(begin)
+		f = func() error {
+			return s.authnClient.Client.ArchiveAccount(strconv.Itoa(int(authnID)))
+		}
+	)
+
+	// TODO: perform this operation in a circuit breaker, and trace this
+	if err = s.RemoteOperationAndInstrument(f, constants.DELETE_ACCOUNT, &took); err != nil {
 		s.logger.ErrorM(err, "failed to archive created account")
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	deleteAccountResp.Error = err

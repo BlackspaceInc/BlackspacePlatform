@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	Origin      = "http://localhost"
+	Origin = "http://localhost"
 )
 
 type Authentication struct {
@@ -33,16 +33,16 @@ type Authentication struct {
 	Timeout                          time.Duration
 	AuthUsername                     string
 	AuthPassword                     string
-	CircuitBreaker  *gobreaker.CircuitBreaker
-	Logger core_logging.ILog
+	CircuitBreaker                   *gobreaker.CircuitBreaker
+	Logger                           core_logging.ILog
 }
 
 // Obtain authentication service
 func NewAuthenticationService(origin, url, authPort string,
-	                          enablePrivateEndpointInteraction bool,
-	                          httpClientTimeout time.Duration,
-	                          username, password string, cb *gobreaker.CircuitBreaker,
-	                          logger core_logging.ILog) *Authentication {
+	enablePrivateEndpointInteraction bool,
+	httpClientTimeout time.Duration,
+	username, password string, cb *gobreaker.CircuitBreaker,
+	logger core_logging.ILog) *Authentication {
 	if url == "" {
 		url = Origin
 	}
@@ -61,8 +61,8 @@ func NewAuthenticationService(origin, url, authPort string,
 		Timeout:                          httpClientTimeout,
 		AuthUsername:                     username,
 		AuthPassword:                     password,
-		CircuitBreaker: cb,
-		Logger: logger,
+		CircuitBreaker:                   cb,
+		Logger:                           logger,
 	}
 }
 

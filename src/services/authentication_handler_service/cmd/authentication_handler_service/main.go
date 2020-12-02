@@ -22,9 +22,9 @@ import (
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/api"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/authentication"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/grpc"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/metrics"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/signals"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/metrics"
 )
 
 func main() {
@@ -113,7 +113,7 @@ func main() {
 	}
 
 	serviceName := viper.GetString("SERVICE_NAME")
-	coreMetrics := core_metrics.NewCoreMetricsEngineInstance(serviceName,nil)
+	coreMetrics := core_metrics.NewCoreMetricsEngineInstance(serviceName, nil)
 	serviceMetrics := metrics.NewMetricsEngine(coreMetrics)
 
 	logger := core_logging.JSONLogger
@@ -177,7 +177,7 @@ func main() {
 		zap.String("port", srvCfg.Port))
 
 	// start HTTP server
-	srv, _ := api.NewServer(&srvCfg, authnServiceClient, logger, serviceMetrics)
+	srv, _ := api.NewServer(&srvCfg, authnServiceClient, logger, serviceMetrics.MicroServiceMetrics, serviceMetrics.Engine)
 	stopCh := signals.SetupSignalHandler()
 	srv.ListenAndServe(stopCh)
 }
@@ -189,7 +189,7 @@ func NewAuthServiceClient(err error, logger core_logging.ILog) *api.AuthServiceC
 	authPassword := viper.GetString("AUTHN_PASSWORD")
 	issuer := viper.GetString("AUTHN_ISSUER")
 	domains := viper.GetString("AUTHN_DOMAINS")
-	privateURL :=  viper.GetString("AUTHN_PRIVATE_BASE_URL") + ":" + viper.GetString("AUTHN_INTERNAL_PORT")
+	privateURL := viper.GetString("AUTHN_PRIVATE_BASE_URL") + ":" + viper.GetString("AUTHN_INTERNAL_PORT")
 	authSrvPort := viper.GetString("AUTHN_INTERNAL_PORT")
 	duration := viper.GetDuration("HTTP_CLIENT_TIMEOUT")
 
@@ -216,10 +216,9 @@ func NewAuthServiceClient(err error, logger core_logging.ILog) *api.AuthServiceC
 		time.Sleep(1 * time.Second)
 	}
 
-
 	logger.InfoM("successfullly established connection to authentication service")
 
-	authnHandler := initAuthnHandler(viper.GetString("AUTHN_PRIVATE_BASE_URL") , authSrvPort, duration, authUsername, authPassword, nil, logger)
+	authnHandler := initAuthnHandler(viper.GetString("AUTHN_PRIVATE_BASE_URL"), authSrvPort, duration, authUsername, authPassword, nil, logger)
 	customErr, _ := authnHandler.GetJwtPublicKey()
 	if customErr != nil {
 		logger.ErrorM(customErr.Error, "error occured while initializing authn handler")
@@ -243,7 +242,7 @@ func initAuthnHandler(authnUrl, authSrvPort string,
 	origin := viper.GetString("AUTHN_ISSUER")
 
 	// create a connection wrapper to the authentication service
-	auth := authentication.NewAuthenticationService(origin ,authnUrl, authSrvPort, enableAuth, timeout,
+	auth := authentication.NewAuthenticationService(origin, authnUrl, authSrvPort, enableAuth, timeout,
 		username, password,
 		cb, logger)
 	return auth

@@ -43,9 +43,11 @@ import (
 	"sync/atomic"
 	"time"
 
+	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
 	"github.com/gomodule/redigo/redis"
 	"github.com/gorilla/mux"
 	"github.com/keratin/authn-go/authn"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/viper"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -54,6 +56,7 @@ import (
 	"golang.org/x/net/http2/h2c"
 
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
+
 	_ "github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/api/docs"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/authentication"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/fscache"
@@ -121,16 +124,20 @@ type Server struct {
 	handler     http.Handler
 	authnClient *AuthServiceClientWrapper
 	logger      core_logging.ILog
-	serviceMetrics *metrics.MetricsEngine
+	metrics     *metrics.CoreMetrics
+	metricsEngine *core_metrics.CoreMetricsEngine
 }
 
-func NewServer(config *Config, client *AuthServiceClientWrapper, logging core_logging.ILog, serviceMetrics *metrics.MetricsEngine) (*Server, error) {
+func NewServer(config *Config, client *AuthServiceClientWrapper, logging core_logging.ILog, serviceMetrics *metrics.CoreMetrics,
+	metricsEngineConf *core_metrics.CoreMetricsEngine) (*Server,
+	error) {
 	srv := &Server{
 		router:      mux.NewRouter(),
 		config:      config,
 		authnClient: client,
 		logger:      logging,
-		serviceMetrics: serviceMetrics,
+		metrics:     serviceMetrics,
+		metricsEngine: metricsEngineConf,
 	}
 
 	return srv, nil
@@ -138,6 +145,8 @@ func NewServer(config *Config, client *AuthServiceClientWrapper, logging core_lo
 
 func (s *Server) registerHandlers() {
 	s.router.Handle("/metrics", promhttp.Handler())
+	s.router.Handle("/v1/metrics", promhttp.InstrumentMetricHandler(prometheus.DefaultRegisterer, core_metrics.HandlerWithReset(s.metricsEngine.Registry,
+		core_metrics.HandlerOpts{})))
 	s.router.PathPrefix("/debug/pprof/").Handler(http.DefaultServeMux)
 	s.router.HandleFunc("/", s.indexHandler).HeadersRegexp("User-Agent", "^Mozilla.*").Methods("GET")
 	s.router.HandleFunc("/", s.infoHandler).Methods("GET")
@@ -173,7 +182,7 @@ func (s *Server) registerHandlers() {
 }
 
 func (s *Server) registerMiddlewares() {
-	prom := NewPrometheusMiddleware(s.serviceMetrics)
+	prom := NewPrometheusMiddleware(s.metrics)
 	s.router.Use(prom.Handler)
 	httpLogger := NewLoggingMiddleware()
 	s.router.Use(httpLogger.Handler)

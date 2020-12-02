@@ -7,11 +7,11 @@ import (
 )
 
 type JwtCustomClaims struct {
-	Id   string         `json:"id"`
+	Id string `json:"id"`
 	jwt.StandardClaims
 }
 
 type TokenValidationResponse struct {
-	Id        string         `json:"id"`
-	ExpiresAt time.Time      `json:"expires_at"`
+	Id        string    `json:"id"`
+	ExpiresAt time.Time `json:"expires_at"`
 }

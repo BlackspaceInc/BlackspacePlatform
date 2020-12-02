@@ -1,8 +1,11 @@
 package api
 
 import (
+	"errors"
 	"net/http"
+	"time"
 
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
 
@@ -76,27 +79,46 @@ func (s *Server) loginAccountHandler(w http.ResponseWriter, r *http.Request) {
 		loginAccountReq LoginAccountRequest
 	)
 
-	err := helper.DecodeJSONBody(w, r, &loginAccountReq)
+	err := s.DecodeRequestAndInstrument(w, r, &loginAccountReq, constants.LOGIN_ACCOUNT)
 	if err != nil {
-		// TODO: emit a metric
 		s.logger.ErrorM(err, "failed to decode request")
 		helper.ProcessMalformedRequest(w, err)
 		return
 	}
 
 	if loginAccountReq.Password == "" || loginAccountReq.Email == "" {
-		// TODO: emit a metric
+		s.metrics.InvalidRequestParametersCounter.WithLabelValues(constants.LOGIN_ACCOUNT).Inc()
+
 		errMsg := "invalid input parameters. please specify a email and password"
 		s.logger.ErrorM(err, "invalid input parameters")
+
 		http.Error(w, errMsg, http.StatusBadRequest)
 		return
 	}
 
-	// TODO: perform this operation in a circuit breaker, emit a metric, and trace this
-	token, customErr := s.authnClient.Handler.Login(loginAccountReq.Email, loginAccountReq.Password)
-	s.logger.Info("status of login", "err",customErr)
-	if _, err := helper.ProcessAggregatedErrors(w, customErr); err != nil {
+	var (
+		startTime = time.Now()
+		elapsedTime  = time.Since(startTime)
+		op = func() (interface{},error) {
+			token, aggregatedErr :=  s.authnClient.Handler.Login(loginAccountReq.Email, loginAccountReq.Password)
+			s.logger.Info("status of login", "err", aggregatedErr)
+			if _, err := helper.ProcessAggregatedErrors(w, aggregatedErr); err != nil {
+				return token, err
+			}
+			return token, nil
+		}
+	)
+
+	result, err := s.RemoteOperationAndInstrumentWithResult(op, constants.LOGIN_ACCOUNT, &elapsedTime)
+	if err != nil {
 		s.logger.ErrorM(err, "failed to login user")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	token, ok := result.(string)
+	if !ok {
+		err := errors.New("failed to cast from interface type")
+		s.logger.ErrorM(err, "casting error")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 

@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version"
+	"github.com/spf13/cobra"
 )
 
 func init() {

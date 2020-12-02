@@ -164,7 +164,7 @@ func (a *Authentication) UpdateAccount(username, password string, locked bool) (
 		return &CustomError{Error: err, AuthErrorMsg: nil}, 0
 	}
 
-	body,err := a.SetHeadersAndPerformRequest(request, username, password, false)
+	body, err := a.SetHeadersAndPerformRequest(request, username, password, false)
 	if err != nil {
 		return &CustomError{Error: err, AuthErrorMsg: nil}, 0
 	}
@@ -193,7 +193,7 @@ func (a *Authentication) Login(username, password string) (string, *CustomError)
 		return "", &CustomError{Error: err, AuthErrorMsg: nil}
 	}
 
-	body,err := a.SetHeadersAndPerformRequest(request, username, password, true)
+	body, err := a.SetHeadersAndPerformRequest(request, username, password, true)
 	if err != nil {
 		a.Logger.Error(err, "failed to perform request")
 		return "", &CustomError{Error: err, AuthErrorMsg: nil}

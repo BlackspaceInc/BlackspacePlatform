@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"go.uber.org/zap"
 
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
 
@@ -85,19 +87,15 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 		updateAccountResp UpdateAccountResponse
 	)
 
-	// TODO: emit metrics
-	authnID, err := helper.ExtractIDFromRequest(r)
+	authnID, err := s.ExtractIdOperationAndInstrument(r, constants.UPDATE_ACCOUNT)
 	if err != nil {
-		// TODO: emit metrics
 		s.logger.ErrorM(err, "failed to parse account id from url")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// TODO: emit metrics
 	// decode the update user request
-	if err := helper.DecodeJSONBody(w, r, &updateAccountReq); err != nil {
-		// TODO: emit metrics
+	if err := s.DecodeRequestAndInstrument(w, r, &updateAccountReq, constants.UPDATE_ACCOUNT); err != nil {
 		s.logger.ErrorM(err, "failed to decode request body")
 		helper.ProcessMalformedRequest(w, err)
 		return
@@ -105,15 +103,23 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 
 	// assert password and email field is present.
 	if updateAccountReq.Email == "" {
-		// TODO: emit metrics
+		s.metrics.InvalidRequestParametersCounter.WithLabelValues(constants.UPDATE_ACCOUNT).Inc()
 		errMsg := "invalid input parameters. please specify a email"
 		s.logger.ErrorM(err, errMsg)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	// TODO: emit metrics, and trace
-	if err := s.authnClient.Client.Update(strconv.Itoa(int(authnID)), updateAccountReq.Email); err != nil {
+	var (
+		begin = time.Now()
+		took  = time.Since(begin)
+		f     = func() error {
+			return s.authnClient.Client.Update(strconv.Itoa(int(authnID)), updateAccountReq.Email)
+		}
+	)
+
+	// TODO: perform this operation in a circuit breaker, and trace this
+	if err = s.RemoteOperationAndInstrument(f, constants.UPDATE_ACCOUNT, &took); err != nil {
 		s.logger.ErrorM(err, fmt.Sprintf("failed to update the account through the authentication service, id: %s", strconv.Itoa(int(authnID))))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -123,3 +129,4 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 	updateAccountResp.Error = err
 	s.JSONResponse(w, r, updateAccountResp)
 }
+

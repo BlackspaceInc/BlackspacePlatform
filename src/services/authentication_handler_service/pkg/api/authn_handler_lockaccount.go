@@ -3,8 +3,9 @@ package api
 import (
 	"net/http"
 	"strconv"
+	"time"
 
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
 )
 
 // LockAccountResponse is struct providing errors tied to lock account operations
@@ -49,8 +50,7 @@ type LockAccountRequest struct {
 func (s *Server) lockAccountHandler(w http.ResponseWriter, r *http.Request) {
 	var lockAccountResp LockAccountResponse
 	// we extract the user id from the url initially
-	// TODO: emit metrics
-	authnID, err := helper.ExtractIDFromRequest(r)
+	authnID, err := s.ExtractIdOperationAndInstrument(r, constants.LOCK_ACCOUNT)
 	if err != nil {
 		// TODO: emit metrics
 		s.logger.ErrorM(err, "failed to parse account id from url")
@@ -58,9 +58,16 @@ func (s *Server) lockAccountHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: emit a metric, and trace this
-	if err = s.authnClient.Client.LockAccount(strconv.Itoa(int(authnID))); err != nil {
-		// TODO: emit metrics
+	var (
+		begin = time.Now()
+		took  = time.Since(begin)
+		f = func() error {
+			return s.authnClient.Client.LockAccount(strconv.Itoa(int(authnID)))
+		}
+	)
+
+	// TODO: perform this operation in a circuit breaker, and trace this
+	if err = s.RemoteOperationAndInstrument(f, constants.LOCK_ACCOUNT, &took); err != nil {
 		s.logger.ErrorM(err, "failed to lock created account")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}

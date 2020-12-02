@@ -35,4 +35,4 @@ RUN go get github.com/canthefason/go-watcher
 RUN go install github.com/canthefason/go-watcher/cmd/watcher
 
 # define container entrypoint
-ENTRYPOINT watcher -run /go/src/github.com/BlackspaceInc/service/cmd/authentication_handler_service -watch github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service
+ENTRYPOINT watcher -run /go/src/github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/cmd/authentication_handler_service -watch github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service
