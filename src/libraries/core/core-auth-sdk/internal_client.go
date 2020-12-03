@@ -19,6 +19,7 @@ type internalClient struct {
 	baseURL  *url.URL
 	username string
 	password string
+	origin string
 }
 
 const (
@@ -29,7 +30,7 @@ const (
 	put    = "PUT"
 )
 
-func newInternalClient(base, username, password string) (*internalClient, error) {
+func newInternalClient(base, username, password, origin string) (*internalClient, error) {
 	// ensure that base ends with a '/', so ResolveReference() will work as desired
 	if base[len(base)-1] != '/' {
 		base = base + "/"
@@ -46,6 +47,7 @@ func newInternalClient(base, username, password string) (*internalClient, error)
 		baseURL:  baseURL,
 		username: username,
 		password: password,
+		origin: origin,
 	}, nil
 }
 
@@ -266,6 +268,7 @@ func (ic *internalClient) doWithAuth(verb string, path string, body io.Reader) (
 		return nil, err
 	}
 	req.SetBasicAuth(ic.username, ic.password)
+	req.Header.Set("Origin", ic.origin)
 
 	if verb == post || verb == patch || verb == put {
 		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
