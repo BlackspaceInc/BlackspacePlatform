@@ -87,6 +87,10 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 		updateAccountResp UpdateAccountResponse
 	)
 
+	if s.IsNotAuthenticated(w, r) {
+		return
+	}
+
 	authnID, err := s.ExtractIdOperationAndInstrument(r, constants.UPDATE_ACCOUNT)
 	if err != nil {
 		s.logger.ErrorM(err, "failed to parse account id from url")

@@ -58,7 +58,6 @@ import (
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 
 	_ "github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/api/docs"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/authentication"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/fscache"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/metrics"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/middleware"
@@ -83,11 +82,6 @@ var (
 	ready   int32
 	watcher *fscache.Watcher
 )
-
-type AuthServiceClientWrapper struct {
-	Client  *core_auth_sdk.Client
-	Handler *authentication.Authentication
-}
 
 type Config struct {
 	HttpClientTimeout         time.Duration `mapstructure:"http-client-timeout"`

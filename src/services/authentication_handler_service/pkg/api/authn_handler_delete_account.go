@@ -1,11 +1,13 @@
 package api
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/middleware"
 )
 
 // DeleteAccountResponse is struct providing errors tied to delete account operations
@@ -48,6 +50,10 @@ type DeleteAccountRequest struct {
 // 500: internalServerError
 // deletes an by account id
 func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
+	if s.IsNotAuthenticated(w, r) {
+		return
+	}
+
 	var deleteAccountResp DeleteAccountResponse
 
 	// we extract the user id from the url initially
@@ -61,7 +67,7 @@ func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 	var (
 		begin = time.Now()
 		took  = time.Since(begin)
-		f = func() error {
+		f     = func() error {
 			return s.authnClient.ArchiveAccount(strconv.Itoa(int(authnID)))
 		}
 	)
@@ -75,4 +81,14 @@ func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 
 	deleteAccountResp.Error = err
 	s.JSONResponse(w, r, deleteAccountResp)
+}
+
+func (s *Server) IsNotAuthenticated(w http.ResponseWriter, r *http.Request) bool {
+	if !middleware.IsAuthenticated(r.Context()) {
+		err := errors.New("user not authenticated")
+		s.logger.ErrorM(err, err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return true
+	}
+	return false
 }

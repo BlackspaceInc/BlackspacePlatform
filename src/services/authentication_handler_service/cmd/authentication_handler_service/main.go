@@ -13,14 +13,12 @@ import (
 	core_auth_sdk "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk"
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
-	"github.com/sony/gobreaker"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/api"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/authentication"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/grpc"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/metrics"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/signals"
@@ -62,7 +60,8 @@ func main() {
 	// authentication service specific flags
 	fs.String("AUTHN_USERNAME", "blackspaceinc", "username of authentication client")
 	fs.String("AUTHN_PASSWORD", "blackspaceinc", "password of authentication client")
-	fs.String("AUTHN_ISSUER", "http://localhost", "authentication service issuer")
+	fs.String("AUTHN_ISSUER_BASE_URL", "http://localhost", "authentication service issuer")
+	fs.String("AUTHN_ORIGIN", "http://localhost", "origin of auth requests")
 	fs.String("AUTHN_DOMAINS", "localhost", "authentication service domains")
 	fs.String("AUTHN_PRIVATE_BASE_URL", "http://authentication_service",
 		"authentication service private url. should be local host if these are not running on docker containers. "+
@@ -177,23 +176,22 @@ func main() {
 		zap.String("port", srvCfg.Port))
 
 	// start HTTP server
-	srv, _ := api.NewServer(&srvCfg, authnServiceClient.Client, logger, serviceMetrics.MicroServiceMetrics, serviceMetrics.Engine)
+	srv, _ := api.NewServer(&srvCfg, authnServiceClient, logger, serviceMetrics.MicroServiceMetrics, serviceMetrics.Engine)
 	stopCh := signals.SetupSignalHandler()
 	srv.ListenAndServe(stopCh)
 }
 
-func NewAuthServiceClient(err error, logger core_logging.ILog) *api.AuthServiceClientWrapper {
+func NewAuthServiceClient(err error, logger core_logging.ILog) *core_auth_sdk.Client {
 	// initialize authentication client in order to establish communication with the
 	// authentication service. This serves as a singular source of truth for authentication needs
 	authUsername := viper.GetString("AUTHN_USERNAME")
 	authPassword := viper.GetString("AUTHN_PASSWORD")
-	issuer := viper.GetString("AUTHN_ISSUER")
 	domains := viper.GetString("AUTHN_DOMAINS")
 	privateURL := viper.GetString("AUTHN_PRIVATE_BASE_URL") + ":" + viper.GetString("AUTHN_INTERNAL_PORT")
-	authSrvPort := viper.GetString("AUTHN_INTERNAL_PORT")
-	duration := viper.GetDuration("HTTP_CLIENT_TIMEOUT")
+	origin := viper.GetString("AUTHN_ORIGIN")
+	issuer := viper.GetString("AUTHN_ISSUER_BASE_URL") + ":" + viper.GetString("AUTHN_PORT")
 
-	authnClient, err := initAuthnClient(authUsername, authPassword, domains, issuer, privateURL)
+	authnClient, err := initAuthnClient(authUsername, authPassword, domains, issuer, privateURL, origin)
 	// crash the process if we cannot connect to the authentication service
 	if err != nil {
 		logger.FatalM(err, "failed to initialized authentication service client")
@@ -218,57 +216,8 @@ func NewAuthServiceClient(err error, logger core_logging.ILog) *api.AuthServiceC
 		time.Sleep(1 * time.Second)
 	}
 
-	// check that we can create an account and check we can login throguh cleint
-	id, err := authnClient.ImportAccount("test", "test", false)
-	if err != nil {
-		logger.ErrorM(err, "failed to create account")
-	}
-	logger.InfoM(strconv.Itoa(id))
-
-	// try to now login
-	token, err := authnClient.LoginAccount("test", "test")
-	if err != nil {
-		logger.ErrorM(err, "failed to login account")
-	}
-	logger.InfoM(token)
-
-	// try to validate token
-	tokenId, err := authnClient.SubjectFrom(token)
-	if err != nil {
-		logger.ErrorM(err, "failed to login account")
-	}
-	logger.InfoM(tokenId)
-
-	logger.InfoM("successfullly established connection to authentication service")
-
-	authnHandler := initAuthnHandler(viper.GetString("AUTHN_PRIVATE_BASE_URL"), authSrvPort, duration, authUsername, authPassword, nil, logger)
-	customErr, _ := authnHandler.GetJwtPublicKey()
-	if customErr != nil {
-		logger.ErrorM(customErr.Error, "error occured while initializing authn handler")
-	}
-
-	logger.InfoM("initialized custom authentication service wrapper client")
-
 	// attempt to connect to the authentication service if not then crash process
-	return &api.AuthServiceClientWrapper{
-		Client:  authnClient,
-		Handler: authnHandler,
-	}
-}
-
-// initAuthnHandler initializes connection to custom authentication service wrapper
-func initAuthnHandler(authnUrl, authSrvPort string,
-	timeout time.Duration,
-	username, password string,
-	cb *gobreaker.CircuitBreaker, logger core_logging.ILog) *authentication.Authentication {
-	enableAuth := viper.GetBool("ENABLE_AUTH_SERVICE_PRIVATE_INTEGRATION")
-	origin := viper.GetString("AUTHN_ISSUER")
-
-	// create a connection wrapper to the authentication service
-	auth := authentication.NewAuthenticationService(origin, authnUrl, authSrvPort, enableAuth, timeout,
-		username, password,
-		cb, logger)
-	return auth
+	return authnClient
 }
 
 func initZap(logLevel string) (*zap.Logger, error) {
@@ -362,7 +311,7 @@ func beginStressTest(cpus int, mem int, logger core_logging.ILog) {
 
 // initAuthnClient initializes an instance of the authn client primarily useful in
 // communicating with the authentication service securely
-func initAuthnClient(username, password, audience, issuer, url string) (*core_auth_sdk.Client, error) {
+func initAuthnClient(username, password, audience, issuer, url, origin string) (*core_auth_sdk.Client, error) {
 	// Authentication.
 	return core_auth_sdk.NewClient(core_auth_sdk.Config{
 		// The AUTHN_URL of your Keratin AuthN server. This will be used to verify tokens created by
@@ -383,5 +332,5 @@ func initAuthnClient(username, password, audience, issuer, url string) (*core_au
 		// RECOMMENDED: Send private API calls to AuthN using private network routing. This can be
 		// necessary if your environment has a firewall to limit public endpoints.
 		PrivateBaseURL: url,
-	})
+	},origin)
 }

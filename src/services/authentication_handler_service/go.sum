@@ -55,6 +55,8 @@ github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-2020120302
 github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201203024139-495bd9831233/go.mod h1:Fh8gXK7VWyCwzUIzFVGcI5ETW5W/uslvk6IJNnwVROc=
 github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk v0.0.0-20201203024139-495bd9831233 h1:C0vpC3Kfku6540rl2nYoxpe0HBXqlpNPizev4xuPFBk=
 github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk v0.0.0-20201203024139-495bd9831233/go.mod h1:KkNZX1GDCaRazTNcS3s53EXNXBm8SCi0SugSKulHtcs=
+github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk v0.0.0-20201203033108-1d6c364361ad h1:6v9ja9a+xbjZe1vkfxrET9H862AIX6WmMJVqm1UXLus=
+github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk v0.0.0-20201203033108-1d6c364361ad/go.mod h1:KkNZX1GDCaRazTNcS3s53EXNXBm8SCi0SugSKulHtcs=
 github.com/BlackspaceInc/common v1.0.1/go.mod h1:bnMwAz2Rq97hxV//CWtn8BSU8cXYzNqbo2hC8NDdyBE=
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=

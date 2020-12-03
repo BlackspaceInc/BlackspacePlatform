@@ -48,6 +48,10 @@ type UnLockAccountRequest struct {
 // 500: internalServerError
 // unlocks an by account id
 func (s *Server) unlockAccountHandler(w http.ResponseWriter, r *http.Request) {
+	if s.IsNotAuthenticated(w, r) {
+		return
+	}
+
 	var unlockAccountResp UnLockAccountResponse
 	// we extract the user id from the url initially
 	authnID, err := s.ExtractIdOperationAndInstrument(r, constants.UNLOCK_ACCOUNT)

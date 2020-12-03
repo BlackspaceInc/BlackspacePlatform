@@ -8,6 +8,10 @@ import (
 )
 
 func (s *Server) logoutHandler(w http.ResponseWriter, r *http.Request) {
+	if s.IsNotAuthenticated(w, r) {
+		return
+	}
+
 	// hit authn log out endpoint and return
 	// we delete the session stored in the authentication service redis store
 	var (

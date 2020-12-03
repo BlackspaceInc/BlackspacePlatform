@@ -6,15 +6,14 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/keratin/authn-go/authn"
+	core_auth_sdk "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/middleware"
 )
 
 // GetAccountResponse is struct providing errors tied to get account operations
 type GetAccountResponse struct {
-	Account *authn.Account `json:"account"`
+	Account *core_auth_sdk.Account `json:"account"`
 	Error   error          `json:"error"`
 }
 
@@ -53,16 +52,16 @@ type GetAccountRequest struct {
 // 500: internalServerError
 // deletes an by account id
 func (s *Server) getAccountHandler(w http.ResponseWriter, r *http.Request) {
+	if s.IsNotAuthenticated(w, r) {
+		return
+	}
+
 	// we extract the user id from the url initially
 	authnID, err := s.ExtractIdOperationAndInstrument(r, constants.GET_ACCOUNT)
 	if err != nil {
 		s.logger.ErrorM(err, "failed to parse account id from url")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
-	}
-
-	if !middleware.IsAuthenticated(r.Context()){
-		s.logger.InfoM("user not authenticated")
 	}
 
 	var (
@@ -77,14 +76,16 @@ func (s *Server) getAccountHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		s.logger.ErrorM(err, "failed to get account")
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
-	account, ok := result.(*authn.Account)
+	account, ok := result.(*core_auth_sdk.Account)
 	if !ok {
 		s.metrics.CastingOperationFailureCounter.WithLabelValues(constants.GET_ACCOUNT)
 		err  := errors.New("failed to cast response to account object")
 		s.logger.ErrorM(err, "casting failure")
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 
 	var getAccountResp = GetAccountResponse{

@@ -5,7 +5,7 @@ go 1.15
 require (
 	github.com/BlackspaceInc/Backend/user-management-service v0.0.0-20200610031650-f616806382e1
 	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201203024139-495bd9831233
-	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk v0.0.0-20201203024139-495bd9831233
+	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk v0.0.0-20201203033108-1d6c364361ad
 	github.com/BlackspaceInc/common v1.0.1 // indirect
 	github.com/DataDog/datadog-go v4.2.0+incompatible // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
@@ -55,4 +55,5 @@ require (
 	gopkg.in/olivere/elastic.v3 v3.0.75 // indirect
 	gopkg.in/olivere/elastic.v5 v5.0.86 // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1
+	k8s.io/apimachinery v0.19.4
 )

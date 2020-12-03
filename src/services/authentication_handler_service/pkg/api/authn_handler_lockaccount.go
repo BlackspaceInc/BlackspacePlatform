@@ -48,6 +48,10 @@ type LockAccountRequest struct {
 // 500: internalServerError
 // locks an account by account id
 func (s *Server) lockAccountHandler(w http.ResponseWriter, r *http.Request) {
+	if s.IsNotAuthenticated(w, r) {
+		return
+	}
+
 	var lockAccountResp LockAccountResponse
 	// we extract the user id from the url initially
 	authnID, err := s.ExtractIdOperationAndInstrument(r, constants.LOCK_ACCOUNT)
