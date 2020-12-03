@@ -17,14 +17,11 @@ require (
 	github.com/mwitkow/go-proto-validators v0.3.2
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/opentracing/opentracing-go v1.2.0
-	github.com/openzipkin/zipkin-go v0.2.5 // indirect
-	github.com/pelletier/go-toml v1.7.0 // indirect
 	github.com/prometheus/client_golang v1.8.0
 	github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/common v0.15.0
 	github.com/prometheus/procfs v0.2.0
-	github.com/sirupsen/logrus v1.7.0
-	github.com/smartystreets/assertions v1.0.1 // indirect
+	github.com/sirupsen/logrus v1.6.0
 	github.com/sony/gobreaker v0.4.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.7.1
@@ -36,6 +33,8 @@ require (
 	golang.org/x/sys v0.0.0-20201119102817-f84b799fce68 // indirect
 	golang.org/x/tools v0.0.0-20201022035929-9cf592e881e9 // indirect
 	google.golang.org/genproto v0.0.0-20201119123407-9b1e624d6bc4
+	google.golang.org/grpc v1.30.0 // indirect
+	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	k8s.io/apimachinery v0.19.4
 	k8s.io/component-base v0.19.4

@@ -19,8 +19,6 @@ import (
 	"math"
 	"net/url"
 	"time"
-
-	"github.com/prometheus/client_golang/prometheus"
 )
 
 const (
@@ -109,7 +107,7 @@ var (
 		},
 	)
 
-	rest_metrics = []prometheus.Collector {
+	rest_metrics = []Registerable{
 		requestLatency,requestResult,rateLimiterLatency,
 	}
 )

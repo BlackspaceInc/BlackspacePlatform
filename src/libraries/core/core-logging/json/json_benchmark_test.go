@@ -18,9 +18,12 @@ package logs
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"testing"
 	"time"
+
+	"go.uber.org/zap"
 )
 
 var record = struct {
@@ -84,6 +87,20 @@ func BenchmarkInfoLoggerInfo(b *testing.B) {
 	})
 }
 
+func BenchmarkInfoMLoggerInfo(b *testing.B) {
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			jLogger := NewJSONLogger(nil)
+			jLogger.InfoM("test",
+				zap.String("test0", "response0"),
+				zap.String("test1", "response1"),
+				zap.String("test2", "response2"),
+				zap.String("test3", "response3"),
+			)
+		}
+	})
+}
+
 func BenchmarkInfoLoggerInfoStandardJSON(b *testing.B) {
 	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
@@ -121,6 +138,16 @@ func BenchmarkZapLoggerError(b *testing.B) {
 		}
 	})
 }
+
+func BenchmarkErrorMLoggerInfo(b *testing.B) {
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			jLogger := NewJSONLogger(nil)
+			jLogger.ErrorM(errors.New("test0"), "error occured")
+		}
+	})
+}
+
 func BenchmarkZapLoggerErrorStandardJSON(b *testing.B) {
 	b.ResetTimer()
 	b.RunParallel(func(pb *testing.PB) {
@@ -157,3 +184,4 @@ func BenchmarkZapLoggerV(b *testing.B) {
 		}
 	})
 }
+

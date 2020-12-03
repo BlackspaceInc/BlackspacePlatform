@@ -49,8 +49,8 @@ func NewCoreMetricsEngineInstance(namespace string /* more specific to the servi
 		coreMetricsEngine.RegisterCustomMetric(database_metrics...)
 	}
 
-	coreMetricsEngine.RegisterCustomMetric(queue_metrics...)
-	coreMetricsEngine.RegisterCustomMetric(rest_metrics...)
+	coreMetricsEngine.RegisterMetric(queue_metrics...)
+	coreMetricsEngine.RegisterMetric(rest_metrics...)
 	return coreMetricsEngine
 }
 
