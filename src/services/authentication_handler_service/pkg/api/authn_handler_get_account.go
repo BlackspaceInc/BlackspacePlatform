@@ -9,6 +9,7 @@ import (
 	"github.com/keratin/authn-go/authn"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/middleware"
 )
 
 // GetAccountResponse is struct providing errors tied to get account operations
@@ -58,6 +59,10 @@ func (s *Server) getAccountHandler(w http.ResponseWriter, r *http.Request) {
 		s.logger.ErrorM(err, "failed to parse account id from url")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
+	}
+
+	if !middleware.IsAuthenticated(r.Context()){
+		s.logger.InfoM("user not authenticated")
 	}
 
 	var (

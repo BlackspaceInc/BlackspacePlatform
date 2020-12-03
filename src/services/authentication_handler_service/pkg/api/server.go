@@ -188,6 +188,9 @@ func (s *Server) registerMiddlewares() {
 	s.router.Use(httpLogger.Handler)
 	s.router.Use(versionMiddleware)
 	s.router.Use(middleware.CorsMiddleware)
+	authMw := middleware.NewAuthnMw(s.authnClient.Client, s.logger)
+	s.router.Use(authMw.AuthenticationMiddleware)
+
 	if s.config.RandomDelay {
 		randomDelayer := NewRandomDelayMiddleware(s.config.RandomDelayMin, s.config.RandomDelayMax, s.config.RandomDelayUnit)
 		s.router.Use(randomDelayer.Handler)

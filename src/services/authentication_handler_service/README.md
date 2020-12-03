@@ -112,6 +112,9 @@ docker run -dp 9898:9898 github.com/blackspaceInc/BlackspacePlatform/authenticat
 #### Technical
 - [ ] pull authn client library and enhance it with the custom impl. in the authentication folder
 - [ ] emit metrics for this service and fix errors
+    - [X] emit metrics at the api level
+    - [ ] emit metrics at the configuration level (startup)
+- [ ] ensure some api are auth protected (use jwt)
 - [ ] implement circuit breaker [link](https://github.com/cep21/circuit) in core library
 - [ ] implement retryable operation in core library [link](https://github.com/avast/retry-go)
 - [ ] implement distributed request tracing
