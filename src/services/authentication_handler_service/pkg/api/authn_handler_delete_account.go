@@ -62,7 +62,7 @@ func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 		begin = time.Now()
 		took  = time.Since(begin)
 		f = func() error {
-			return s.authnClient.Client.ArchiveAccount(strconv.Itoa(int(authnID)))
+			return s.authnClient.ArchiveAccount(strconv.Itoa(int(authnID)))
 		}
 	)
 

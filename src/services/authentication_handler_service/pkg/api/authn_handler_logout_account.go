@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
 
 func (s *Server) logoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -15,11 +14,9 @@ func (s *Server) logoutHandler(w http.ResponseWriter, r *http.Request) {
 		begin = time.Now()
 		took  = time.Since(begin)
 		f = func() error {
-			if authErr := s.authnClient.Handler.LogOut(); authErr != nil {
-				s.logger.Info("status of logout", "err", authErr)
-				if _, err := helper.ProcessAggregatedErrors(w, authErr); err != nil {
-					return err
-				}
+			if err := s.authnClient.LogOutAccount(); err != nil {
+				s.logger.ErrorM(err,"status of logout")
+				return err
 			}
 			return nil
 		}

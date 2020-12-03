@@ -100,7 +100,7 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 		begin = time.Now()
 		took  = time.Since(begin)
 		f = func() (interface{}, error){
-			return  s.authnClient.Client.ImportAccount(createAccountReq.Email, createAccountReq.Password, false)
+			return  s.authnClient.ImportAccount(createAccountReq.Email, createAccountReq.Password, false)
 		}
 	)
 
@@ -127,7 +127,7 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 			startTime := time.Now()
 			elapsedTime  := time.Since(startTime)
 			op := func() error {
-				return s.authnClient.Client.ArchiveAccount(strconv.Itoa(int(authnID)))
+				return s.authnClient.ArchiveAccount(strconv.Itoa(int(authnID)))
 			}
 
 			// TODO: perform this operation in a circuit breaker, and trace this

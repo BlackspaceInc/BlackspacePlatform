@@ -100,9 +100,9 @@ func (s *Server) loginAccountHandler(w http.ResponseWriter, r *http.Request) {
 		startTime = time.Now()
 		elapsedTime  = time.Since(startTime)
 		op = func() (interface{},error) {
-			token, aggregatedErr :=  s.authnClient.Handler.Login(loginAccountReq.Email, loginAccountReq.Password)
-			s.logger.Info("status of login", "err", aggregatedErr)
-			if _, err := helper.ProcessAggregatedErrors(w, aggregatedErr); err != nil {
+			token, err :=  s.authnClient.LoginAccount(loginAccountReq.Email, loginAccountReq.Password)
+			if err != nil {
+				s.logger.ErrorM(err,"status of login")
 				return token, err
 			}
 			return token, nil

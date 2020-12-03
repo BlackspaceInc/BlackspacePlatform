@@ -61,7 +61,7 @@ func (s *Server) unlockAccountHandler(w http.ResponseWriter, r *http.Request) {
 		begin = time.Now()
 		took  = time.Since(begin)
 		f = func() error {
-			return s.authnClient.Client.UnlockAccount(strconv.Itoa(int(authnID)))
+			return s.authnClient.UnlockAccount(strconv.Itoa(int(authnID)))
 		}
 	)
 

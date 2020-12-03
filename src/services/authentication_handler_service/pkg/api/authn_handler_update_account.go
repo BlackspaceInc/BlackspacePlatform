@@ -114,7 +114,7 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 		begin = time.Now()
 		took  = time.Since(begin)
 		f     = func() error {
-			return s.authnClient.Client.Update(strconv.Itoa(int(authnID)), updateAccountReq.Email)
+			return s.authnClient.Update(strconv.Itoa(int(authnID)), updateAccountReq.Email)
 		}
 	)
 

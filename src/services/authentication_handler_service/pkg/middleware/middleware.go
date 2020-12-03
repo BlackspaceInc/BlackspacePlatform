@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	core_auth_sdk "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk"
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	"github.com/keratin/authn-go/authn"
 )
@@ -16,12 +17,12 @@ type contextKey struct {
 }
 
 type AuthnMW struct  {
-	client *authn.Client
+	client *core_auth_sdk.Client
 	logger      core_logging.ILog
 
 }
 
-func NewAuthnMw(c *authn.Client, log core_logging.ILog) *AuthnMW {
+func NewAuthnMw(c *core_auth_sdk.Client, log core_logging.ILog) *AuthnMW {
 	return &AuthnMW{client: c, logger: log}
 }
 

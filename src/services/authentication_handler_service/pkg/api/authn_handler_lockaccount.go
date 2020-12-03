@@ -62,7 +62,7 @@ func (s *Server) lockAccountHandler(w http.ResponseWriter, r *http.Request) {
 		begin = time.Now()
 		took  = time.Since(begin)
 		f = func() error {
-			return s.authnClient.Client.LockAccount(strconv.Itoa(int(authnID)))
+			return s.authnClient.LockAccount(strconv.Itoa(int(authnID)))
 		}
 	)
 

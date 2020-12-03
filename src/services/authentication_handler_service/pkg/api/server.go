@@ -43,10 +43,10 @@ import (
 	"sync/atomic"
 	"time"
 
+	core_auth_sdk "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk"
 	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
 	"github.com/gomodule/redigo/redis"
 	"github.com/gorilla/mux"
-	"github.com/keratin/authn-go/authn"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/viper"
@@ -85,7 +85,7 @@ var (
 )
 
 type AuthServiceClientWrapper struct {
-	Client  *authn.Client
+	Client  *core_auth_sdk.Client
 	Handler *authentication.Authentication
 }
 
@@ -122,13 +122,13 @@ type Server struct {
 	config      *Config
 	pool        *redis.Pool
 	handler     http.Handler
-	authnClient *AuthServiceClientWrapper
+	authnClient *core_auth_sdk.Client
 	logger      core_logging.ILog
 	metrics     *metrics.CoreMetrics
 	metricsEngine *core_metrics.CoreMetricsEngine
 }
 
-func NewServer(config *Config, client *AuthServiceClientWrapper, logging core_logging.ILog, serviceMetrics *metrics.CoreMetrics,
+func NewServer(config *Config, client *core_auth_sdk.Client, logging core_logging.ILog, serviceMetrics *metrics.CoreMetrics,
 	metricsEngineConf *core_metrics.CoreMetricsEngine) (*Server,
 	error) {
 	srv := &Server{
@@ -188,7 +188,7 @@ func (s *Server) registerMiddlewares() {
 	s.router.Use(httpLogger.Handler)
 	s.router.Use(versionMiddleware)
 	s.router.Use(middleware.CorsMiddleware)
-	authMw := middleware.NewAuthnMw(s.authnClient.Client, s.logger)
+	authMw := middleware.NewAuthnMw(s.authnClient, s.logger)
 	s.router.Use(authMw.AuthenticationMiddleware)
 
 	if s.config.RandomDelay {

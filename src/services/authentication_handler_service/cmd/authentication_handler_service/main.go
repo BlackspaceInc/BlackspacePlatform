@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
+	core_auth_sdk "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk"
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
-	"github.com/keratin/authn-go/authn"
 	"github.com/sony/gobreaker"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -177,7 +177,7 @@ func main() {
 		zap.String("port", srvCfg.Port))
 
 	// start HTTP server
-	srv, _ := api.NewServer(&srvCfg, authnServiceClient, logger, serviceMetrics.MicroServiceMetrics, serviceMetrics.Engine)
+	srv, _ := api.NewServer(&srvCfg, authnServiceClient.Client, logger, serviceMetrics.MicroServiceMetrics, serviceMetrics.Engine)
 	stopCh := signals.SetupSignalHandler()
 	srv.ListenAndServe(stopCh)
 }
@@ -210,11 +210,34 @@ func NewAuthServiceClient(err error, logger core_logging.ILog) *api.AuthServiceC
 			} else {
 				logger.FatalM(err, "failed to connect to authentication service")
 			}
+			retries += 1
+		} else {
+			retries = 4
 		}
 
-		retries += 1
 		time.Sleep(1 * time.Second)
 	}
+
+	// check that we can create an account and check we can login throguh cleint
+	id, err := authnClient.ImportAccount("test", "test", false)
+	if err != nil {
+		logger.ErrorM(err, "failed to create account")
+	}
+	logger.InfoM(strconv.Itoa(id))
+
+	// try to now login
+	token, err := authnClient.LoginAccount("test", "test")
+	if err != nil {
+		logger.ErrorM(err, "failed to login account")
+	}
+	logger.InfoM(token)
+
+	// try to validate token
+	tokenId, err := authnClient.SubjectFrom(token)
+	if err != nil {
+		logger.ErrorM(err, "failed to login account")
+	}
+	logger.InfoM(tokenId)
 
 	logger.InfoM("successfullly established connection to authentication service")
 
@@ -339,9 +362,9 @@ func beginStressTest(cpus int, mem int, logger core_logging.ILog) {
 
 // initAuthnClient initializes an instance of the authn client primarily useful in
 // communicating with the authentication service securely
-func initAuthnClient(username, password, audience, issuer, url string) (*authn.Client, error) {
+func initAuthnClient(username, password, audience, issuer, url string) (*core_auth_sdk.Client, error) {
 	// Authentication.
-	return authn.NewClient(authn.Config{
+	return core_auth_sdk.NewClient(core_auth_sdk.Config{
 		// The AUTHN_URL of your Keratin AuthN server. This will be used to verify tokens created by
 		// AuthN, and will also be used for API calls unless PrivateBaseURL is also set.
 		Issuer: issuer,

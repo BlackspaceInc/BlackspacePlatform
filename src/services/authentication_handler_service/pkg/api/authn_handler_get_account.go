@@ -69,7 +69,7 @@ func (s *Server) getAccountHandler(w http.ResponseWriter, r *http.Request) {
 		begin = time.Now()
 		took  = time.Since(begin)
 		f = func() (interface{}, error){
-			return s.authnClient.Client.GetAccount(strconv.Itoa(int(authnID)))
+			return s.authnClient.GetAccount(strconv.Itoa(int(authnID)))
 		}
 	)
 
