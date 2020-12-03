@@ -1,8 +1,9 @@
-# Keratin AuthN
+# Blackspace Auth-SDK
 
 Keratin AuthN is an authentication service that keeps you in control of the experience without forcing you to be an expert in web security.
 
-This library provides utilities to help integrate with a Go application. You will also need a client for your frontend, such as [https://github.com/keratin/authn-js](https://github.com/keratin/authn-js).
+This library provides utilities to help integrate with a Go application. You may also need a client for your frontend, such as [https://github.com
+/keratin/authn-js](https://github.com/keratin/authn-js).
 
 [![Godoc](https://godoc.org/github.com/keratin/authn-go/authn?status.svg)](https://godoc.org/github.com/keratin/authn-go/authn)
 [![Gitter](https://badges.gitter.im/keratin/authn-server.svg)](https://gitter.im/keratin/authn-server?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
@@ -12,7 +13,7 @@ This library provides utilities to help integrate with a Go application. You wil
 ## Installation
 
 ```bash
-go get github.com/keratin/authn-go/authn
+go get github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk
 ```
 
 ## Example
@@ -22,14 +23,14 @@ package main
 
 import (
   "fmt"
-  "github.com/keratin/authn-go/authn"
+  sdk "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk"
 )
 
 var jwt1 = `<your test jwt here>`
 var accountID = `<test ID>`
 
 func main() {
-  err := authn.NewClient(authn.Config{
+  err := sdk.NewClient(sdk.Config{
     // The AUTHN_URL of your Keratin AuthN server. This will be used to verify tokens created by
     // AuthN, and will also be used for API calls unless PrivateBaseURL is also set.
     Issuer:         "https://issuer.example.com",
@@ -53,7 +54,7 @@ func main() {
 
   // SubjectFrom will return an AuthN account ID that you can use as to identify the user, if and
   // only if the token is valid.
-  sub, err := authn.SubjectFrom(jwt1)
+  sub, err := sdk.SubjectFrom(jwt1)
   fmt.Println(sub)
   fmt.Println(err)
 
@@ -61,7 +62,7 @@ func main() {
   // they signed up. That account will be unable to log in until it is unlocked.
   //
   // See the godocs for all actions that you can take on an account.
-  err = authn.LockAccount(accountID)
+  err = sdk.LockAccount(accountID)
   fmt.Println(err)
 }
 ```
