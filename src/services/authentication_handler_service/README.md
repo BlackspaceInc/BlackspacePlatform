@@ -113,21 +113,19 @@ docker run -dp 9898:9898 github.com/blackspaceInc/BlackspacePlatform/authenticat
 - [X] pull authn client library and enhance it with the custom impl. in the authentication folder
 - [X] emit metrics for this service and fix errors
 - [X] ensure some api are auth protected (use jwt)
-- [ ] implement circuit breaker [link](https://github.com/cep21/circuit) in core library
-- [ ] implement retryable operation in core library & for all remote operations [link](https://github.com/avast/retry-go)
-- [ ] implement distributed request tracing
+- [ ] __ implement circuit breaker [link](https://github.com/cep21/circuit) in core library & wrap around all remote calls
+- [ ] __ implement retryable operation in core library & for all remote operations [link](https://github.com/avast/retry-go)
+- [ ] __ implement distributed request tracing & wrap around all remote calls
 - [ ] define graffana views, circuit breaker views, traces, ... etc to visualize metrics, circuit breaker, and traces and ensure
       template service has this implementation
-- [ ] implement unit tests for all api's and new authn library client
-- [ ] implement load testing for service and automate this flow
-- [ ] configure github actions to run all service tests, run load tests, and end to end tests via docker end to end setup
+- [ ] __ implement unit tests for all api's and new authn library client
+- [ ] __ implement load testing for service and automate this flow
+- [ ] __ configure github actions to run all service tests, run load tests, and end to end tests via docker end to end setup
 - [ ] define minikube and docker-compose local test flows and test local deployments
-- [ ] spec out user details and company details data for the registration flow
-    - [ ] model after square space account registration, square business account registration, shopify account registration, quora and pinterest
+- [ ] __ spec out user details and company details data for the registration flow
+    - [X] model after square space account registration, square business account registration, shopify account registration, quora and pinterest
      account registration
-- [ ] spec out how third party business details table will look and pull from yelp (third party businesses)
-- [ ] Build user details service, business details service (first party and 3rd party businesses), api gateway --> complete registration and login
- from backend context
+- [ ] ___ implement graphql api gateway
 - [ ] Implement linkerd side care deployment config (k8 and docker-compose) [link](https://github.com/LensPlatform/linkerd-examples)
 
 #### Non Technical

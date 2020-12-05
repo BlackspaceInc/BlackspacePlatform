@@ -13,6 +13,7 @@ import (
 	core_auth_sdk "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk"
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
+
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
@@ -26,6 +27,9 @@ import (
 )
 
 func main() {
+	// TODO: Implement Distributed Tracing
+	// 	https://github.com/jaegertracing/jaeger/tree/0cbd8c896d5f8ca8dc9eb19ea0faf469b9640925/examples
+
 	// flags definition
 	fs := pflag.NewFlagSet("default", pflag.ContinueOnError)
 	fs.Int("port", 9898, "HTTP port")
@@ -72,6 +76,7 @@ func main() {
 	fs.Bool("ENABLE_AUTH_SERVICE_PRIVATE_INTEGRATION", true, "enables communication with authentication service")
 	// logging specific configurations
 	fs.String("SERVICE_NAME", "authentication_handler_service", "service name")
+	fs.String("ZIPKIN", "http://localhost:9792",  "Zipkin address")
 
 	versionFlag := fs.BoolP("version", "v", false, "get version number")
 
