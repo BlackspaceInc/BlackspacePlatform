@@ -17,10 +17,15 @@ limitations under the License.
 package logs
 
 import (
+	"context"
 	"os"
 	"time"
 
 	"github.com/go-logr/logr"
+	"github.com/opentracing/opentracing-go"
+	tag "github.com/opentracing/opentracing-go/ext"
+	"github.com/opentracing/opentracing-go/log"
+	"github.com/uber/jaeger-client-go"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -31,6 +36,7 @@ type ILog interface {
 	InfoM(msg string, zapKeysAndVals ...zap.Field)
 	ErrorM(err error, msg string)
 	FatalM(err error, msg string)
+	For(ctx context.Context) ILog
 }
 
 var (
@@ -39,6 +45,13 @@ var (
 
 	// timeNow stubbed out for testing
 	timeNow = time.Now
+
+	// witholds a handle on a trancing object with which the library can log traces
+	Span opentracing.Span
+)
+
+const (
+	CORE_LOGGER string = "CORE_LOGGER"
 )
 
 // zapLogger is a logr.Logger that uses Zap to record log.
@@ -47,6 +60,8 @@ type zapLogger struct {
 	// deals with our desire to have multiple verbosity levels.
 	l   *zap.Logger
 	lvl int
+	span       opentracing.Span
+	spanFields []zapcore.Field
 }
 
 // implement logr.Logger
@@ -65,6 +80,7 @@ func (l *zapLogger) InfoM(msg string, zapKeysAndVals ...zap.Field) {
 	}
 	checkedEntry := l.l.Core().Check(entry, nil)
 	checkedEntry.Write(zapKeysAndVals...)
+	l.logToSpan("info", msg, zapKeysAndVals...)
 }
 
 // Info write message to error level log
@@ -75,6 +91,7 @@ func (l *zapLogger) Info(msg string, keysAndVals ...interface{}) {
 	}
 	checkedEntry := l.l.Core().Check(entry, nil)
 	checkedEntry.Write(l.handleFields(keysAndVals)...)
+	l.logToSpan("info", msg, l.handleFields(keysAndVals)...)
 }
 
 // dPanic write message to DPanicLevel level log
@@ -88,6 +105,7 @@ func (l *zapLogger) dPanic(msg string) {
 	}
 	checkedEntry := l.l.Core().Check(entry, nil)
 	checkedEntry.Write(zap.Int("v", l.lvl))
+	l.logToSpan("panic", msg)
 }
 
 // handleFields converts a bunch of arbitrary key-value pairs into Zap fields.  It takes
@@ -138,6 +156,7 @@ func (l *zapLogger) Error(err error, msg string, keysAndVals ...interface{}) {
 	}
 	checkedEntry := l.l.Core().Check(entry, nil)
 	checkedEntry.Write(l.handleFields(keysAndVals, handleError(err))...)
+	l.logToSpan("error", msg, l.handleFields(keysAndVals)...)
 }
 
 // ErrorM writes zap  log message to error level
@@ -147,8 +166,10 @@ func (l *zapLogger) ErrorM(err error, msg string) {
 		Time:    timeNow(),
 		Message: msg,
 	}
+
 	checkedEntry := l.l.Core().Check(entry, nil)
 	checkedEntry.Write(handleError(err))
+	l.logToSpan("error", msg)
 }
 
 // FatalM writes zap  log message to error level and calls os.exit(255)
@@ -158,17 +179,29 @@ func (l *zapLogger) FatalM(err error, msg string) {
 		Time:    timeNow(),
 		Message: msg,
 	}
+
 	checkedEntry := l.l.Core().Check(entry, nil)
 	checkedEntry.Write(handleError(err))
+	l.logToSpan("fatal", msg)
+	tag.Error.Set(l.span, true)
+
 	os.Exit(255)
 }
 
 // V return info logr.Logger  with specified level
 func (l *zapLogger) V(level int) logr.Logger {
+	opentracing.SetGlobalTracer(opentracing.GlobalTracer())
 	return &zapLogger{
 		lvl: l.lvl + level,
 		l:   l.l,
+		span: opentracing.StartSpan(CORE_LOGGER),
 	}
+}
+
+// With creates a child logger, and optionally adds some context fields to that logger.
+func (l *zapLogger) WithSpanFields(fields ...zapcore.Field) *zap.Logger {
+	l.l = l.l.With(fields...)
+	return l.l
 }
 
 // WithValues return logr.Logger with some keys And Values
@@ -183,6 +216,38 @@ func (l *zapLogger) WithName(name string) logr.Logger {
 	return l
 }
 
+// With creates a child logger, and optionally adds some context fields to that logger.
+func (l *zapLogger) With(fields ...zapcore.Field) ILog {
+	return &zapLogger{l: l.WithSpanFields(fields...), span: l.span, spanFields: l.spanFields}
+}
+
+func (l *zapLogger) For(ctx context.Context) ILog {
+	if span := opentracing.SpanFromContext(ctx); span != nil {
+		l.span = span
+		if jaegerCtx, ok := span.Context().(jaeger.SpanContext); ok {
+			l.spanFields = []zapcore.Field{
+				zap.String("trace_id", jaegerCtx.TraceID().String()),
+				zap.String("span_id", jaegerCtx.SpanID().String()),
+			}
+		}
+
+		return l
+	}
+	return l
+}
+
+func (l *zapLogger) logToSpan(level string, msg string, fields ...zapcore.Field) {
+	// TODO rather than always converting the fields, we could wrap them into a lazy logger
+	fa := fieldAdapter(make([]log.Field, 0, 2+len(fields)))
+	fa = append(fa, log.String("event", msg))
+	fa = append(fa, log.String("level", level))
+	for _, field := range fields {
+		field.AddTo(&fa)
+	}
+	l.span.LogFields(fa...)
+}
+
+
 // encoderConfig config zap encodetime format
 var encoderConfig = zapcore.EncoderConfig{
 	MessageKey: "msg",
@@ -191,8 +256,8 @@ var encoderConfig = zapcore.EncoderConfig{
 	EncodeTime: zapcore.EpochMillisTimeEncoder,
 }
 
-// NewJSONLogger creates a new json logr.Logger using the given Zap Logger to log.
-func NewJSONLogger(w zapcore.WriteSyncer) ILog {
+// NewJSONLogger creates a new json logging object using the given Zap Logger to log.
+func NewJSONLogger(w zapcore.WriteSyncer, span opentracing.Span) ILog {
 	l, _ := zap.NewProduction()
 	if w == nil {
 		w = os.Stdout
@@ -202,8 +267,14 @@ func NewJSONLogger(w zapcore.WriteSyncer) ILog {
 			func(zapcore.Core) zapcore.Core {
 				return zapcore.NewCore(zapcore.NewJSONEncoder(encoderConfig), zapcore.AddSync(w), zapcore.DebugLevel)
 			}))
+
+	if span == nil {
+		opentracing.SetGlobalTracer(opentracing.GlobalTracer())
+		span = opentracing.StartSpan(CORE_LOGGER)
+	}
 	return &zapLogger{
 		l: log,
+		span: span,
 	}
 }
 
@@ -212,6 +283,5 @@ func handleError(err error) zap.Field {
 }
 
 func init() {
-	JSONLogger = NewJSONLogger(nil)
+	JSONLogger = NewJSONLogger(nil, nil)
 }
-
