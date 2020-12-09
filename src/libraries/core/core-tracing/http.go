@@ -8,18 +8,17 @@ import (
 	"net/http"
 
 	"github.com/opentracing-contrib/go-stdlib/nethttp"
-	"github.com/opentracing/opentracing-go"
 )
 
 // HTTPClient wraps an http.Client with tracing instrumentation.
 type HTTPClient struct {
-	Tracer *opentracing.Tracer
+	TracerEngine *TracingEngine
 	Client *http.Client
 }
 
-func NewHTTPClient(tracer *opentracing.Tracer) *HTTPClient {
+func NewHTTPClient(tracer *TracingEngine) *HTTPClient {
 	return &HTTPClient{
-		Tracer: tracer,
+		TracerEngine: tracer,
 		Client: http.DefaultClient,
 	}
 }
@@ -33,7 +32,7 @@ func (c *HTTPClient) GetJSON(ctx context.Context, endpoint string, url string, o
 	}
 
 	req = req.WithContext(ctx)
-	req, ht := nethttp.TraceRequest(*c.Tracer, req, nethttp.OperationName("HTTP GET: "+endpoint))
+	req, ht := nethttp.TraceRequest(c.TracerEngine.Tracer, req, nethttp.OperationName("HTTP GET: "+endpoint))
 	defer ht.Finish()
 
 	res, err := c.Client.Do(req)
