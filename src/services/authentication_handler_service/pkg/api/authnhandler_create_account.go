@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"time"
 
+	"go.uber.org/zap"
+
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
@@ -81,8 +83,11 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 		createAccountReq CreateAccountRequest
 	)
 
+	ctx := r.Context()
+	s.logger.For(ctx).Info("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
+
 	err := s.DecodeRequestAndInstrument(w, r, &createAccountReq, constants.CREATE_ACCOUNT)
-	if err != nil {
+	if err != nil{
 		s.logger.ErrorM(err, "failed to decode request")
 		helper.ProcessMalformedRequest(w, err)
 		return

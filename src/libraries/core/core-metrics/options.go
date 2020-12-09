@@ -75,4 +75,3 @@ func validateShowHiddenMetricsVersion(currentVersion semver.Version, targetVersi
 
 	return nil
 }
-

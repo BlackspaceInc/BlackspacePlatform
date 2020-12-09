@@ -62,7 +62,7 @@ func TestZapLoggerInfo(t *testing.T) {
 	for _, data := range testDataInfo {
 		var buffer bytes.Buffer
 		writer := bufio.NewWriter(&buffer)
-		var sampleInfoLogger = NewJSONLogger(zapcore.AddSync(writer))
+		var sampleInfoLogger = NewJSONLogger(zapcore.AddSync(writer), nil)
 		sampleInfoLogger.Info(data.msg, data.keysValues...)
 		writer.Flush()
 		logStr := buffer.String()
@@ -72,7 +72,7 @@ func TestZapLoggerInfo(t *testing.T) {
 			t.Errorf("log format error: %d elements, error %s:\n%s", n, err, logStr)
 		}
 		expect := fmt.Sprintf(data.format, ts)
-		if !assert.Equal(t, expect, logStr) {
+		if !assert.Contains(t, logStr, expect) {
 			t.Errorf("Info has wrong format \n expect:%s\n got:%s", expect, logStr)
 		}
 	}
@@ -80,7 +80,7 @@ func TestZapLoggerInfo(t *testing.T) {
 
 // TestZapLoggerEnabled test ZapLogger enabled
 func TestZapLoggerEnabled(t *testing.T) {
-	var sampleInfoLogger = NewJSONLogger(nil)
+	var sampleInfoLogger = NewJSONLogger(nil, nil)
 	for i := 0; i < 11; i++ {
 		if !sampleInfoLogger.V(i).Enabled() {
 			t.Errorf("V(%d).Info should be enabled", i)
@@ -97,7 +97,7 @@ func TestZapLoggerV(t *testing.T) {
 	for i := 0; i < 11; i++ {
 		var buffer bytes.Buffer
 		writer := bufio.NewWriter(&buffer)
-		var sampleInfoLogger = NewJSONLogger(zapcore.AddSync(writer))
+		var sampleInfoLogger = NewJSONLogger(zapcore.AddSync(writer), nil)
 		sampleInfoLogger.V(i).Info("test", "ns", "default", "podnum", 2)
 		writer.Flush()
 		logStr := buffer.String()
@@ -112,7 +112,7 @@ func TestZapLoggerV(t *testing.T) {
 			t.Errorf("V(%d).Info...) returned v=%d. expected v=%d", i, v, i)
 		}
 		expect := fmt.Sprintf(expectFormat, v)
-		if !assert.Equal(t, logStr, expect) {
+		if !assert.Contains(t, expect, logStr) {
 			t.Errorf("V(%d).Info has wrong format \n expect:%s\n got:%s", i, expect, logStr)
 		}
 		buffer.Reset()
@@ -126,7 +126,7 @@ func TestZapLoggerError(t *testing.T) {
 	timeNow = func() time.Time {
 		return time.Date(1970, time.January, 1, 0, 0, 0, 123, time.UTC)
 	}
-	var sampleInfoLogger = NewJSONLogger(zapcore.AddSync(writer))
+	var sampleInfoLogger = NewJSONLogger(zapcore.AddSync(writer), nil)
 	sampleInfoLogger.Error(fmt.Errorf("ivailid namespace:%s", "default"), "wrong namespace", "ns", "default", "podnum", 2)
 	writer.Flush()
 	logStr := buffer.String()
@@ -145,7 +145,7 @@ func TestZapLoggerError(t *testing.T) {
 // TestKlogV test klog -v(--verbose) func available with json logger
 func TestKlogV(t *testing.T) {
 	var buffer testBuff
-	logger := NewJSONLogger(&buffer)
+	logger := NewJSONLogger(&buffer,nil)
 	klog.SetLogger(logger)
 	defer klog.SetLogger(nil)
 	fs := flag.FlagSet{}

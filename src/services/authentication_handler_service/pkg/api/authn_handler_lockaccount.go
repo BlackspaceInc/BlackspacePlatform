@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"time"
 
+	"go.uber.org/zap"
+
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
 )
 
@@ -48,6 +50,9 @@ type LockAccountRequest struct {
 // 500: internalServerError
 // locks an account by account id
 func (s *Server) lockAccountHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	s.logger.For(ctx).Info("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
+
 	if s.IsNotAuthenticated(w, r) {
 		return
 	}

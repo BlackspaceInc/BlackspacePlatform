@@ -108,7 +108,7 @@ var (
 	)
 
 	rest_metrics = []Registerable{
-		requestLatency,requestResult,rateLimiterLatency,
+		requestLatency, requestResult, rateLimiterLatency,
 	}
 )
 

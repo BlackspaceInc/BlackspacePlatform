@@ -16,10 +16,9 @@ type contextKey struct {
 	name string
 }
 
-type AuthnMW struct  {
+type AuthnMW struct {
 	client *core_auth_sdk.Client
-	logger      core_logging.ILog
-
+	logger core_logging.ILog
 }
 
 func NewAuthnMw(c *core_auth_sdk.Client, log core_logging.ILog) *AuthnMW {

@@ -6,6 +6,10 @@ import (
 	"strconv"
 	"time"
 
+	utils "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-utilities"
+	"github.com/opentracing/opentracing-go"
+	"go.uber.org/zap"
+
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/middleware"
 )
@@ -50,6 +54,13 @@ type DeleteAccountRequest struct {
 // 500: internalServerError
 // deletes an by account id
 func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	s.logger.For(ctx).Info("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
+
+	// start a span
+	parentSpan := s.tracer.StartSpan("DeleteAccountRequest")
+	defer parentSpan.Finish()
+
 	if s.IsNotAuthenticated(w, r) {
 		return
 	}
@@ -58,9 +69,8 @@ func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 
 	// we extract the user id from the url initially
 	authnID, err := s.ExtractIdOperationAndInstrument(r, constants.DELETE_ACCOUNT)
-	if err != nil {
-		s.logger.ErrorM(err, "failed to parse account id from url")
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if utils.HandleError(w, err, http.StatusInternalServerError) {
+		s.logger.For(ctx).Error(err,"failed to parse account id from url")
 		return
 	}
 
@@ -72,13 +82,16 @@ func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	)
 
+	childRpcSpan := s.tracer.StartSpan("AuthenticationService_Delete_RPC", opentracing.ChildOf(parentSpan.Context()))
+	defer childRpcSpan.Finish()
+
 	// TODO: perform this operation in a circuit breaker, and trace this
-	if err = s.RemoteOperationAndInstrument(f, constants.DELETE_ACCOUNT, &took); err != nil {
-		s.logger.ErrorM(err, "failed to archive created account")
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	if err = s.RemoteOperationAndInstrument(f, constants.DELETE_ACCOUNT, &took); utils.HandleError(w, err, http.StatusInternalServerError) {
+		s.logger.For(ctx).Error(err,"failed to archive created account")
 		return
 	}
 
+	s.logger.For(ctx).Info("Successfully deleted user account", zap.Int("accountID", int(authnID)))
 	deleteAccountResp.Error = err
 	s.JSONResponse(w, r, deleteAccountResp)
 }

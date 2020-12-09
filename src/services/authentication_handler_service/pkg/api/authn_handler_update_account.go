@@ -91,6 +91,9 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	ctx := r.Context()
+	s.logger.For(ctx).Info("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
+
 	authnID, err := s.ExtractIdOperationAndInstrument(r, constants.UPDATE_ACCOUNT)
 	if err != nil {
 		s.logger.ErrorM(err, "failed to parse account id from url")

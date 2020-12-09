@@ -7,6 +7,7 @@ import (
 	"time"
 
 	core_auth_sdk "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk"
+	"go.uber.org/zap"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
 )
@@ -14,7 +15,7 @@ import (
 // GetAccountResponse is struct providing errors tied to get account operations
 type GetAccountResponse struct {
 	Account *core_auth_sdk.Account `json:"account"`
-	Error   error          `json:"error"`
+	Error   error                  `json:"error"`
 }
 
 // Get account by id request
@@ -52,6 +53,9 @@ type GetAccountRequest struct {
 // 500: internalServerError
 // deletes an by account id
 func (s *Server) getAccountHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	s.logger.For(ctx).Info("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
+
 	if s.IsNotAuthenticated(w, r) {
 		return
 	}
@@ -67,7 +71,7 @@ func (s *Server) getAccountHandler(w http.ResponseWriter, r *http.Request) {
 	var (
 		begin = time.Now()
 		took  = time.Since(begin)
-		f = func() (interface{}, error){
+		f     = func() (interface{}, error) {
 			return s.authnClient.GetAccount(strconv.Itoa(int(authnID)))
 		}
 	)
@@ -82,7 +86,7 @@ func (s *Server) getAccountHandler(w http.ResponseWriter, r *http.Request) {
 	account, ok := result.(*core_auth_sdk.Account)
 	if !ok {
 		s.metrics.CastingOperationFailureCounter.WithLabelValues(constants.GET_ACCOUNT)
-		err  := errors.New("failed to cast response to account object")
+		err := errors.New("failed to cast response to account object")
 		s.logger.ErrorM(err, "casting failure")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

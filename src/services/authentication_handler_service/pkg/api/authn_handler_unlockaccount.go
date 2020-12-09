@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"time"
 
+	"go.uber.org/zap"
+
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
 )
 
@@ -51,6 +53,9 @@ func (s *Server) unlockAccountHandler(w http.ResponseWriter, r *http.Request) {
 	if s.IsNotAuthenticated(w, r) {
 		return
 	}
+
+	ctx := r.Context()
+	s.logger.For(ctx).Info("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
 
 	var unlockAccountResp UnLockAccountResponse
 	// we extract the user id from the url initially

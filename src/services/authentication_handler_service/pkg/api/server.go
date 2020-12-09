@@ -47,6 +47,7 @@ import (
 	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
 	"github.com/gomodule/redigo/redis"
 	"github.com/gorilla/mux"
+	"github.com/opentracing/opentracing-go"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/viper"
@@ -112,26 +113,29 @@ type Config struct {
 }
 
 type Server struct {
-	router      *mux.Router
-	config      *Config
-	pool        *redis.Pool
-	handler     http.Handler
-	authnClient *core_auth_sdk.Client
-	logger      core_logging.ILog
-	metrics     *metrics.CoreMetrics
+	router        *mux.Router
+	config        *Config
+	pool          *redis.Pool
+	handler       http.Handler
+	authnClient   *core_auth_sdk.Client
+	logger        core_logging.ILog
+	metrics       *metrics.CoreMetrics
 	metricsEngine *core_metrics.CoreMetricsEngine
+	tracer        opentracing.Tracer
 }
 
-func NewServer(config *Config, client *core_auth_sdk.Client, logging core_logging.ILog, serviceMetrics *metrics.CoreMetrics,
-	metricsEngineConf *core_metrics.CoreMetricsEngine) (*Server,
+func NewServer(config *Config,
+	client *core_auth_sdk.Client, logging core_logging.ILog, serviceMetrics *metrics.CoreMetrics,
+	metricsEngineConf *core_metrics.CoreMetricsEngine, tracer opentracing.Tracer) (*Server,
 	error) {
 	srv := &Server{
-		router:      mux.NewRouter(),
-		config:      config,
-		authnClient: client,
-		logger:      logging,
-		metrics:     serviceMetrics,
+		router:        mux.NewRouter(),
+		config:        config,
+		authnClient:   client,
+		logger:        logging,
+		metrics:       serviceMetrics,
 		metricsEngine: metricsEngineConf,
+		tracer:        tracer,
 	}
 
 	return srv, nil
@@ -150,7 +154,6 @@ func (s *Server) registerHandlers() {
 	s.router.HandleFunc("/readyz/enable", s.enableReadyHandler).Methods("POST")
 	s.router.HandleFunc("/readyz/disable", s.disableReadyHandler).Methods("POST")
 	s.router.HandleFunc("/api/info", s.infoHandler).Methods("GET")
-
 	s.router.HandleFunc("/v1/account/create", s.createAccountHandler).Methods("POST")
 	s.router.HandleFunc("/v1/account/update/{id:[0-9]+}", s.updateAccountHandler).Methods("POST", "PUT")
 	s.router.HandleFunc("/v1/account/delete/{id:[0-9]+}", s.deleteAccountHandler).Methods("DELETE")

@@ -23,7 +23,7 @@ type Client struct {
 }
 
 // NewClient returns an initialized and configured Client.
-func NewClient(config Config) (*Client, error) {
+func NewClient(config Config, origin string) (*Client, error) {
 	var err error
 	config.setDefaults()
 
@@ -31,7 +31,7 @@ func NewClient(config Config) (*Client, error) {
 
 	ac.config = config
 
-	ac.iclient, err = newInternalClient(config.PrivateBaseURL, config.Username, config.Password)
+	ac.iclient, err = newInternalClient(config.PrivateBaseURL, config.Username, config.Password, origin)
 	if err != nil {
 		return nil, err
 	}
@@ -145,8 +145,8 @@ func defaultClient() *Client {
 
 // Configure initializes the default AuthN client with the given config. This is necessary to
 // use lib.SubjectFrom without keeping a reference to your own AuthN client.
-func Configure(config Config) error {
-	client, err := NewClient(config)
+func Configure(config Config, origin string) error {
+	client, err := NewClient(config, origin)
 	if err != nil {
 		return err
 	}

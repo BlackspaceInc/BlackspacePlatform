@@ -62,7 +62,7 @@ var record = struct {
 func BenchmarkInfoLoggerInfo(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			jLogger := NewJSONLogger(nil)
+			jLogger := NewJSONLogger(nil, nil)
 			jLogger.Info("test",
 				"str", "foo",
 				"int64-1", int64(1),
@@ -90,7 +90,7 @@ func BenchmarkInfoLoggerInfo(b *testing.B) {
 func BenchmarkInfoMLoggerInfo(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			jLogger := NewJSONLogger(nil)
+			jLogger := NewJSONLogger(nil, nil)
 			jLogger.InfoM("test",
 				zap.String("test0", "response0"),
 				zap.String("test1", "response1"),
@@ -113,7 +113,7 @@ func BenchmarkInfoLoggerInfoStandardJSON(b *testing.B) {
 func BenchmarkZapLoggerError(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			jLogger := NewJSONLogger(nil)
+			jLogger := NewJSONLogger(nil, nil)
 			jLogger.Error(fmt.Errorf("test for error:%s", "default"),
 				"test",
 				"str", "foo",
@@ -142,7 +142,7 @@ func BenchmarkZapLoggerError(b *testing.B) {
 func BenchmarkErrorMLoggerInfo(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			jLogger := NewJSONLogger(nil)
+			jLogger := NewJSONLogger(nil, nil)
 			jLogger.ErrorM(errors.New("test0"), "error occured")
 		}
 	})
@@ -160,7 +160,7 @@ func BenchmarkZapLoggerErrorStandardJSON(b *testing.B) {
 func BenchmarkZapLoggerV(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			jLogger := NewJSONLogger(nil)
+			jLogger := NewJSONLogger(nil, nil)
 			jLogger.V(1).Info("test",
 				"str", "foo",
 				"int64-1", int64(1),
@@ -184,4 +184,3 @@ func BenchmarkZapLoggerV(b *testing.B) {
 		}
 	})
 }
-

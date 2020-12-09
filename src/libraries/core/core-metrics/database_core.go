@@ -35,7 +35,7 @@ var (
 	DatabaseConnectionsInUse            GaugeFunc
 	DatabaseConnectionsWaitDuration     GaugeFunc
 	DatabaseConnectionsOperationLatency *HistogramVec
-	database_metrics []prometheus.Collector
+	database_metrics                    []prometheus.Collector
 )
 
 func initializeCoreDatabaseCounters(namespace string, db *gorm.DB) {
@@ -111,7 +111,7 @@ func initializeCoreDatabaseCounters(namespace string, db *gorm.DB) {
 	)
 
 	database_metrics = []prometheus.Collector{
-		DatabaseConnectionsInUse, DatabaseConnectionsOperationLatency, DatabaseConnectionsWaitDuration,idleDatabaseConnections,
+		DatabaseConnectionsInUse, DatabaseConnectionsOperationLatency, DatabaseConnectionsWaitDuration, idleDatabaseConnections,
 		openDatabaseConnections,
 	}
 }

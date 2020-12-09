@@ -8,7 +8,8 @@ import (
 	"github.com/uber/jaeger-client-go"
 	"github.com/uber/jaeger-client-go/config"
 )
-func NewTracer(serviceName string) (io.Closer, error){
+
+func NewTracer(serviceName string) (io.Closer, error) {
 	cfg := config.Configuration{
 		Sampler: &config.SamplerConfig{
 			Type:  "const",

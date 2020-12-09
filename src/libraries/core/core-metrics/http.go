@@ -74,4 +74,3 @@ func HandlerWithReset(reg PlatformRegistry, opts HandlerOpts) http.Handler {
 		defaultHandler.ServeHTTP(w, r)
 	})
 }
-

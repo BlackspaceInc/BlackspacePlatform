@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/BlackspaceInc/Backend/user-management-service v0.0.0-20200610031650-f616806382e1
-	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201203024139-495bd9831233
+	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201207000145-7c3fb9b163d5
 	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk v0.0.0-20201203033108-1d6c364361ad
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
@@ -28,7 +28,7 @@ require (
 	github.com/swaggo/http-swagger v0.0.0-20200308142732-58ac5e232fba
 	github.com/swaggo/swag v1.6.9
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
-	github.com/uber/jaeger-lib v2.4.0+incompatible // indirect
+	github.com/uber/jaeger-lib v2.4.0+incompatible
 	go.uber.org/zap v1.16.0
 	golang.org/x/net v0.0.0-20201202161906-c7110b5ffcbb
 	google.golang.org/grpc v1.34.0

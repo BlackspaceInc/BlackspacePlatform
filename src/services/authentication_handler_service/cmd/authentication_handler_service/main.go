@@ -13,9 +13,11 @@ import (
 	core_auth_sdk "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk"
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
-
+	core_tracing "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-tracing"
+	"github.com/opentracing/opentracing-go"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"github.com/uber/jaeger-lib/metrics/prometheus"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
@@ -76,7 +78,7 @@ func main() {
 	fs.Bool("ENABLE_AUTH_SERVICE_PRIVATE_INTEGRATION", true, "enables communication with authentication service")
 	// logging specific configurations
 	fs.String("SERVICE_NAME", "authentication_handler_service", "service name")
-	fs.String("ZIPKIN", "http://localhost:9792",  "Zipkin address")
+	fs.String("ZIPKIN", "http://localhost:9792", "Zipkin address")
 
 	versionFlag := fs.BoolP("version", "v", false, "get version number")
 
@@ -120,7 +122,13 @@ func main() {
 	coreMetrics := core_metrics.NewCoreMetricsEngineInstance(serviceName, nil)
 	serviceMetrics := metrics.NewMetricsEngine(coreMetrics)
 
-	logger := core_logging.JSONLogger
+	// initiaize a tracing object globally
+	tracer := core_tracing.Init(serviceName, prometheus.New())
+	opentracing.SetGlobalTracer(tracer)
+
+	// create logging object
+	logger := core_logging.NewJSONLogger(nil, tracer.StartSpan("initiate logging instance"))
+
 	authnServiceClient := NewAuthServiceClient(err, logger)
 	logger.InfoM("successfully initialized authentication service client")
 
@@ -181,7 +189,7 @@ func main() {
 		zap.String("port", srvCfg.Port))
 
 	// start HTTP server
-	srv, _ := api.NewServer(&srvCfg, authnServiceClient, logger, serviceMetrics.MicroServiceMetrics, serviceMetrics.Engine)
+	srv, _ := api.NewServer(&srvCfg, authnServiceClient, logger, serviceMetrics.MicroServiceMetrics, serviceMetrics.Engine, tracer)
 	stopCh := signals.SetupSignalHandler()
 	srv.ListenAndServe(stopCh)
 }
@@ -337,5 +345,5 @@ func initAuthnClient(username, password, audience, issuer, url, origin string) (
 		// RECOMMENDED: Send private API calls to AuthN using private network routing. This can be
 		// necessary if your environment has a firewall to limit public endpoints.
 		PrivateBaseURL: url,
-	},origin)
+	}, origin)
 }

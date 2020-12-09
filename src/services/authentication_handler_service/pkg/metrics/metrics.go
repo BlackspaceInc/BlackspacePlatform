@@ -32,23 +32,23 @@ type CoreMetrics struct {
 	// tracks the number of times there was a failure or success when trying to extract id from the request url
 	ExtractIdOperationCounter *core_metrics.CounterVec
 	// tracks the number of times there was a failure or success when trying to extract id from the request url
-	RemoteOperationStatusCounter   *core_metrics.CounterVec
-	RemoteOperationsLatencyCounter *core_metrics.HistogramVec
+	RemoteOperationStatusCounter    *core_metrics.CounterVec
+	RemoteOperationsLatencyCounter  *core_metrics.HistogramVec
 	InvalidRequestParametersCounter *core_metrics.CounterVec
-	CastingOperationFailureCounter *core_metrics.CounterVec
-	DecodeRequestStatusCounter *core_metrics.CounterVec
+	CastingOperationFailureCounter  *core_metrics.CounterVec
+	DecodeRequestStatusCounter      *core_metrics.CounterVec
 }
 
 func NewCoreMetrics(engine *core_metrics.CoreMetricsEngine) *CoreMetrics {
 	return &CoreMetrics{
-		HttpRequestCounter:             NewHttpRequestCounter(engine),
-		HttpRequestLatencyCounter:      NewHttpRequestLatencyCounter(engine),
-		ExtractIdOperationCounter:      NewExtractIdOperationCounter(engine),
-		RemoteOperationStatusCounter:   NewRemoteOperationStatusCounter(engine),
-		RemoteOperationsLatencyCounter: NewRemoteOperationLatencyCounter(engine),
+		HttpRequestCounter:              NewHttpRequestCounter(engine),
+		HttpRequestLatencyCounter:       NewHttpRequestLatencyCounter(engine),
+		ExtractIdOperationCounter:       NewExtractIdOperationCounter(engine),
+		RemoteOperationStatusCounter:    NewRemoteOperationStatusCounter(engine),
+		RemoteOperationsLatencyCounter:  NewRemoteOperationLatencyCounter(engine),
 		InvalidRequestParametersCounter: NewInvalidRequestParametersCounter(engine),
-		CastingOperationFailureCounter : NewCastingOperationFailureCounter(engine),
-		DecodeRequestStatusCounter: NewDecodeRequestStatusCounter(engine),
+		CastingOperationFailureCounter:  NewCastingOperationFailureCounter(engine),
+		DecodeRequestStatusCounter:      NewDecodeRequestStatusCounter(engine),
 	}
 }
 
