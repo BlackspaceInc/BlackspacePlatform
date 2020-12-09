@@ -13,11 +13,9 @@ import (
 	core_auth_sdk "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk"
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
-	core_tracing "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-tracing"
 	"github.com/opentracing/opentracing-go"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	"github.com/uber/jaeger-lib/metrics/prometheus"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
@@ -25,6 +23,7 @@ import (
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/grpc"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/metrics"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/signals"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/tracing"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version"
 )
 
@@ -123,7 +122,7 @@ func main() {
 	serviceMetrics := metrics.NewMetricsEngine(coreMetrics)
 
 	// initiaize a tracing object globally
-	tracer, closer := core_tracing.Init(serviceName, prometheus.New())
+	tracer, closer :=  tracing.Init("authentication_handler_service") // core_tracing.Init(serviceName, prometheus.New())
 	opentracing.SetGlobalTracer(tracer)
 	defer closer.Close()
 
@@ -132,6 +131,11 @@ func main() {
 
 	authnServiceClient := NewAuthServiceClient(err, logger)
 	logger.InfoM("successfully initialized authentication service client")
+
+	sp := tracer.StartSpan("setting up configurations")
+	logger.Info("trying to emit a span")
+	defer sp.Finish()
+
 
 	// start stress tests if any
 	beginStressTest(viper.GetInt("stress-cpu"), viper.GetInt("stress-memory"), logger)
@@ -348,3 +352,4 @@ func initAuthnClient(username, password, audience, issuer, url, origin string) (
 		PrivateBaseURL: url,
 	}, origin)
 }
+

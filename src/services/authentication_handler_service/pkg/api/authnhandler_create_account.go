@@ -87,7 +87,7 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 	s.logger.For(ctx).Info("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
 
 	err := s.DecodeRequestAndInstrument(w, r, &createAccountReq, constants.CREATE_ACCOUNT)
-	if err != nil{
+	if err != nil {
 		s.logger.ErrorM(err, "failed to decode request")
 		helper.ProcessMalformedRequest(w, err)
 		return
@@ -104,8 +104,8 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 	var (
 		begin = time.Now()
 		took  = time.Since(begin)
-		f = func() (interface{}, error){
-			return  s.authnClient.ImportAccount(createAccountReq.Email, createAccountReq.Password, false)
+		f     = func() (interface{}, error) {
+			return s.authnClient.ImportAccount(createAccountReq.Email, createAccountReq.Password, false)
 		}
 	)
 
@@ -130,7 +130,7 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		if err != nil {
 			startTime := time.Now()
-			elapsedTime  := time.Since(startTime)
+			elapsedTime := time.Since(startTime)
 			op := func() error {
 				return s.authnClient.ArchiveAccount(strconv.Itoa(int(authnID)))
 			}

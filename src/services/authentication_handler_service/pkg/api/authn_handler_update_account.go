@@ -136,4 +136,3 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 	updateAccountResp.Error = err
 	s.JSONResponse(w, r, updateAccountResp)
 }
-

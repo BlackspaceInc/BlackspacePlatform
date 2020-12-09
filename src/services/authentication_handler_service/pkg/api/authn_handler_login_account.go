@@ -102,12 +102,12 @@ func (s *Server) loginAccountHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var (
-		startTime = time.Now()
-		elapsedTime  = time.Since(startTime)
-		op = func() (interface{},error) {
-			token, err :=  s.authnClient.LoginAccount(loginAccountReq.Email, loginAccountReq.Password)
+		startTime   = time.Now()
+		elapsedTime = time.Since(startTime)
+		op          = func() (interface{}, error) {
+			token, err := s.authnClient.LoginAccount(loginAccountReq.Email, loginAccountReq.Password)
 			if err != nil {
-				s.logger.ErrorM(err,"status of login")
+				s.logger.ErrorM(err, "status of login")
 				return token, err
 			}
 			return token, nil

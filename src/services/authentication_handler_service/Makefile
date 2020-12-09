@@ -138,4 +138,4 @@ start:
 	docker-compose -f docker-compose.dev.yaml up --remove-orphans
 
 stop:
-	docker-compose -f docker-compose.dev.yaml -f docker-compose-authentication_service.yml down
+	docker-compose -f docker-compose.jaeger.yml -f docker-compose.dev.yaml -f docker-compose-authentication_service.yml down

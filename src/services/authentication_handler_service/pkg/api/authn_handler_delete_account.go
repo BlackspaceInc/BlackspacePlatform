@@ -72,7 +72,7 @@ func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 	// we extract the user id from the url initially
 	authnID, err := s.ExtractIdOperationAndInstrument(r, constants.DELETE_ACCOUNT)
 	if utils.HandleError(w, err, http.StatusInternalServerError) {
-		s.logger.For(ctx).Error(err,"failed to parse account id from url")
+		s.logger.For(ctx).Error(err, "failed to parse account id from url")
 		return
 	}
 
@@ -90,7 +90,7 @@ func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 
 	// TODO: perform this operation in a circuit breaker
 	if err = s.RemoteOperationAndInstrument(f, constants.DELETE_ACCOUNT, &took); utils.HandleError(w, err, http.StatusInternalServerError) {
-		s.logger.For(ctx).Error(err,"failed to archive created account")
+		s.logger.For(ctx).Error(err, "failed to archive created account")
 		return
 	}
 

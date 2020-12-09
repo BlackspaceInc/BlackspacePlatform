@@ -22,9 +22,9 @@ func (s *Server) logoutHandler(w http.ResponseWriter, r *http.Request) {
 	var (
 		begin = time.Now()
 		took  = time.Since(begin)
-		f = func() error {
+		f     = func() error {
 			if err := s.authnClient.LogOutAccount(); err != nil {
-				s.logger.ErrorM(err,"status of logout")
+				s.logger.ErrorM(err, "status of logout")
 				return err
 			}
 			return nil
