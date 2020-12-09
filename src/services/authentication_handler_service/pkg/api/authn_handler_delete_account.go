@@ -8,6 +8,7 @@ import (
 
 	utils "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-utilities"
 	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	"go.uber.org/zap"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
@@ -57,8 +58,9 @@ func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	s.logger.For(ctx).Info("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
 
-	// start a span
-	parentSpan := s.tracer.StartSpan("DeleteAccountRequest")
+	// start a parent span
+	spanCtx, _ := s.tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
+	parentSpan := s.tracer.StartSpan("DeleteAccountRequest", ext.RPCServerOption(spanCtx))
 	defer parentSpan.Finish()
 
 	if s.IsNotAuthenticated(w, r) {
@@ -82,10 +84,11 @@ func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	)
 
-	childRpcSpan := s.tracer.StartSpan("AuthenticationService_Delete_RPC", opentracing.ChildOf(parentSpan.Context()))
-	defer childRpcSpan.Finish()
+	// we start a child span for the rpc operation
+	authnSvcRpcSpan := s.tracer.StartSpan("AuthenticationService_DeleteAccount_RPC", opentracing.ChildOf(parentSpan.Context()))
+	defer authnSvcRpcSpan.Finish()
 
-	// TODO: perform this operation in a circuit breaker, and trace this
+	// TODO: perform this operation in a circuit breaker
 	if err = s.RemoteOperationAndInstrument(f, constants.DELETE_ACCOUNT, &took); utils.HandleError(w, err, http.StatusInternalServerError) {
 		s.logger.For(ctx).Error(err,"failed to archive created account")
 		return

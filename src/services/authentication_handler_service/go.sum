@@ -48,10 +48,8 @@ github.com/Azure/go-autorest/logger v0.1.0/go.mod h1:oExouG+K6PryycPJfVSxi/koC6L
 github.com/Azure/go-autorest/tracing v0.5.0/go.mod h1:r/s2XiOKccPW3HrqB+W0TQzfbtp2fGCgRFtBroKn4Dk=
 github.com/BlackspaceInc/Backend/user-management-service v0.0.0-20200610031650-f616806382e1 h1:APXs7I4cgb9PlUKKISYHXufP5j4Yofn9YyA2ZVcpLUQ=
 github.com/BlackspaceInc/Backend/user-management-service v0.0.0-20200610031650-f616806382e1/go.mod h1:NJlj7lCIB/8IgpDNC0r7x92IrS8p1BHTmDKsglM/iek=
-github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201203024139-495bd9831233 h1:Fx8hA6Mm7/Pm5EQSDTEg95e4+TQsx0/4SV467EO/CwU=
-github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201203024139-495bd9831233/go.mod h1:Fh8gXK7VWyCwzUIzFVGcI5ETW5W/uslvk6IJNnwVROc=
-github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201207000145-7c3fb9b163d5 h1:Ru1gPdwMqpwfm+VVWQTpnXFfWz6jErhUnJDHk6DX92w=
-github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201207000145-7c3fb9b163d5/go.mod h1:ILhvfvC+t7eFHSQJxNqhqPohrUEa77UxTo6/SeD1tXk=
+github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201209060659-3d49164f7bbd h1:BsB/PuAOD+IdlOMiqj/0GMh/WNd0FEldd81b55Uty8Q=
+github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201209060659-3d49164f7bbd/go.mod h1:ILhvfvC+t7eFHSQJxNqhqPohrUEa77UxTo6/SeD1tXk=
 github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk v0.0.0-20201203033108-1d6c364361ad h1:6v9ja9a+xbjZe1vkfxrET9H862AIX6WmMJVqm1UXLus=
 github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk v0.0.0-20201203033108-1d6c364361ad/go.mod h1:KkNZX1GDCaRazTNcS3s53EXNXBm8SCi0SugSKulHtcs=
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
@@ -650,8 +648,6 @@ github.com/openzipkin-contrib/zipkin-go-opentracing v0.4.5/go.mod h1:/wsWhb9smxS
 github.com/openzipkin/zipkin-go v0.1.6/go.mod h1:QgAqvLzwWbR/WpD4A3cGpPtJrZXNIiJc5AZX7/PBEpw=
 github.com/openzipkin/zipkin-go v0.2.1/go.mod h1:NaW6tEwdmWMaCDZzg8sh+IBNOxHMPnhQw8ySjnjRyN4=
 github.com/openzipkin/zipkin-go v0.2.2/go.mod h1:NaW6tEwdmWMaCDZzg8sh+IBNOxHMPnhQw8ySjnjRyN4=
-github.com/openzipkin/zipkin-go v0.2.5 h1:UwtQQx2pyPIgWYHRg+epgdx1/HnBQTgN3/oIYEJTQzU=
-github.com/openzipkin/zipkin-go v0.2.5/go.mod h1:KpXfKdgRDnnhsxw4pNIH9Md5lyFqKUa4YDFlwRYAMyE=
 github.com/pact-foundation/pact-go v1.0.4/go.mod h1:uExwJY4kCzNPcHRj+hCR/HBbOOIwwtUjcrb0b5/5kLM=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/patrickmn/go-cache v2.1.0+incompatible h1:HRMgzkcYKYpi3C8ajMPV8OFXaaRUnok+kx1WdO15EQc=
@@ -1236,7 +1232,6 @@ gopkg.in/jcmturner/gokrb5.v7 v7.2.3/go.mod h1:l8VISx+WGYp+Fp7KRbsiUuXTTOnxIc3Tuv
 gopkg.in/jcmturner/rpc.v1 v1.1.0/go.mod h1:YIdkC4XfD6GXbzje11McwsDuOlZQSb9W4vfLvuNnlv8=
 gopkg.in/resty.v1 v1.12.0/go.mod h1:mDo4pnntr5jdWRML875a/NmxYqAlA73dVijT2AXvQQo=
 gopkg.in/square/go-jose.v2 v2.1.3/go.mod h1:M9dMgbHiYLoDGQrXy7OpJDJWiKiU//h+vD76mk0e1AI=
-gopkg.in/square/go-jose.v2 v2.3.1/go.mod h1:M9dMgbHiYLoDGQrXy7OpJDJWiKiU//h+vD76mk0e1AI=
 gopkg.in/square/go-jose.v2 v2.5.1 h1:7odma5RETjNHWJnR32wx8t+Io4djHE1PqxCFx3iiZ2w=
 gopkg.in/square/go-jose.v2 v2.5.1/go.mod h1:M9dMgbHiYLoDGQrXy7OpJDJWiKiU//h+vD76mk0e1AI=
 gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7/go.mod h1:dt/ZhP58zS4L8KSrWDmTeBkI65Dw0HsyUHuEVlX15mw=

@@ -123,8 +123,9 @@ func main() {
 	serviceMetrics := metrics.NewMetricsEngine(coreMetrics)
 
 	// initiaize a tracing object globally
-	tracer := core_tracing.Init(serviceName, prometheus.New())
+	tracer, closer := core_tracing.Init(serviceName, prometheus.New())
 	opentracing.SetGlobalTracer(tracer)
+	defer closer.Close()
 
 	// create logging object
 	logger := core_logging.NewJSONLogger(nil, tracer.StartSpan("initiate logging instance"))
