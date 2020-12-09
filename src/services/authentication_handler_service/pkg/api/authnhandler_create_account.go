@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	"go.uber.org/zap"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
@@ -84,7 +86,12 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 	)
 
 	ctx := r.Context()
-	s.logger.For(ctx).Info("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
+	s.logger.For(ctx).InfoM("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
+
+	// start a parent span
+	spanCtx, _ := s.tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
+	parentSpan := s.tracer.StartSpan("CreateAccountRequest", ext.RPCServerOption(spanCtx))
+	defer parentSpan.Finish()
 
 	err := s.DecodeRequestAndInstrument(w, r, &createAccountReq, constants.CREATE_ACCOUNT)
 	if err != nil {
@@ -108,6 +115,10 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 			return s.authnClient.ImportAccount(createAccountReq.Email, createAccountReq.Password, false)
 		}
 	)
+
+	// we start a child span for the rpc operation
+	authnSvcRpcSpan := s.tracer.StartSpan("AuthenticationService_CreateAccount_RPC", opentracing.ChildOf(parentSpan.Context()))
+	defer authnSvcRpcSpan.Finish()
 
 	result, err := s.RemoteOperationAndInstrumentWithResult(f, constants.CREATE_ACCOUNT, &took)
 	if err != nil {
@@ -135,14 +146,19 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 				return s.authnClient.ArchiveAccount(strconv.Itoa(int(authnID)))
 			}
 
+			// we start a child span for the rpc operation
+			authnSvcRpcSpan := s.tracer.StartSpan("AuthenticationService_DeleteAccount_RPC", opentracing.ChildOf(parentSpan.Context()))
+			defer authnSvcRpcSpan.Finish()
+
 			// TODO: perform this operation in a circuit breaker, and trace this
 			s.logger.ErrorM(err, "unable to create user account in authentication service. archiving account")
-			if err = s.RemoteOperationAndInstrument(op, constants.DELETE_ACCOUNT, &elapsedTime); err != nil {
+			if err = s.RemoteOperationAndInstrument(op, constants.DELETE_ACCOUNT, &elapsedTime, parentSpan.Context()); err != nil {
 				s.logger.ErrorM(err, "failed to archive created account")
 			}
 		}
 	}()
 
+	s.logger.For(ctx).Info("Successfully created user account", zap.Int("accountID", int(authnID)))
 	response := CreateAccountResponse{Id: uint32(authnID), Error: err}
 	s.JSONResponse(w, r, response)
 }

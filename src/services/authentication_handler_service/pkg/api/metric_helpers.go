@@ -1,8 +1,11 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/opentracing/opentracing-go"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
@@ -20,7 +23,11 @@ func (s *Server) ExtractIdOperationAndInstrument(r *http.Request, operation stri
 	return authnID, err
 }
 
-func (s *Server) RemoteOperationAndInstrument(f func() error, operationType string, took *time.Duration) error {
+func (s *Server) RemoteOperationAndInstrument(f func() error, operationType string, took *time.Duration, ctx opentracing.SpanContext) error {
+	// we start a child span for the rpc operation
+	authnSvcRpcSpan := s.tracer.StartSpan(fmt.Sprintf("AUTHENTICATION_SERVICE_%s_RPC", operationType) , opentracing.ChildOf(ctx))
+	defer authnSvcRpcSpan.Finish()
+
 	var status = constants.SUCCESS
 	err := f()
 	if err != nil {

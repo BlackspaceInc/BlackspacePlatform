@@ -56,7 +56,7 @@ type DeleteAccountRequest struct {
 // deletes an by account id
 func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	s.logger.For(ctx).Info("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
+	s.logger.For(ctx).InfoM("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
 
 	// start a parent span
 	spanCtx, _ := s.tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
@@ -84,12 +84,9 @@ func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	)
 
-	// we start a child span for the rpc operation
-	authnSvcRpcSpan := s.tracer.StartSpan("AuthenticationService_DeleteAccount_RPC", opentracing.ChildOf(parentSpan.Context()))
-	defer authnSvcRpcSpan.Finish()
-
 	// TODO: perform this operation in a circuit breaker
-	if err = s.RemoteOperationAndInstrument(f, constants.DELETE_ACCOUNT, &took); utils.HandleError(w, err, http.StatusInternalServerError) {
+	if err = s.RemoteOperationAndInstrument(f, constants.DELETE_ACCOUNT, &took, parentSpan.Context()); utils.HandleError(w, err,
+		http.StatusInternalServerError) {
 		s.logger.For(ctx).Error(err, "failed to archive created account")
 		return
 	}

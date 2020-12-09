@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	"go.uber.org/zap"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
@@ -82,6 +84,14 @@ type accountIdParam struct {
 // 500: internalServerError
 // updates an account credentials in the authentication service
 func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	s.logger.For(ctx).InfoM("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
+
+	// start a parent span
+	spanCtx, _ := s.tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
+	parentSpan := s.tracer.StartSpan("UpdateAccountRequest", ext.RPCServerOption(spanCtx))
+	defer parentSpan.Finish()
+
 	var (
 		updateAccountReq  UpdateAccountRequest
 		updateAccountResp UpdateAccountResponse
@@ -90,9 +100,6 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 	if s.IsNotAuthenticated(w, r) {
 		return
 	}
-
-	ctx := r.Context()
-	s.logger.For(ctx).Info("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
 
 	authnID, err := s.ExtractIdOperationAndInstrument(r, constants.UPDATE_ACCOUNT)
 	if err != nil {
@@ -126,7 +133,7 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 	)
 
 	// TODO: perform this operation in a circuit breaker, and trace this
-	if err = s.RemoteOperationAndInstrument(f, constants.UPDATE_ACCOUNT, &took); err != nil {
+	if err = s.RemoteOperationAndInstrument(f, constants.UPDATE_ACCOUNT, &took, parentSpan.Context()); err != nil {
 		s.logger.ErrorM(err, fmt.Sprintf("failed to update the account through the authentication service, id: %s", strconv.Itoa(int(authnID))))
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

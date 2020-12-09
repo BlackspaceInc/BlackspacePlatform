@@ -13,9 +13,14 @@ import (
 	core_auth_sdk "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk"
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
+	core_tracing "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-tracing"
+	"github.com/uber/jaeger-lib/metrics/prometheus"
+
+	// core_tracing "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-tracing"
 	"github.com/opentracing/opentracing-go"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	// "github.com/uber/jaeger-lib/metrics/prometheus"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
@@ -118,13 +123,14 @@ func main() {
 	}
 
 	serviceName := viper.GetString("SERVICE_NAME")
-	coreMetrics := core_metrics.NewCoreMetricsEngineInstance(serviceName, nil)
-	serviceMetrics := metrics.NewMetricsEngine(coreMetrics)
 
 	// initiaize a tracing object globally
-	tracer, closer :=  tracing.Init("authentication_handler_service") // core_tracing.Init(serviceName, prometheus.New())
-	opentracing.SetGlobalTracer(tracer)
+	tracer, closer :=  tracing.Init(serviceName)
 	defer closer.Close()
+	opentracing.SetGlobalTracer(tracer)
+
+	coreMetrics := core_metrics.NewCoreMetricsEngineInstance(serviceName, nil)
+	serviceMetrics := metrics.NewMetricsEngine(coreMetrics)
 
 	// create logging object
 	logger := core_logging.NewJSONLogger(nil, tracer.StartSpan("initiate logging instance"))

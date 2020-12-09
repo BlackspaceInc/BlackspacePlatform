@@ -11,31 +11,25 @@ import (
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
+	"github.com/uber/jaeger-client-go"
 	"github.com/uber/jaeger-client-go/config"
 )
 
 // Init returns an instance of Jaeger Tracer that samples 100% of traces and logs all spans to stdout.
 func Init(service string) (opentracing.Tracer, io.Closer) {
-	// Add Opentracing instrumentation
-	defcfg := config.Configuration{
+	cfg := &config.Configuration{
 		ServiceName: service,
 		Sampler: &config.SamplerConfig{
 			Type:  "const",
 			Param: 1,
 		},
 		Reporter: &config.ReporterConfig{
-			LogSpans:            true,
+			LogSpans: true,
 			BufferFlushInterval: 1 * time.Second,
-			LocalAgentHostPort: "jaeger:6831",
-			QueueSize: 3000,
+			CollectorEndpoint: "http://jaeger-collector:14268/api/traces",
 		},
 	}
-
-	cfg, err := defcfg.FromEnv()
-	if err != nil {
-		panic("Could not parse Jaeger env vars: " + err.Error())
-	}
-	tracer, closer, err := cfg.NewTracer()
+	tracer, closer, err := cfg.NewTracer(config.Logger(jaeger.StdLogger))
 	if err != nil {
 		panic("Could not initialize jaeger tracer: " + err.Error())
 	}
@@ -98,7 +92,7 @@ func CreateChildSpan(ctx context.Context, name string) opentracing.Span {
 }
 
 // NewTracedRequest generates a new traced HTTP request with opentracing headers injected into it
-func NewTracedRequest(method string, url string, body io.Reader, span opentracing.Span) (*http.Request, error) {
+func NewTracedRequest(method string, url string, span opentracing.Span) (*http.Request, error) {
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		panic(err.Error())
@@ -112,4 +106,32 @@ func NewTracedRequest(method string, url string, body io.Reader, span opentracin
 		opentracing.HTTPHeadersCarrier(req.Header))
 
 	return req, err
+}
+
+func Inject(span opentracing.Span, request *http.Request) error {
+	return span.Tracer().Inject(
+		span.Context(),
+		opentracing.HTTPHeaders,
+		opentracing.HTTPHeadersCarrier(request.Header))
+}
+
+func Extract(tracer opentracing.Tracer, r *http.Request) (opentracing.SpanContext, error) {
+	return tracer.Extract(
+		opentracing.HTTPHeaders,
+		opentracing.HTTPHeadersCarrier(r.Header))
+}
+
+func OpenTracingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		wireCtx, _ := opentracing.GlobalTracer().Extract(
+		opentracing.HTTPHeaders,
+		opentracing.HTTPHeadersCarrier(r.Header))
+
+		serverSpan := opentracing.StartSpan(r.URL.Path,
+		ext.RPCServerOption(wireCtx))
+		defer serverSpan.Finish()
+
+		r = r.WithContext(opentracing.ContextWithSpan(r.Context(), serverSpan))
+		next.ServeHTTP(w, r)
+	})
 }

@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	"go.uber.org/zap"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
@@ -53,6 +55,11 @@ func (s *Server) lockAccountHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	s.logger.For(ctx).Info("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
 
+	// start a parent span
+	spanCtx, _ := s.tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
+	parentSpan := s.tracer.StartSpan("LockAccountRequest", ext.RPCServerOption(spanCtx))
+	defer parentSpan.Finish()
+
 	if s.IsNotAuthenticated(w, r) {
 		return
 	}
@@ -76,7 +83,7 @@ func (s *Server) lockAccountHandler(w http.ResponseWriter, r *http.Request) {
 	)
 
 	// TODO: perform this operation in a circuit breaker, and trace this
-	if err = s.RemoteOperationAndInstrument(f, constants.LOCK_ACCOUNT, &took); err != nil {
+	if err = s.RemoteOperationAndInstrument(f, constants.LOCK_ACCOUNT, &took, parentSpan.Context()); err != nil {
 		s.logger.ErrorM(err, "failed to lock created account")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
