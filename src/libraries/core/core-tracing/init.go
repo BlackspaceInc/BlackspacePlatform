@@ -12,11 +12,11 @@ import (
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
+	"github.com/uber/jaeger-client-go"
 	"github.com/uber/jaeger-client-go/config"
-	"github.com/uber/jaeger-client-go/rpcmetrics"
 	"github.com/uber/jaeger-lib/metrics"
 	"go.uber.org/zap"
-	)
+)
 
 type TracingEngine struct {
 	Tracer opentracing.Tracer
@@ -24,9 +24,6 @@ type TracingEngine struct {
 
 // Init returns an instance of Jaeger Tracer that samples 100% of traces and logs all spans to stdout.
 func NewTracer(service string, collectorEndpoint string, metricsFactory metrics.Factory) (*TracingEngine, io.Closer) {
-	l := zap.SugaredLogger{}
-	jaegerLogger := jaegerLoggerAdapter{l}
-
 	cfg := &config.Configuration{
 		ServiceName: service,
 		Sampler: &config.SamplerConfig{
@@ -41,9 +38,7 @@ func NewTracer(service string, collectorEndpoint string, metricsFactory metrics.
 	}
 
 	tracer, closer, err := cfg.NewTracer(
-		config.Logger(jaegerLogger),
-		config.Metrics(metricsFactory),
-		config.Observer(rpcmetrics.NewObserver(metricsFactory, rpcmetrics.DefaultNameNormalizer)))
+		config.Logger(jaeger.StdLogger))
 
 	if err != nil {
 		panic("Could not initialize jaeger tracer: " + err.Error())
