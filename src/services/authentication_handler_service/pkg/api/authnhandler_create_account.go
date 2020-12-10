@@ -81,7 +81,7 @@ type createAccountResponse struct {
 // 500: internalServerError
 // creates an account
 func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
-	ctx, parentSpan := s.startRootSpan(r, constants.UPDATE_ACCOUNT)
+	ctx, parentSpan := s.startRootSpan(r, constants.CREATE_ACCOUNT)
 	defer parentSpan.Finish()
 
 	var (

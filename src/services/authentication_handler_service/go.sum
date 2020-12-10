@@ -48,8 +48,8 @@ github.com/Azure/go-autorest/logger v0.1.0/go.mod h1:oExouG+K6PryycPJfVSxi/koC6L
 github.com/Azure/go-autorest/tracing v0.5.0/go.mod h1:r/s2XiOKccPW3HrqB+W0TQzfbtp2fGCgRFtBroKn4Dk=
 github.com/BlackspaceInc/Backend/user-management-service v0.0.0-20200610031650-f616806382e1 h1:APXs7I4cgb9PlUKKISYHXufP5j4Yofn9YyA2ZVcpLUQ=
 github.com/BlackspaceInc/Backend/user-management-service v0.0.0-20200610031650-f616806382e1/go.mod h1:NJlj7lCIB/8IgpDNC0r7x92IrS8p1BHTmDKsglM/iek=
-github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201209233936-1b76ea58f5ad h1:fXCzvrk6UPGxGwjXN/NNTDvVn7wkRjXioCfWdjDzaeE=
-github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201209233936-1b76ea58f5ad/go.mod h1:ILhvfvC+t7eFHSQJxNqhqPohrUEa77UxTo6/SeD1tXk=
+github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201210005006-1459795ef39e h1:0rhob1TcUs3dKfragIgKmVtB3hST4d2WfuALgYkgZpw=
+github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201210005006-1459795ef39e/go.mod h1:ILhvfvC+t7eFHSQJxNqhqPohrUEa77UxTo6/SeD1tXk=
 github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk v0.0.0-20201203033108-1d6c364361ad h1:6v9ja9a+xbjZe1vkfxrET9H862AIX6WmMJVqm1UXLus=
 github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk v0.0.0-20201203033108-1d6c364361ad/go.mod h1:KkNZX1GDCaRazTNcS3s53EXNXBm8SCi0SugSKulHtcs=
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=

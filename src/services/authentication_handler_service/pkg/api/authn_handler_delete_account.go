@@ -100,6 +100,7 @@ func (s *Server) startRootSpan(r *http.Request, operationType string) (context.C
 	// start a parent span
 	spanCtx, _ := s.tracerEngine.Tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
 	parentSpan := s.tracerEngine.Tracer.StartSpan(operationType, ext.RPCServerOption(spanCtx))
+	ctx = opentracing.ContextWithSpan(ctx, parentSpan)
 	return ctx, parentSpan
 }
 

@@ -129,6 +129,11 @@ func main() {
 	// initiaize a tracing object globally
 	tracerEngine, closer := core_tracing.NewTracer(serviceName, collectorEndpoint, prometheus.New())
 	defer closer.Close()
+
+	if tracerEngine == nil {
+		panic("cannot initialize tracer engine")
+	}
+
 	opentracing.SetGlobalTracer(tracerEngine.Tracer)
 
 	coreMetrics := core_metrics.NewCoreMetricsEngineInstance(serviceName, nil)
