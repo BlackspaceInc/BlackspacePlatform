@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/BlackspaceInc/Backend/user-management-service v0.0.0-20200610031650-f616806382e1
-	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201209060659-3d49164f7bbd
+	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201209233936-1b76ea58f5ad
 	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk v0.0.0-20201203033108-1d6c364361ad
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751

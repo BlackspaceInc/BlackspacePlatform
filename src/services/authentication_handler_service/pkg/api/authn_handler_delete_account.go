@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"strconv"
@@ -55,12 +56,7 @@ type DeleteAccountRequest struct {
 // 500: internalServerError
 // deletes an by account id
 func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	s.logger.For(ctx).InfoM("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
-
-	// start a parent span
-	spanCtx, _ := s.tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
-	parentSpan := s.tracer.StartSpan("DeleteAccountRequest", ext.RPCServerOption(spanCtx))
+	ctx, parentSpan := s.startRootSpan(r, constants.DELETE_ACCOUNT)
 	defer parentSpan.Finish()
 
 	if s.IsNotAuthenticated(w, r) {
@@ -69,8 +65,9 @@ func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 
 	var deleteAccountResp DeleteAccountResponse
 
+	ctx = opentracing.ContextWithSpan(ctx, parentSpan)
 	// we extract the user id from the url initially
-	authnID, err := s.ExtractIdOperationAndInstrument(r, constants.DELETE_ACCOUNT)
+	authnID, err := s.ExtractIdOperationAndInstrument(ctx, r, constants.DELETE_ACCOUNT)
 	if utils.HandleError(w, err, http.StatusInternalServerError) {
 		s.logger.For(ctx).Error(err, "failed to parse account id from url")
 		return
@@ -85,7 +82,7 @@ func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 	)
 
 	// TODO: perform this operation in a circuit breaker
-	if err = s.RemoteOperationAndInstrument(f, constants.DELETE_ACCOUNT, &took, parentSpan.Context()); utils.HandleError(w, err,
+	if err = s.RemoteOperationAndInstrument(ctx, f, constants.DELETE_ACCOUNT, &took); utils.HandleError(w, err,
 		http.StatusInternalServerError) {
 		s.logger.For(ctx).Error(err, "failed to archive created account")
 		return
@@ -94,6 +91,16 @@ func (s *Server) deleteAccountHandler(w http.ResponseWriter, r *http.Request) {
 	s.logger.For(ctx).Info("Successfully deleted user account", zap.Int("accountID", int(authnID)))
 	deleteAccountResp.Error = err
 	s.JSONResponse(w, r, deleteAccountResp)
+}
+
+func (s *Server) startRootSpan(r *http.Request, operationType string) (context.Context, opentracing.Span) {
+	ctx := r.Context()
+	s.logger.For(ctx).InfoM("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
+
+	// start a parent span
+	spanCtx, _ := s.tracerEngine.Tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
+	parentSpan := s.tracerEngine.Tracer.StartSpan(operationType, ext.RPCServerOption(spanCtx))
+	return ctx, parentSpan
 }
 
 func (s *Server) IsNotAuthenticated(w http.ResponseWriter, r *http.Request) bool {

@@ -45,9 +45,9 @@ import (
 
 	core_auth_sdk "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk"
 	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
+	core_tracing "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-tracing"
 	"github.com/gomodule/redigo/redis"
 	"github.com/gorilla/mux"
-	"github.com/opentracing/opentracing-go"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/spf13/viper"
@@ -121,12 +121,12 @@ type Server struct {
 	logger        core_logging.ILog
 	metrics       *metrics.CoreMetrics
 	metricsEngine *core_metrics.CoreMetricsEngine
-	tracer        opentracing.Tracer
+	tracerEngine  *core_tracing.TracingEngine
 }
 
 func NewServer(config *Config,
 	client *core_auth_sdk.Client, logging core_logging.ILog, serviceMetrics *metrics.CoreMetrics,
-	metricsEngineConf *core_metrics.CoreMetricsEngine, tracer opentracing.Tracer) (*Server,
+	metricsEngineConf *core_metrics.CoreMetricsEngine, tracer *core_tracing.TracingEngine) (*Server,
 	error) {
 	srv := &Server{
 		router:        mux.NewRouter(),
@@ -135,7 +135,7 @@ func NewServer(config *Config,
 		logger:        logging,
 		metrics:       serviceMetrics,
 		metricsEngine: metricsEngineConf,
-		tracer:        tracer,
+		tracerEngine:  tracer,
 	}
 
 	return srv, nil

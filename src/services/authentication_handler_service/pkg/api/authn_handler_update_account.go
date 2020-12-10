@@ -6,12 +6,11 @@ import (
 	"strconv"
 	"time"
 
+	utils "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-utilities"
 	"github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/ext"
 	"go.uber.org/zap"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
 
 type UpdateAccountRequest struct {
@@ -84,12 +83,7 @@ type accountIdParam struct {
 // 500: internalServerError
 // updates an account credentials in the authentication service
 func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	s.logger.For(ctx).InfoM("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
-
-	// start a parent span
-	spanCtx, _ := s.tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
-	parentSpan := s.tracer.StartSpan("UpdateAccountRequest", ext.RPCServerOption(spanCtx))
+	ctx, parentSpan := s.startRootSpan(r, constants.UPDATE_ACCOUNT)
 	defer parentSpan.Finish()
 
 	var (
@@ -101,17 +95,17 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authnID, err := s.ExtractIdOperationAndInstrument(r, constants.UPDATE_ACCOUNT)
-	if err != nil {
-		s.logger.ErrorM(err, "failed to parse account id from url")
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	ctx = opentracing.ContextWithSpan(ctx, parentSpan)
+	authnID, err := s.ExtractIdOperationAndInstrument(ctx, r, constants.UPDATE_ACCOUNT)
+	if utils.HandleError(w, err, http.StatusInternalServerError) {
+		s.logger.For(ctx).ErrorM(err, "failed to parse account id from url")
 		return
 	}
 
 	// decode the update user request
-	if err := s.DecodeRequestAndInstrument(w, r, &updateAccountReq, constants.UPDATE_ACCOUNT); err != nil {
-		s.logger.ErrorM(err, "failed to decode request body")
-		helper.ProcessMalformedRequest(w, err)
+	if err := s.DecodeRequestAndInstrument(ctx, w, r, &updateAccountReq, constants.UPDATE_ACCOUNT); utils.HandleError(w, err,
+		http.StatusInternalServerError) == true {
+		s.logger.For(ctx).ErrorM(err, "failed to decode request body")
 		return
 	}
 
@@ -132,10 +126,11 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	)
 
-	// TODO: perform this operation in a circuit breaker, and trace this
-	if err = s.RemoteOperationAndInstrument(f, constants.UPDATE_ACCOUNT, &took, parentSpan.Context()); err != nil {
-		s.logger.ErrorM(err, fmt.Sprintf("failed to update the account through the authentication service, id: %s", strconv.Itoa(int(authnID))))
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	// TODO: perform this operation in a circuit breaker
+	if err = s.RemoteOperationAndInstrument(ctx, f, constants.UPDATE_ACCOUNT, &took); utils.HandleError(w, err,
+		http.StatusInternalServerError) == true {
+		s.logger.For(ctx).ErrorM(err, fmt.Sprintf("failed to update the account through the authentication service, id: %s",
+			strconv.Itoa(int(authnID))))
 		return
 	}
 

@@ -4,25 +4,19 @@ import (
 	"net/http"
 	"time"
 
+	utils "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-utilities"
 	"github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/ext"
-	"go.uber.org/zap"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
 )
 
 func (s *Server) logoutHandler(w http.ResponseWriter, r *http.Request) {
+	ctx, parentSpan := s.startRootSpan(r, constants.LOGOUT_ACCOUNT)
+	defer parentSpan.Finish()
+
 	if s.IsNotAuthenticated(w, r) {
 		return
 	}
-
-	ctx := r.Context()
-	s.logger.For(ctx).Info("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
-
-	// start a parent span
-	spanCtx, _ := s.tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
-	parentSpan := s.tracer.StartSpan("LogoutAccountRequest", ext.RPCServerOption(spanCtx))
-	defer parentSpan.Finish()
 
 	// hit authn log out endpoint and return
 	// we delete the session stored in the authentication service redis store
@@ -38,10 +32,11 @@ func (s *Server) logoutHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	)
 
-	// TODO: perform this operation in a circuit breaker, and trace this
-	if err := s.RemoteOperationAndInstrument(f, constants.LOGOUT_ACCOUNT, &took, parentSpan.Context()); err != nil {
-		s.logger.ErrorM(err, "failed to perform logout account")
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	ctx = opentracing.ContextWithSpan(ctx, parentSpan)
+	// TODO: perform this operation in a circuit breaker
+	if err := s.RemoteOperationAndInstrument(ctx, f, constants.LOGOUT_ACCOUNT, &took); utils.HandleError(w, err,
+		http.StatusInternalServerError) == true {
+		s.logger.For(ctx).Error(err, "failed to perform logout account")
 		return
 	}
 

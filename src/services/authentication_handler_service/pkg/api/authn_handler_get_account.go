@@ -7,7 +7,8 @@ import (
 	"time"
 
 	core_auth_sdk "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk"
-	"go.uber.org/zap"
+	utils "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-utilities"
+	"github.com/opentracing/opentracing-go"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
 )
@@ -53,15 +54,16 @@ type GetAccountRequest struct {
 // 500: internalServerError
 // deletes an by account id
 func (s *Server) getAccountHandler(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	s.logger.For(ctx).Info("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
+	ctx, parentSpan := s.startRootSpan(r, constants.GET_ACCOUNT)
+	defer parentSpan.Finish()
 
 	if s.IsNotAuthenticated(w, r) {
 		return
 	}
 
+	ctx = opentracing.ContextWithSpan(ctx, parentSpan)
 	// we extract the user id from the url initially
-	authnID, err := s.ExtractIdOperationAndInstrument(r, constants.GET_ACCOUNT)
+	authnID, err := s.ExtractIdOperationAndInstrument(ctx, r, constants.GET_ACCOUNT)
 	if err != nil {
 		s.logger.ErrorM(err, "failed to parse account id from url")
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -76,10 +78,9 @@ func (s *Server) getAccountHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	)
 
-	result, err := s.RemoteOperationAndInstrumentWithResult(f, constants.GET_ACCOUNT, &took)
-	if err != nil {
-		s.logger.ErrorM(err, "failed to get account")
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	result, err := s.RemoteOperationAndInstrumentWithResult(ctx, f, constants.GET_ACCOUNT, &took)
+	if utils.HandleError(w, err, http.StatusInternalServerError) {
+		s.logger.For(ctx).Error(err, "failed to get account")
 		return
 	}
 

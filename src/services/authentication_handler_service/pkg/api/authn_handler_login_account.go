@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"time"
 
-	"go.uber.org/zap"
+	utils "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-utilities"
+	"github.com/opentracing/opentracing-go"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
 
 type LoginAccountRequest struct {
@@ -77,17 +77,16 @@ type loginAccountResponse struct {
 // 500: internalServerError
 // creates an account
 func (s *Server) loginAccountHandler(w http.ResponseWriter, r *http.Request) {
+	ctx, parentSpan := s.startRootSpan(r, constants.LOGIN_ACCOUNT)
+	defer parentSpan.Finish()
+
 	var (
 		loginAccountReq LoginAccountRequest
 	)
 
-	ctx := r.Context()
-	s.logger.For(ctx).Info("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
-
-	err := s.DecodeRequestAndInstrument(w, r, &loginAccountReq, constants.LOGIN_ACCOUNT)
-	if err != nil {
-		s.logger.ErrorM(err, "failed to decode request")
-		helper.ProcessMalformedRequest(w, err)
+	err := s.DecodeRequestAndInstrument(ctx, w, r, &loginAccountReq, constants.LOGIN_ACCOUNT)
+	if utils.HandleError(w, err, http.StatusInternalServerError){
+		s.logger.For(ctx).Error(err, "failed to decode request")
 		return
 	}
 
@@ -114,10 +113,11 @@ func (s *Server) loginAccountHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	)
 
-	result, err := s.RemoteOperationAndInstrumentWithResult(op, constants.LOGIN_ACCOUNT, &elapsedTime)
-	if err != nil {
-		s.logger.ErrorM(err, "failed to login user")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	ctx = opentracing.ContextWithSpan(ctx, parentSpan)
+	result, err := s.RemoteOperationAndInstrumentWithResult(ctx, op, constants.LOGIN_ACCOUNT, &elapsedTime)
+	if utils.HandleError(w, err, http.StatusInternalServerError){
+		s.logger.For(ctx).Error(err, "failed to login user")
+		return
 	}
 
 	token, ok := result.(string)
@@ -125,6 +125,7 @@ func (s *Server) loginAccountHandler(w http.ResponseWriter, r *http.Request) {
 		err := errors.New("failed to cast from interface type")
 		s.logger.ErrorM(err, "casting error")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	response := LoginAccountResponse{Token: token, Error: err}

@@ -5,9 +5,8 @@ import (
 	"strconv"
 	"time"
 
+	utils "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-utilities"
 	"github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/ext"
-	"go.uber.org/zap"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
 )
@@ -52,12 +51,7 @@ type LockAccountRequest struct {
 // 500: internalServerError
 // locks an account by account id
 func (s *Server) lockAccountHandler(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	s.logger.For(ctx).Info("HTTP request received", zap.String("method", r.Method), zap.Stringer("url", r.URL))
-
-	// start a parent span
-	spanCtx, _ := s.tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
-	parentSpan := s.tracer.StartSpan("LockAccountRequest", ext.RPCServerOption(spanCtx))
+	ctx, parentSpan := s.startRootSpan(r, constants.LOCK_ACCOUNT)
 	defer parentSpan.Finish()
 
 	if s.IsNotAuthenticated(w, r) {
@@ -65,12 +59,11 @@ func (s *Server) lockAccountHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var lockAccountResp LockAccountResponse
+	ctx = opentracing.ContextWithSpan(ctx, parentSpan)
 	// we extract the user id from the url initially
-	authnID, err := s.ExtractIdOperationAndInstrument(r, constants.LOCK_ACCOUNT)
-	if err != nil {
-		// TODO: emit metrics
-		s.logger.ErrorM(err, "failed to parse account id from url")
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	authnID, err := s.ExtractIdOperationAndInstrument(ctx, r, constants.LOCK_ACCOUNT)
+	if utils.HandleError(w, err, http.StatusInternalServerError) {
+		s.logger.For(ctx).Error(err, "failed to parse account id from url")
 		return
 	}
 
@@ -82,10 +75,11 @@ func (s *Server) lockAccountHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	)
 
-	// TODO: perform this operation in a circuit breaker, and trace this
-	if err = s.RemoteOperationAndInstrument(f, constants.LOCK_ACCOUNT, &took, parentSpan.Context()); err != nil {
-		s.logger.ErrorM(err, "failed to lock created account")
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	// TODO: perform this operation in a circuit breaker
+	if err = s.RemoteOperationAndInstrument(ctx, f, constants.LOCK_ACCOUNT, &took); utils.HandleError(w, err,
+		http.StatusInternalServerError) == true {
+		s.logger.For(ctx).Error(err, "failed to lock created account")
+		return
 	}
 
 	lockAccountResp.Error = err

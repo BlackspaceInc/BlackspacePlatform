@@ -1,18 +1,21 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
-
-	"github.com/opentracing/opentracing-go"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/helper"
 )
 
 // ExtractIdOperationAndInstrument extracts an account id from a request and increments the necessary metrics
-func (s *Server) ExtractIdOperationAndInstrument(r *http.Request, operation string) (uint32, error) {
+func (s *Server) ExtractIdOperationAndInstrument(ctx context.Context, r *http.Request, operation string) (uint32, error) {
+	// we start a child span for the rpc operation
+	extractIdChildSpan := s.tracerEngine.CreateChildSpan(ctx, "EXTRACT_ID_FROM_REQUEST_HEADER")
+	defer extractIdChildSpan.Finish()
+
 	var status = constants.SUCCESS
 	authnID, err := helper.ExtractIDFromRequest(r)
 	if err != nil {
@@ -23,9 +26,9 @@ func (s *Server) ExtractIdOperationAndInstrument(r *http.Request, operation stri
 	return authnID, err
 }
 
-func (s *Server) RemoteOperationAndInstrument(f func() error, operationType string, took *time.Duration, ctx opentracing.SpanContext) error {
+func (s *Server) RemoteOperationAndInstrument(ctx context.Context, f func() error, operationType string, took *time.Duration) error {
 	// we start a child span for the rpc operation
-	authnSvcRpcSpan := s.tracer.StartSpan(fmt.Sprintf("AUTHENTICATION_SERVICE_%s_RPC", operationType) , opentracing.ChildOf(ctx))
+	authnSvcRpcSpan := s.tracerEngine.CreateChildSpan(ctx, fmt.Sprintf("ATHENTICATION_SERVICE_%s_RPC_REQUEST", operationType))
 	defer authnSvcRpcSpan.Finish()
 
 	var status = constants.SUCCESS
@@ -40,9 +43,13 @@ func (s *Server) RemoteOperationAndInstrument(f func() error, operationType stri
 }
 
 func (s *Server) RemoteOperationAndInstrumentWithResult(
+	ctx context.Context,
 	f func() (interface{}, error),
 	operationType string,
 	took *time.Duration) (interface{}, error) {
+
+	authnSvcRpcSpan := s.tracerEngine.CreateChildSpan(ctx, fmt.Sprintf("ATHENTICATION_SERVICE_%s_RPC_REQUEST", operationType))
+	defer authnSvcRpcSpan.Finish()
 
 	var status = constants.SUCCESS
 	result, err := f()
@@ -55,7 +62,12 @@ func (s *Server) RemoteOperationAndInstrumentWithResult(
 	return result, err
 }
 
-func (s *Server) DecodeRequestAndInstrument(w http.ResponseWriter, r *http.Request, obj interface{}, operationType string) error {
+func (s *Server) DecodeRequestAndInstrument(ctx context.Context, w http.ResponseWriter, r *http.Request, obj interface{},
+	operationType string) error {
+	// we start a child span for the rpc operation
+	childSpan := s.tracerEngine.CreateChildSpan(ctx, "DECODE_REQUEST")
+	defer childSpan.Finish()
+
 	var status = constants.SUCCESS
 
 	err := helper.DecodeJSONBody(w, r, &obj)

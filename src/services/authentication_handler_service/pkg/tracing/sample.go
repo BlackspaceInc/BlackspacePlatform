@@ -24,9 +24,9 @@ func Init(service string) (opentracing.Tracer, io.Closer) {
 			Param: 1,
 		},
 		Reporter: &config.ReporterConfig{
-			LogSpans: true,
+			LogSpans:            true,
 			BufferFlushInterval: 1 * time.Second,
-			CollectorEndpoint: "http://jaeger-collector:14268/api/traces",
+			CollectorEndpoint:   "http://jaeger-collector:14268/api/traces",
 		},
 	}
 	tracer, closer, err := cfg.NewTracer(config.Logger(jaeger.StdLogger))
@@ -124,11 +124,11 @@ func Extract(tracer opentracing.Tracer, r *http.Request) (opentracing.SpanContex
 func OpenTracingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		wireCtx, _ := opentracing.GlobalTracer().Extract(
-		opentracing.HTTPHeaders,
-		opentracing.HTTPHeadersCarrier(r.Header))
+			opentracing.HTTPHeaders,
+			opentracing.HTTPHeadersCarrier(r.Header))
 
 		serverSpan := opentracing.StartSpan(r.URL.Path,
-		ext.RPCServerOption(wireCtx))
+			ext.RPCServerOption(wireCtx))
 		defer serverSpan.Finish()
 
 		r = r.WithContext(opentracing.ContextWithSpan(r.Context(), serverSpan))
