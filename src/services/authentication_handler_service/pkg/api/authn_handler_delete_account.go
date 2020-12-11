@@ -105,9 +105,10 @@ func (s *Server) startRootSpan(r *http.Request, operationType string) (context.C
 }
 
 func (s *Server) IsNotAuthenticated(w http.ResponseWriter, r *http.Request) bool {
-	if !middleware.IsAuthenticated(r.Context()) {
+	ctx := r.Context()
+	if !middleware.IsAuthenticated(ctx) {
 		err := errors.New("user not authenticated")
-		s.logger.ErrorM(err, err.Error())
+		s.logger.For(ctx).ErrorM(err, err.Error())
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return true
 	}

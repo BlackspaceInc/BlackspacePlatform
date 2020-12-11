@@ -65,7 +65,7 @@ func (s *Server) getAccountHandler(w http.ResponseWriter, r *http.Request) {
 	// we extract the user id from the url initially
 	authnID, err := s.ExtractIdOperationAndInstrument(ctx, r, constants.GET_ACCOUNT)
 	if err != nil {
-		s.logger.ErrorM(err, "failed to parse account id from url")
+		s.logger.For(ctx).ErrorM(err, "failed to parse account id from url")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -88,7 +88,7 @@ func (s *Server) getAccountHandler(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		s.metrics.CastingOperationFailureCounter.WithLabelValues(constants.GET_ACCOUNT)
 		err := errors.New("failed to cast response to account object")
-		s.logger.ErrorM(err, "casting failure")
+		s.logger.For(ctx).ErrorM(err, "casting failure")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

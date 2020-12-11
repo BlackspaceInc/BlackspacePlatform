@@ -106,7 +106,7 @@ func (s *Server) loginAccountHandler(w http.ResponseWriter, r *http.Request) {
 		op          = func() (interface{}, error) {
 			token, err := s.authnClient.LoginAccount(loginAccountReq.Email, loginAccountReq.Password)
 			if err != nil {
-				s.logger.ErrorM(err, "status of login")
+				s.logger.For(ctx).ErrorM(err, "status of login")
 				return token, err
 			}
 			return token, nil
@@ -123,7 +123,7 @@ func (s *Server) loginAccountHandler(w http.ResponseWriter, r *http.Request) {
 	token, ok := result.(string)
 	if !ok {
 		err := errors.New("failed to cast from interface type")
-		s.logger.ErrorM(err, "casting error")
+		s.logger.For(ctx).ErrorM(err, "casting error")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

@@ -16,6 +16,7 @@ require (
 	github.com/go-openapi/runtime v0.19.24
 	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/gomodule/redigo v1.8.3
+	github.com/gorilla/context v1.1.1
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/keratin/authn-go v1.1.0

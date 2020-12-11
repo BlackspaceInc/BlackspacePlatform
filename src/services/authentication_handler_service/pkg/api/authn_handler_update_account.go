@@ -113,7 +113,7 @@ func (s *Server) updateAccountHandler(w http.ResponseWriter, r *http.Request) {
 	if updateAccountReq.Email == "" {
 		s.metrics.InvalidRequestParametersCounter.WithLabelValues(constants.UPDATE_ACCOUNT).Inc()
 		errMsg := "invalid input parameters. please specify a email"
-		s.logger.ErrorM(err, errMsg)
+		s.logger.For(ctx).ErrorM(err, errMsg)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

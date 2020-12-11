@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"net/http"
 	"time"
 
@@ -8,6 +9,7 @@ import (
 	"github.com/opentracing/opentracing-go"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/constants"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/middleware"
 )
 
 func (s *Server) logoutHandler(w http.ResponseWriter, r *http.Request) {
@@ -18,6 +20,7 @@ func (s *Server) logoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+
 	// hit authn log out endpoint and return
 	// we delete the session stored in the authentication service redis store
 	var (
@@ -25,7 +28,7 @@ func (s *Server) logoutHandler(w http.ResponseWriter, r *http.Request) {
 		took  = time.Since(begin)
 		f     = func() error {
 			if err := s.authnClient.LogOutAccount(); err != nil {
-				s.logger.ErrorM(err, "status of logout")
+				s.logger.For(ctx).ErrorM(err, "status of logout")
 				return err
 			}
 			return nil
@@ -39,6 +42,10 @@ func (s *Server) logoutHandler(w http.ResponseWriter, r *http.Request) {
 		s.logger.For(ctx).Error(err, "failed to perform logout account")
 		return
 	}
+
+	// remove the authentication ctx key from the request context
+	ctx = context.WithValue(ctx, middleware.UserCtxKey, nil)
+	r = r.WithContext(ctx)
 
 	s.JSONResponse(w, r, http.StatusOK)
 }

@@ -97,7 +97,7 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 	if createAccountReq.Password == "" || createAccountReq.Email == "" {
 		s.metrics.InvalidRequestParametersCounter.WithLabelValues(constants.CREATE_ACCOUNT).Inc()
 		errMsg := "invalid input parameters. please specify a username and password"
-		s.logger.ErrorM(err, errMsg)
+		s.logger.For(ctx).ErrorM(err, errMsg)
 		http.Error(w, errMsg, http.StatusBadRequest)
 		return
 	}
@@ -121,7 +121,7 @@ func (s *Server) createAccountHandler(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		s.metrics.CastingOperationFailureCounter.WithLabelValues(constants.CREATE_ACCOUNT)
 		err := errors.New("failed to convert result to uint32 id value")
-		s.logger.ErrorM(err, "casting error")
+		s.logger.For(ctx).ErrorM(err, "casting error")
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

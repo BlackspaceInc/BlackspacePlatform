@@ -58,7 +58,7 @@ func TestUpdateAccountHandler(t *testing.T) {
 			result, err, authRes = createAndLoginAccountTestUtil(t, result, err, data.oldEmail, data.errorExpectedToOcurr, authRes)
 		}
 
-		// attempt to login user then try the update operation
+		// try the update operation
 		userId := fmt.Sprint(result.Id)
 		updateResult, err, rr := UpdateUserAccountRequestTestUtil(data.newEmail, userId, authRes.Token, t)
 

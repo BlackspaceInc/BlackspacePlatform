@@ -75,7 +75,7 @@ func (s *Server) unlockAccountHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	)
 
-	// TODO: perform this operation in a circuit breaker, and trace this
+	// TODO: perform this operation in a circuit breaker
 	if err = s.RemoteOperationAndInstrument(ctx, f, constants.UNLOCK_ACCOUNT, &took); utils.HandleError(w, err,
 		http.StatusInternalServerError) == true {
 		s.logger.For(ctx).Error(err, "failed to unlock created account")
