@@ -12,7 +12,9 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/color v1.10.0
 	github.com/fsnotify/fsnotify v1.4.9
+	github.com/gin-gonic/gin v1.6.3 // indirect
 	github.com/go-openapi/runtime v0.19.24
+	github.com/gofrs/uuid v3.3.0+incompatible // indirect
 	github.com/gomodule/redigo v1.8.3
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.4.2
@@ -26,7 +28,7 @@ require (
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1
 	github.com/swaggo/http-swagger v0.0.0-20200308142732-58ac5e232fba
-	github.com/swaggo/swag v1.6.9
+	github.com/swaggo/swag v1.7.0
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	github.com/uber/jaeger-lib v2.4.0+incompatible
 	go.uber.org/zap v1.16.0

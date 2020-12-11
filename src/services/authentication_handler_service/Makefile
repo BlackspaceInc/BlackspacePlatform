@@ -18,6 +18,8 @@ run:
 test:
 	go test -v -race ./...
 
+test-suite: start-e2e-dependencies test stop-e2e-dependencies
+
 build:
 	GIT_COMMIT=$$(git rev-list -1 HEAD) && CGO_ENABLED=0 go build  -ldflags "-s -w -X github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version.REVISION=$(GIT_COMMIT)" -a -o ./bin/authentication_handler_service ./cmd/authentication_handler_service/*
 	GIT_COMMIT=$$(git rev-list -1 HEAD) && CGO_ENABLED=0 go build  -ldflags "-s -w -X github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version.REVISION=$(GIT_COMMIT)" -a -o ./bin/podcli ./cmd/podcli/*
@@ -133,8 +135,6 @@ deploy-production:
 deploy: deploy-dev deploy-staging
 	@echo "deploying"
 
-e2e-test: start-test-dependencies test stop-test-dependencies
-
 start:
 	# docker-compose -f docker-compose.dev.yaml build
 	docker-compose -f docker-compose.jaeger.yml -f docker-compose.dev.yaml up --remove-orphans
@@ -142,11 +142,11 @@ start:
 stop:
 	docker-compose -f docker-compose.jaeger.yml -f docker-compose.dev.yaml -f docker-compose-authentication_service.yml down
 
-start-test-dependencies:
+start-e2e-dependencies:
 	# starts the necessary services in order to permit e2e testing
 	@echo starts the required support container services to allow e2e testing
-	docker-compose -f docker-compose.jaeger.yml -f docker-compose.test.dependencies.yml up --remove-orphans
+	docker-compose -f docker-compose.jaeger.yml -f docker-compose.test.dependencies.yml up --remove-orphans -d
 
-stop-test-dependencies:
+stop-e2e-dependencies:
 	@echo stopping the container services used for testing
 	docker-compose -f docker-compose.jaeger.yml -f docker-compose.test.dependencies.yml down
