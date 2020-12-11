@@ -23,7 +23,7 @@ jobs:
         with:
           go-version: 1.15.x
       - name: Run unit tests
-        run: make test
+        run: make test-suite
       - name: Check if working tree is dirty
         run: |
           if [[ $(git diff --stat) != '' ]]; then
