@@ -42,16 +42,9 @@ func TestLogoutAccountHandler(t *testing.T) {
 			result, err, authRes = createAndLoginAccountTestUtil(t, result, err, data.newEmail, data.errorExpectedToOcurr, authRes)
 		}
 
+		shouldAuthenticate := data.shouldCreateAndAuthenticateAccountFirst
 		// try the lock operation
-		rr, err := LogoutUserAccountRequestTestUtil(authRes.Token, t)
-
-		if data.errorExpectedToOcurr && err == nil {
-			t.Errorf("expected error to occur but none did")
-		}
-
-		if !data.errorExpectedToOcurr && err != nil {
-			t.Errorf("error was not expected to occur - error %s", err.Error())
-		}
+		rr, err := LogoutUserAccountRequestTestUtil(authRes.Token, shouldAuthenticate, t)
 
 		// Check the status code is what we expect.
 		if status := rr.Code; status != data.responseCode {
@@ -61,13 +54,17 @@ func TestLogoutAccountHandler(t *testing.T) {
 	}
 }
 
-func LogoutUserAccountRequestTestUtil(token string, t *testing.T) (*httptest.ResponseRecorder, error) {
+func LogoutUserAccountRequestTestUtil(token string, shouldAuthenticate bool, t *testing.T) (*httptest.ResponseRecorder, error) {
 	req, err := http.NewRequest("POST", "/v1/account/logout", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	req, rr := generateAuthorizedRequest(req, token)
+	rr := httptest.NewRecorder()
+
+	if shouldAuthenticate {
+		req, rr = generateAuthorizedRequest(req, token)
+	}
 
 	srv := NewMockServer()
 	handler := http.HandlerFunc(srv.logoutHandler)
