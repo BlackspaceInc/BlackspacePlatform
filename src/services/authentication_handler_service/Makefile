@@ -133,9 +133,20 @@ deploy-production:
 deploy: deploy-dev deploy-staging
 	@echo "deploying"
 
+e2e-test: start-test-dependencies test stop-test-dependencies
+
 start:
 	# docker-compose -f docker-compose.dev.yaml build
 	docker-compose -f docker-compose.jaeger.yml -f docker-compose.dev.yaml up --remove-orphans
 
 stop:
 	docker-compose -f docker-compose.jaeger.yml -f docker-compose.dev.yaml -f docker-compose-authentication_service.yml down
+
+start-test-dependencies:
+	# starts the necessary services in order to permit e2e testing
+	@echo starts the required support container services to allow e2e testing
+	docker-compose -f docker-compose.jaeger.yml -f docker-compose.test.dependencies.yml up --remove-orphans
+
+stop-test-dependencies:
+	@echo stopping the container services used for testing
+	docker-compose -f docker-compose.jaeger.yml -f docker-compose.test.dependencies.yml down

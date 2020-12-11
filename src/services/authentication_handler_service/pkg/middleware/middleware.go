@@ -10,7 +10,7 @@ import (
 	"github.com/keratin/authn-go/authn"
 )
 
-var userCtxKey = &contextKey{"user"}
+var UserCtxKey = &contextKey{"user"}
 
 type contextKey struct {
 	name string
@@ -41,7 +41,7 @@ func (mw *AuthnMW) AuthenticationMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx = context.WithValue(ctx, userCtxKey, decodedToken)
+		ctx = context.WithValue(ctx, UserCtxKey, decodedToken)
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})
@@ -63,7 +63,7 @@ func AuthnMiddleware(auth *authn.Client) func(http.Handler) http.Handler {
 				return
 			}
 
-			ctx = context.WithValue(ctx, userCtxKey, decodedToken)
+			ctx = context.WithValue(ctx, UserCtxKey, decodedToken)
 			r = r.WithContext(ctx)
 			next.ServeHTTP(w, r)
 		})
@@ -73,5 +73,5 @@ func AuthnMiddleware(auth *authn.Client) func(http.Handler) http.Handler {
 // IsAuthenticated returns wether or not the user is authenticated.
 // REQUIRES Middleware to have run.
 func IsAuthenticated(ctx context.Context) bool {
-	return ctx.Value(userCtxKey) != nil
+	return ctx.Value(UserCtxKey) != nil
 }

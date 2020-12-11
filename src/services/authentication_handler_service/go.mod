@@ -17,6 +17,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/keratin/authn-go v1.1.0
+	github.com/mitchellh/go-testing-interface v1.14.1
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/prometheus/client_golang v1.8.0
 	github.com/smartystreets/assertions v1.0.1 // indirect

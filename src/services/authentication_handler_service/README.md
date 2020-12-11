@@ -115,7 +115,7 @@ docker run -dp 9898:9898 github.com/blackspaceInc/BlackspacePlatform/authenticat
 - [X] ensure some api are auth protected (use jwt)
 - [ ] __ implement circuit breaker [link](https://github.com/cep21/circuit) in core library & wrap around all remote calls
 - [ ] __ implement retryable operation in core library & for all remote operations [link](https://github.com/avast/retry-go)
-- [ ] __ implement distributed request tracing & wrap around all remote calls
+- [X] implement distributed request tracing & wrap around all remote calls
 - [ ] define graffana views, circuit breaker views, traces, ... etc to visualize metrics, circuit breaker, and traces and ensure
       template service has this implementation
 - [ ] __ implement unit tests for all api's and new authn library client

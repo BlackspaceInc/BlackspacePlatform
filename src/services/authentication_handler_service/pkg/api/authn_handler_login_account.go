@@ -85,7 +85,7 @@ func (s *Server) loginAccountHandler(w http.ResponseWriter, r *http.Request) {
 	)
 
 	err := s.DecodeRequestAndInstrument(ctx, w, r, &loginAccountReq, constants.LOGIN_ACCOUNT)
-	if utils.HandleError(w, err, http.StatusInternalServerError){
+	if utils.HandleError(w, err, http.StatusInternalServerError) {
 		s.logger.For(ctx).Error(err, "failed to decode request")
 		return
 	}
@@ -115,7 +115,7 @@ func (s *Server) loginAccountHandler(w http.ResponseWriter, r *http.Request) {
 
 	ctx = opentracing.ContextWithSpan(ctx, parentSpan)
 	result, err := s.RemoteOperationAndInstrumentWithResult(ctx, op, constants.LOGIN_ACCOUNT, &elapsedTime)
-	if utils.HandleError(w, err, http.StatusInternalServerError){
+	if utils.HandleError(w, err, http.StatusInternalServerError) {
 		s.logger.For(ctx).Error(err, "failed to login user")
 		return
 	}
