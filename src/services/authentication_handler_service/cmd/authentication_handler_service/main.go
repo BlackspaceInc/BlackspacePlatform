@@ -33,9 +33,6 @@ import (
 )
 
 func main() {
-	// TODO: Implement Distributed Tracing
-	// 	https://github.com/jaegertracing/jaeger/tree/0cbd8c896d5f8ca8dc9eb19ea0faf469b9640925/examples
-
 	// flags definition
 	fs := pflag.NewFlagSet("default", pflag.ContinueOnError)
 	fs.Int("port", 9898, "HTTP port")
@@ -64,9 +61,8 @@ func main() {
 	fs.Bool("random-error", false, "1/3 chances of a random response error")
 	fs.Bool("unhealthy", false, "when set, healthy state is never reached")
 	fs.Bool("unready", false, "when set, ready state is never reached")
-	fs.Int("stress-cpu", 0, "number of CPU cores with 100 load")
-	fs.Int("stress-memory", 0, "MB of data to load into memory")
-	fs.String("cache-server", "", "Redis address in the format <host>:<port>")
+	fs.Int("STRESS_CPU", 0, "number of CPU cores with 100 load")
+	fs.Int("STRESS_MEMORY", 0, "MB of data to load into memory")
 	// authentication service specific flags
 	fs.String("AUTHN_USERNAME", "blackspaceinc", "username of authentication client")
 	fs.String("AUTHN_PASSWORD", "blackspaceinc", "password of authentication client")
@@ -82,7 +78,6 @@ func main() {
 	fs.Bool("ENABLE_AUTH_SERVICE_PRIVATE_INTEGRATION", true, "enables communication with authentication service")
 	// logging specific configurations
 	fs.String("SERVICE_NAME", "authentication_handler_service", "service name")
-	fs.String("ZIPKIN", "http://localhost:9792", "Zipkin address")
 	fs.String("JAEGER_ENDPOINT", "http://jaeger-collector:14268/api/traces", "jaeger collector endpoint")
 
 	versionFlag := fs.BoolP("version", "v", false, "get version number")
@@ -149,7 +144,7 @@ func main() {
 	logger.InfoM("successfully initialized authentication service client")
 
 	// start stress tests if any
-	beginStressTest(viper.GetInt("stress-cpu"), viper.GetInt("stress-memory"), logger)
+	beginStressTest(viper.GetInt("STRESS_CPU"), viper.GetInt("STRESS_MEMORY"), logger)
 
 	// validate port
 	if _, err := strconv.Atoi(viper.GetString("port")); err != nil {

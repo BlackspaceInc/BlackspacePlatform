@@ -10,10 +10,10 @@ import (
 )
 
 func TestLogoutAccountHandler(t *testing.T) {
-	var testDataInfo = []struct{
-		newEmail string
-		responseCode int
-		errorExpectedToOcurr bool
+	var testDataInfo = []struct {
+		newEmail                                string
+		responseCode                            int
+		errorExpectedToOcurr                    bool
 		shouldCreateAndAuthenticateAccountFirst bool
 	}{
 		{

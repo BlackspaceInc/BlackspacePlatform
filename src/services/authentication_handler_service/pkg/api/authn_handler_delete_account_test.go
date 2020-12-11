@@ -13,10 +13,10 @@ import (
 )
 
 func TestDeleteAccountHandler(t *testing.T) {
-	var testDataInfo = []struct{
-		email string
-		responseCode int
-		errorExpectedToOcurr bool
+	var testDataInfo = []struct {
+		email                                   string
+		responseCode                            int
+		errorExpectedToOcurr                    bool
 		shouldCreateAndAuthenticateAccountFirst bool
 	}{
 		{

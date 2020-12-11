@@ -52,7 +52,7 @@ func NewMockServer() *Server {
 		logger.For(ctx).FatalM(err, "unable to setup mock server")
 	}
 
-	srv :=  &Server{
+	srv := &Server{
 		router:        mux.NewRouter(),
 		config:        config,
 		tracerEngine:  tracerEngine,

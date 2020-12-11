@@ -18,11 +18,11 @@ func TestUpdateAccountHandler(t *testing.T) {
 	oldEmail := fmt.Sprintf("test_%s@gmail.com", GenerateRandomString(10))
 	newEmailSameAsOld := oldEmail
 
-	var testDataInfo = []struct{
-		oldEmail string
-		newEmail string
-		responseCode int
-		errorExpectedToOcurr bool
+	var testDataInfo = []struct {
+		oldEmail                                string
+		newEmail                                string
+		responseCode                            int
+		errorExpectedToOcurr                    bool
 		shouldCreateAndAuthenticateAccountFirst bool
 	}{
 		{
@@ -140,7 +140,7 @@ func createAndLoginAccountTestUtil(t *testing.T, result CreateAccountResponse, e
 		t.Errorf("obtained error but not expected - %s", err.Error())
 	}
 
-	if result.Id == 0 && !errorExpectedToOcurr{
+	if result.Id == 0 && !errorExpectedToOcurr {
 		t.Errorf("obtained error since id is 0 but not expected - %s", result.Error)
 	}
 
@@ -153,7 +153,7 @@ func createAndLoginAccountTestUtil(t *testing.T, result CreateAccountResponse, e
 		t.Errorf("error was not expected to occur - error %s", err.Error())
 	}
 
-	if authRes.Token == "" && !errorExpectedToOcurr{
+	if authRes.Token == "" && !errorExpectedToOcurr {
 		t.Errorf("null or empty jwt token not expected")
 	} else if authRes.Token != "" && errorExpectedToOcurr {
 		t.Errorf("expected empty json web token but got a token instead")

@@ -8,16 +8,14 @@ import (
 	"testing"
 )
 
-
-
 func TestCreateAccountHandler(t *testing.T) {
 	email := fmt.Sprintf("test_%s@gmail.com", GenerateRandomString(17))
 	password := fmt.Sprintf("test_password_%s", GenerateRandomString(17))
 
-	var testDataInfo = []struct{
-		email string
-		password string
-		responseCode int
+	var testDataInfo = []struct {
+		email                string
+		password             string
+		responseCode         int
 		errorExpectedToOcurr bool
 	}{
 		{

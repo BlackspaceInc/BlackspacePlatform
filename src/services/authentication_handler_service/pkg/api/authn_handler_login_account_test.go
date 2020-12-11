@@ -8,11 +8,11 @@ import (
 )
 
 func TestLoginAccountHandler(t *testing.T) {
-	var testDataInfo = []struct{
-		email string
-		password string
-		responseCode int
-		errorExpectedToOcurr bool
+	var testDataInfo = []struct {
+		email                        string
+		password                     string
+		responseCode                 int
+		errorExpectedToOcurr         bool
 		shouldCreateUserAccountFirst bool
 	}{
 		{
@@ -55,7 +55,7 @@ func TestLoginAccountHandler(t *testing.T) {
 	for _, data := range testDataInfo {
 		// first we create the account
 		if data.shouldCreateUserAccountFirst {
-			result , err, _ := CreateUserAccountRequestTestUtil(data.email, data.password, t)
+			result, err, _ := CreateUserAccountRequestTestUtil(data.email, data.password, t)
 
 			if err != nil && !data.errorExpectedToOcurr {
 				t.Errorf("obtained error but not expected - %s", err.Error())
@@ -100,7 +100,7 @@ func LoginUserAccountRequestTestUtil(email, password string, t *testing.T) (Logi
 	var result LoginAccountResponse
 
 	reqBody := LoginAccountRequest{
-		Email: email,
+		Email:    email,
 		Password: password,
 	}
 

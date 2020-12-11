@@ -13,10 +13,10 @@ import (
 )
 
 func TestGetAccountHandler(t *testing.T) {
-	var testDataInfo = []struct{
-		email string
-		responseCode int
-		errorExpectedToOcurr bool
+	var testDataInfo = []struct {
+		email                                   string
+		responseCode                            int
+		errorExpectedToOcurr                    bool
 		shouldCreateAndAuthenticateAccountFirst bool
 	}{
 		{
@@ -53,11 +53,11 @@ func TestGetAccountHandler(t *testing.T) {
 		userId := fmt.Sprint(result.Id)
 		opResult, err, rr := GetUserAccountRequestTestUtil(userId, authRes.Token, t)
 
-		if data.errorExpectedToOcurr && (err == nil  || (opResult != nil && opResult.Account != nil)) {
+		if data.errorExpectedToOcurr && (err == nil || (opResult != nil && opResult.Account != nil)) {
 			t.Errorf("expected error to occur but none did")
 		}
 
-		if !data.errorExpectedToOcurr && (err != nil  || (opResult != nil && opResult.Account == nil))  {
+		if !data.errorExpectedToOcurr && (err != nil || (opResult != nil && opResult.Account == nil)) {
 			t.Errorf("error was not expected to occur - error %s", err.Error())
 		}
 
@@ -71,7 +71,7 @@ func TestGetAccountHandler(t *testing.T) {
 			t.Errorf("handler returned empty email field. Expected valid response error")
 		}
 
-		if  opResult != nil && opResult.Account != nil {
+		if opResult != nil && opResult.Account != nil {
 			if opResult.Account.Username != data.email || fmt.Sprint(opResult.Account.ID) != userId {
 				t.Errorf("invalid operation parameters")
 			}

@@ -35,7 +35,7 @@ func GenerateRandomString(n int) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
 
-func createRequestBody(body interface{})(*bytes.Reader, error){
+func createRequestBody(body interface{}) (*bytes.Reader, error) {
 	b, err := json.Marshal(body)
 	if err != nil {
 		return nil, err

@@ -20,7 +20,6 @@ func (s *Server) logoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-
 	// hit authn log out endpoint and return
 	// we delete the session stored in the authentication service redis store
 	var (

@@ -140,13 +140,13 @@ start:
 	docker-compose -f docker-compose.jaeger.yml -f docker-compose.dev.yaml up --remove-orphans
 
 stop:
-	docker-compose -f docker-compose.jaeger.yml -f docker-compose.dev.yaml -f docker-compose-authentication_service.yml down
+	docker-compose -f docker-compose.jaeger.yml -f docker-compose.dev.yaml down
 
 start-e2e-dependencies:
 	# starts the necessary services in order to permit e2e testing
 	@echo starts the required support container services to allow e2e testing
-	docker-compose -f docker-compose.jaeger.yml -f docker-compose.test.dependencies.yml up --remove-orphans -d
+	docker-compose -f docker-compose.jaeger.yml -f docker-compose-authentication_service.yml up --remove-orphans -d
 
 stop-e2e-dependencies:
 	@echo stopping the container services used for testing
-	docker-compose -f docker-compose.jaeger.yml -f docker-compose.test.dependencies.yml down
+	docker-compose -f docker-compose.jaeger.yml -f docker-compose-authentication_service.yml down
