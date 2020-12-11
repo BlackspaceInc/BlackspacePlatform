@@ -1,0 +1,10 @@
+on: push
+name: Authentication Handler Service
+jobs:
+  checks:
+    name: run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Integration & Unit Test Cases
+        run: cd /src/services/authentication_handler_service && make test-suite
