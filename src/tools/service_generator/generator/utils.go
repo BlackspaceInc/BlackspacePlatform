@@ -92,17 +92,17 @@ func WalkAndUpdate(serviceName string){
 	}
 
 	var updateStr =  blackspaceRepo+"/src/services/"+serviceName
-	glog.Info("removing all references of podinfo from files")
+	glog.Info("removing all references of authentication_handler_service from files")
 	for _, file := range fileList {
 
 		if filepath.Ext(file) != ".go" && filepath.Ext(file) != ".png" && filepath.Ext(file) != ".json" {
 				glog.Info("file", zap.String("ext", file))
-				// remove all references of podinfo in file
-				RemoveAllReferencesFromFile(file, "podinfo", serviceName)
+				// remove all references of authentication_handler_service in file
+				RemoveAllReferencesFromFile(file, "authentication_handler_service", serviceName)
 			} else {
-				RemoveAllReferencesFromFile(file, "github.com/stefanprodan/podinfo",updateStr)
-				RemoveAllReferencesFromFile(file, "stefanprodan/podinfo", updateStr)
-				RemoveAllReferencesFromFile(file, "podinfo", serviceName)
+				RemoveAllReferencesFromFile(file, "github.com/stefanprodan/authentication_handler_service",updateStr)
+				RemoveAllReferencesFromFile(file, "stefanprodan/authentication_handler_service", updateStr)
+				RemoveAllReferencesFromFile(file, "authentication_handler_service", serviceName)
 			}
 			// remove all references of stefanprodan
 			// var stefanSearchStr = []string{ "stefanprodan", "Stefan Prodan"}
@@ -115,7 +115,7 @@ func WalkAndUpdate(serviceName string){
 			RemoveAllReferencesFromFile(file, "name: stefanprodan", "name: Yoan Yomba")
 			RemoveAllReferencesFromFile(file, "stefanprodan@users.noreply.github.com", serviceName+"@users.noreply.github.com")
 	}
-	glog.Info("successfully removed all references of podinfo from files")
+	glog.Info("successfully removed all references of authentication_handler_service from files")
 }
 
 // setupCommonTemplates sets up template files for generated service

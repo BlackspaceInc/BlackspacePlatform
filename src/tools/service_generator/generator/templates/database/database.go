@@ -1,7 +1,6 @@
 package database
 
 import (
-	"context"
 	"os"
 
 	"github.com/jinzhu/gorm"
@@ -68,12 +67,10 @@ func MigrateSchemas(db *gorm.DB, logger *zap.Logger, models ...interface{}) erro
 		{
 			ID: "20200416",
 			Migrate: func(tx *gorm.DB) error {
-				return tx.AutoMigrate(
-					...models).Error
+				return tx.AutoMigrate(models...).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
-				return tx.DropTable(
-					...models).Error
+				return tx.DropTable(models...).Error
 			},
 		},
 	})

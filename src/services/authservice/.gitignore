@@ -1,5 +1,0 @@
-*.db
-.env
-vendor/
-dist/
-.idea
