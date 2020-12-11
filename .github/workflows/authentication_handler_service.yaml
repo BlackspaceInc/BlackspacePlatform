@@ -4,7 +4,10 @@ jobs:
   checks:
     name: run
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/services/authentication_handler_service
     steps:
       - uses: actions/checkout@master
       - name: Integration & Unit Test Cases
-        run: cd /src/services/authentication_handler_service && make test-suite
+        run: make test-suite
