@@ -1,0 +1,6 @@
+type Mutation {
+	updateCompany(input: CompanyInput!): Company!
+	createCompany(input: CompanyInput!): Int!
+	deleteCompany(id: Int!): Boolean!
+	deleteCompanies(ids: [Int]!): [Boolean]!
+}

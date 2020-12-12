@@ -1,0 +1,5 @@
+type Query {
+	getCompanies: [Company!]!
+	getPaginatedCompanies(limit: Int!): [Company!]!
+	getCompany(id: Int!): Company!
+}

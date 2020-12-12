@@ -1,0 +1,62 @@
+input CompanyInput {
+	id: Int
+	companyName: String!
+	companyAddress: String!
+	phoneNumber: PhoneNumberInput!
+	category: String!
+}
+
+input TopicsInput {
+	id: Int
+	Technology: Boolean
+	Health: Boolean
+	Food: Boolean
+	Science: Boolean
+	Music: Boolean
+	Travel: Boolean
+	Business: Boolean
+	Cooking: Boolean
+	FashionAndStyle: Boolean
+	Design: Boolean
+	Art: Boolean
+}
+
+input MediaInput {
+	id: Int
+	website: String
+	instagram: String
+	facebook: String
+	linkedIn: String
+	pinterest: String
+}
+
+input AddressInput {
+	Address: String
+	ApartmentUnit: String
+	ZipCode: String
+	City: String
+	State: String
+	birthdate: DateOfBirthInput
+}
+
+input DateOfBirthInput {
+	Month: String
+	Day: String
+	Year: String
+}
+
+input PaymentProcessingMethodsInput {
+	paymentOptions: [PaymentOptions]
+	medium: [PaymentMedium]
+}
+
+input BusinessTypeInput {
+	category: BusinessCategory
+	subCategory: BusinessSubCategory
+}
+
+input PhoneNumberInput {
+	number: String
+	type: PhoneType
+}
+
