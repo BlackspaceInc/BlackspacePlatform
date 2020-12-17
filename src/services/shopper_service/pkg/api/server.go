@@ -12,6 +12,9 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/graphql/playground"
+	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
+	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
+	core_tracing "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-tracing"
 	"github.com/gomodule/redigo/redis"
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -23,6 +26,7 @@ import (
 	"golang.org/x/net/http2/h2c"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/database"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/errors"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/fscache"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/graphql"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/graphql/generated"
@@ -79,7 +83,9 @@ type Config struct {
 
 type Server struct {
 	router  *mux.Router
-	logger  *zap.Logger
+	logger  core_logging.ILog
+	tracingEngine *core_tracing.TracingEngine
+	metricsEngine *core_metrics.CoreMetricsEngine
 	config  *Config
 	pool    *redis.Pool
 	handler http.Handler
@@ -87,7 +93,8 @@ type Server struct {
 	db        *database.Db
 }
 
-func NewServer(config *Config, logger *zap.Logger, db *database.Db) (*Server, error) {
+func NewServer(config *Config, logger core_logging.ILog, tracer *core_tracing.TracingEngine, metrics *core_metrics.CoreMetricsEngine,
+	db *database.Db) (*Server, error) {
 	gqlServer := gql.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graphql.Resolver{
 		db,
 	}}))
@@ -98,6 +105,8 @@ func NewServer(config *Config, logger *zap.Logger, db *database.Db) (*Server, er
 		config: config,
 		gqlServer: gqlServer,
 		db: db,
+		tracingEngine: tracer,
+		metricsEngine: metrics,
 	}
 
 	return srv, nil
@@ -141,7 +150,7 @@ func (s *Server) registerHandlers() {
 	s.router.HandleFunc("/swagger.json", func(w http.ResponseWriter, r *http.Request) {
 		doc, err := swag.ReadDoc()
 		if err != nil {
-			s.logger.Error("swagger error", zap.Error(err), zap.String("path", "/swagger.json"))
+			s.logger.Error(errors.ErrSwaggerGenError, err.Error(), zap.Error(err), zap.String("path", "/swagger.json"))
 		}
 		w.Write([]byte(doc))
 	})
@@ -184,7 +193,7 @@ func (s *Server) ListenAndServe(stopCh <-chan struct{}) {
 		var err error
 		watcher, err = fscache.NewWatch(s.config.ConfigPath)
 		if err != nil {
-			s.logger.Error("config watch error", zap.Error(err), zap.String("path", s.config.ConfigPath))
+			s.logger.Error(errors.ErrFailedToWatchConfigDirectory, "config watch error", zap.Error(err), zap.String("path", s.config.ConfigPath))
 		} else {
 			watcher.Watch()
 		}
@@ -233,14 +242,14 @@ func (s *Server) ListenAndServe(stopCh <-chan struct{}) {
 	// determine if the http server was started
 	if srv != nil {
 		if err := srv.Shutdown(ctx); err != nil {
-			s.logger.Warn("HTTP server graceful shutdown failed", zap.Error(err))
+			s.logger.Error(errors.ErrHttpServerFailedGracefuleShutdown, err.Error())
 		}
 	}
 
 	// determine if the secure server was started
 	if secureSrv != nil {
 		if err := secureSrv.Shutdown(ctx); err != nil {
-			s.logger.Warn("HTTPS server graceful shutdown failed", zap.Error(err))
+			s.logger.Error(errors.ErrHttpsServerFailedGracefuleShutdown, err.Error())
 		}
 	}
 }
@@ -265,7 +274,7 @@ func (s *Server) startServer() *http.Server {
 	// start the server in the background
 	go func() {
 		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
-			s.logger.Fatal("HTTP server crashed", zap.Error(err))
+			s.logger.FatalM(errors.ErrHttpServerCrashed, err.Error())
 		}
 	}()
 
@@ -296,7 +305,7 @@ func (s *Server) startSecureServer() *http.Server {
 	// start the server in the background
 	go func() {
 		if err := srv.ListenAndServeTLS(cert, key); err != http.ErrServerClosed {
-			s.logger.Fatal("HTTPS server crashed", zap.Error(err))
+			s.logger.FatalM(errors.ErrHttpsServerCrashed, err.Error())
 		}
 	}()
 

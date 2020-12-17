@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -9,12 +10,19 @@ import (
 	"strings"
 	"time"
 
+	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
+	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
+	core_tracing "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-tracing"
+	"github.com/opentracing/opentracing-go"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"github.com/uber/jaeger-lib/metrics/prometheus"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/api"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/database"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/errors"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/grpc"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/signals"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/version"
@@ -52,6 +60,16 @@ func main() {
 	fs.Int("stress-cpu", 0, "number of CPU cores with 100 load")
 	fs.Int("stress-memory", 0, "MB of data to load into memory")
 	fs.String("cache-server", "", "Redis address in the format <host>:<port>")
+	// service configurations
+	fs.String("service_name", "business_account_service", "microservice name")
+	// tracing configurations
+	fs.String("jaeger-endpoint", "http://jaeger-collector:14268/api/traces", "jaeger collector endpoint")
+	// database connection configurations
+	fs.String("db_host", "localhost", "database host string")
+	fs.Int("db_port", 5432, "database port")
+	fs.String("db_user", "blackspaceInc", "database user string")
+	fs.String("db_password", "blackspaceInc", "database password string")
+	fs.String("db_name", "business_account_service_db", "database name")
 
 	versionFlag := fs.BoolP("version", "v", false, "get version number")
 
@@ -93,11 +111,29 @@ func main() {
 		fmt.Printf("Error to open config file, %v\n",fileErr)
 	}
 
+	// configure tracing
+	serviceName := viper.GetString("service-name")
+	collectorEndpoint := viper.GetString("jaeger-endpoint")
+	// initialize a tracing object globally
+	tracerEngine, closer := core_tracing.NewTracer(serviceName, collectorEndpoint, prometheus.New())
+	defer closer.Close()
+
+	if tracerEngine == nil {
+		panic("cannot initialize tracer engine")
+	}
+	opentracing.SetGlobalTracer(tracerEngine.Tracer)
+
 	// configure logging
-	logger, _ := initZap(viper.GetString("level"))
-	defer logger.Sync()
-	stdLog := zap.RedirectStdLog(logger)
-	defer stdLog()
+	ctx := context.Background()
+	rootSpan := opentracing.SpanFromContext(ctx)
+	logger := core_logging.NewJSONLogger(nil, rootSpan)
+
+	// configure metrics
+	coreMetrics := core_metrics.NewCoreMetricsEngineInstance(serviceName, nil)
+
+	// configure db connection
+	connectionString := configureConnectionString()
+	db, err := database.New(ctx, connectionString, tracerEngine, coreMetrics, logger)
 
 	// start stress tests if any
 	beginStressTest(viper.GetInt("stress-cpu"), viper.GetInt("stress-memory"), logger)
@@ -116,7 +152,7 @@ func main() {
 
 	// validate random delay options
 	if viper.GetInt("random-delay-max") < viper.GetInt("random-delay-min") {
-		logger.Panic("`--random-delay-max` should be greater than `--random-delay-min`")
+		logger.FatalM(errors.ErrInvalidEnvironmentVariableConfigurations,"`--random-delay-max` should be greater than `--random-delay-min`")
 	}
 
 	switch delayUnit := viper.GetString("random-delay-unit"); delayUnit {
@@ -125,25 +161,25 @@ func main() {
 		"ms":
 		break
 	default:
-		logger.Panic("`random-delay-unit` accepted values are: s|ms")
+		logger.FatalM(errors.ErrInvalidEnvironmentVariableConfigurations, "`random-delay-unit` accepted values are: s|ms")
 	}
 
 	// load gRPC server config
 	var grpcCfg grpc.Config
 	if err := viper.Unmarshal(&grpcCfg); err != nil {
-		logger.Panic("config unmarshal failed", zap.Error(err))
+		logger.FatalM(err, "config unmarshal failed")
 	}
 
 	// start gRPC server
 	if grpcCfg.Port > 0 {
-		grpcSrv, _ := grpc.NewServer(&grpcCfg, logger)
+		grpcSrv, _ := grpc.NewServer(&grpcCfg, logger, tracerEngine, coreMetrics)
 		go grpcSrv.ListenAndServe()
 	}
 
 	// load HTTP server config
 	var srvCfg api.Config
 	if err := viper.Unmarshal(&srvCfg); err != nil {
-		logger.Panic("config unmarshal failed", zap.Error(err))
+		logger.FatalM(err, "config unmarshal failed")
 	}
 
 	// log version and port
@@ -154,9 +190,21 @@ func main() {
 	)
 
 	// start HTTP server
-	srv, _ := api.NewServer(&srvCfg, logger)
+	srv, _ := api.NewServer(&srvCfg, logger, tracerEngine, coreMetrics, db)
 	stopCh := signals.SetupSignalHandler()
 	srv.ListenAndServe(stopCh)
+}
+
+func configureConnectionString() string {
+	host := viper.GetString("db_host")
+	port := viper.GetInt("db_port")
+	user := viper.GetString("db_user")
+	password := viper.GetString("db_password")
+	dbname := viper.GetString("db_name")
+	connectionString := fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+	return connectionString
 }
 
 func initZap(logLevel string) (*zap.Logger, error) {
@@ -208,7 +256,7 @@ func initZap(logLevel string) (*zap.Logger, error) {
 
 var stressMemoryPayload []byte
 
-func beginStressTest(cpus int, mem int, logger *zap.Logger) {
+func beginStressTest(cpus int, mem int, logger core_logging.ILog) {
 	done := make(chan int)
 	if cpus > 0 {
 		logger.Info("starting CPU stress", zap.Int("cores", cpus))
@@ -231,18 +279,18 @@ func beginStressTest(cpus int, mem int, logger *zap.Logger) {
 		f, err := os.Create(path)
 
 		if err != nil {
-			logger.Error("memory stress failed", zap.Error(err))
+			logger.ErrorM(err, "memory stress failed")
 		}
 
 		if err := f.Truncate(1000000 * int64(mem)); err != nil {
-			logger.Error("memory stress failed", zap.Error(err))
+			logger.Error(err, "memory stress failed")
 		}
 
 		stressMemoryPayload, err = ioutil.ReadFile(path)
 		f.Close()
 		os.Remove(path)
 		if err != nil {
-			logger.Error("memory stress failed", zap.Error(err))
+			logger.Error(err, "memory stress failed")
 		}
 		logger.Info("starting CPU stress", zap.Int("memory", len(stressMemoryPayload)))
 	}

@@ -17,7 +17,7 @@ var connSettings = "postgresql://doadmin:oqshd3sto72yyhgq@test-do-user-6612421-0
 
 // init initializes a connection to the database initially and performs package level
 // cleanup handler initialization
-func SetupTests() *database.Db {
+func SetupTests() *Db {
 	testDbInstance := Setup()
 	if testDbInstance == nil {
 		os.Exit(1)
@@ -27,7 +27,7 @@ func SetupTests() *database.Db {
 }
 
 // Setup sets up database connection prior to testing
-func Setup() *database.Db {
+func Setup() *Db {
 	// database connection string
 	// initialize connection to the database
 	db := Initialize(connSettings)
