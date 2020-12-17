@@ -74,11 +74,12 @@ release:
 	git tag $(VERSION)
 	git push origin $(VERSION)
 
-gql-proto:
-	go install github.com/danielvladco/go-proto-gql/protoc-gen-gql && go install github.com/danielvladco/go-proto-gql/protoc-gen-gogql
+download_proto_dependencies:
+	@echo "downloading protoc-gen tool"
+	go install github.com/danielvladco/go-proto-gql/protoc-gen-gql && go install github.com/danielvladco/go-proto-gql/protoc-gen-gogql && go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
 
-proto: gql-proto
-	@echo "setting up service schema definition via protobuf"
+generate_grpc_definitions: download_proto_dependencies
+	@echo "setting up grpc service schema definition via protobuf"
 	protoc -I. \
 			-I$(GOPATH)/src \
 			-I=$(GOPATH)/src/github.com/infobloxopen/protoc-gen-gorm \
@@ -87,15 +88,15 @@ proto: gql-proto
 			-I=$(GOPATH)/src/github.com/infobloxopen/protoc-gen-gorm/options \
 			-I=$(GOPATH)/src/github.com/protobuf/src/google/protobuf/timestamp.proto \
 			--proto_path=${GOPATH}/src/github.com/gogo/protobuf/protobuf \
-			--govalidators_out=./pkg/graphql/ \
-			--go_out=plugins=grpc:./pkg/graphql/ --gorm_out="engine=postgres:./pkg/graphql/" ./models/*.proto
+			--govalidators_out=./pkg/grpc/ \
+			--go_out=./pkg/grpc --go-grpc_out=./pkg/grpc/ --gorm_out="engine=postgres:./pkg/grpc/" ./proto/*.proto
 
-gql: proto
-	proto2graphql --input ./models/schema.proto --output ./pkg/graphql/schema/schema.graphql
+generate_graphql_schema_from_proto_definitions: generate_grpc_definitions
+	proto2graphql --input ./proto/schema.proto --output ./pkg/graphql/schema/schema.graphql
 
-gen-schema: gql
+generate_graphql_api: generate_graphql_schema_from_proto_definitions
 	# go:generate go run github.com/99designs/gqlgen
-	cd pkg/graphql && go run github.com/99designs/gqlgen schema/model.graphql
+	cd pkg/graphql && go run github.com/99designs/gqlgen schema/*.graphql
 
 down:
 	docker-compose down

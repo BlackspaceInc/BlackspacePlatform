@@ -7,11 +7,11 @@ exec:
   filename: generated/generated.go
   package: generated
 
-# Let gqlgen know where to put the generated models (if any)
+# Let gqlgen know where to put the generated proto (if any)
 # Set to null to disable
 model:
-  filename: generated/models/models_gen.go
-  package: models
+  filename: generated/proto/models_gen.go
+  package: proto
 
 # Optional, turns on resolver stub generation
 resolver:
@@ -30,7 +30,7 @@ omit_slice_element_pointers: false
 skip_validation: true
 
 # Instead of listing out every model like below, you can automatically bind to any matching types
-# within the given path by using `model: User` or `model: models.User`. EXPERIMENTAL in v0.9.1
+# within the given path by using `model: User` or `model: proto.User`. EXPERIMENTAL in v0.9.1
 autobind:
-  - github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/graphql/models
+  - github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/grpc/proto
 

@@ -1,5 +1,12 @@
+input GetBusinessAccountRequest {
+	id: Int
+}
+
+input GetBusinessAccountsRequest{
+	limit: Int
+}
+
 type Query {
-	getCompanies: [Company!]!
-	getPaginatedCompanies(limit: Int!): [Company!]!
-	getCompany(id: Int!): Company!
+	getBusinessAccount(input: GetBusinessAccountRequest!): [BusinessAccount!]!
+	getBusinessAccounts(limit: GetBusinessAccountsRequest!): [BusinessAccount!]!
 }

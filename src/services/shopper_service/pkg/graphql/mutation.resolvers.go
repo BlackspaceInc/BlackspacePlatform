@@ -7,27 +7,27 @@ import (
 	"context"
 	"fmt"
 
-	generated1 "github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/graphql/generated"
-	models1 "github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/graphql/generated/models"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/graphql/generated"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/grpc/proto"
 )
 
-func (r *mutationResolver) UpdateCompany(ctx context.Context, input models1.CompanyInput) (*models1.Company, error) {
+func (r *mutationResolver) CreateBusinessAcount(ctx context.Context, input proto.CreateBusinessAccountRequest) (*proto.BusinessAccount, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) CreateCompany(ctx context.Context, input models1.CompanyInput) (int, error) {
+func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input proto.UpdateBusinessAccountRequest) (*proto.BusinessAccount, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) DeleteCompany(ctx context.Context, id int) (bool, error) {
+func (r *mutationResolver) DeleteBusinessAccount(ctx context.Context, id proto.DeleteBusinessAccountRequest) (bool, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mutationResolver) DeleteCompanies(ctx context.Context, ids []*int) ([]*bool, error) {
+func (r *mutationResolver) DeleteBusinessAccounts(ctx context.Context, ids proto.DeleteBusinessAccountsRequest) ([]*bool, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-// Mutation returns generated1.MutationResolver implementation.
-func (r *Resolver) Mutation() generated1.MutationResolver { return &mutationResolver{r} }
+// Mutation returns generated.MutationResolver implementation.
+func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
 type mutationResolver struct{ *Resolver }

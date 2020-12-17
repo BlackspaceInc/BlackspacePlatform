@@ -8,24 +8,25 @@ import (
 	"fmt"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/graphql/generated"
-
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/graphql/models"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/grpc/proto"
 )
 
-func (r *companyResolver) ID(ctx context.Context, obj *models.Company) (*int, error) {
+func (r *businessAccountResolver) ID(ctx context.Context, obj *proto.BusinessAccount) (*int, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *mediaResolver) ID(ctx context.Context, obj *models.Media) (*int, error) {
+func (r *mediaResolver) ID(ctx context.Context, obj *proto.Media) (*int, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *topicsResolver) ID(ctx context.Context, obj *models.Topics) (*int, error) {
+func (r *topicsResolver) ID(ctx context.Context, obj *proto.Topics) (*int, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-// Company returns generated.CompanyResolver implementation.
-func (r *Resolver) Company() generated.CompanyResolver { return &companyResolver{r} }
+// BusinessAccount returns generated.BusinessAccountResolver implementation.
+func (r *Resolver) BusinessAccount() generated.BusinessAccountResolver {
+	return &businessAccountResolver{r}
+}
 
 // Media returns generated.MediaResolver implementation.
 func (r *Resolver) Media() generated.MediaResolver { return &mediaResolver{r} }
@@ -33,6 +34,6 @@ func (r *Resolver) Media() generated.MediaResolver { return &mediaResolver{r} }
 // Topics returns generated.TopicsResolver implementation.
 func (r *Resolver) Topics() generated.TopicsResolver { return &topicsResolver{r} }
 
-type companyResolver struct{ *Resolver }
+type businessAccountResolver struct{ *Resolver }
 type mediaResolver struct{ *Resolver }
 type topicsResolver struct{ *Resolver }

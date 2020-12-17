@@ -12,7 +12,8 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/graphql/generated/models"
+	proto1 "github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/graphql/generated/proto"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/grpc/proto"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -35,8 +36,11 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	BusinessAccount() BusinessAccountResolver
+	Media() MediaResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
+	Topics() TopicsResolver
 }
 
 type DirectiveRoot struct {
@@ -52,12 +56,7 @@ type ComplexityRoot struct {
 		ZipCode       func(childComplexity int) int
 	}
 
-	BusinessType struct {
-		Category    func(childComplexity int) int
-		SubCategory func(childComplexity int) int
-	}
-
-	Company struct {
+	BusinessAccount struct {
 		BusinessGoals               func(childComplexity int) int
 		BusinessStage               func(childComplexity int) int
 		Category                    func(childComplexity int) int
@@ -77,6 +76,11 @@ type ComplexityRoot struct {
 		TypeOfBusiness              func(childComplexity int) int
 	}
 
+	BusinessType struct {
+		Category    func(childComplexity int) int
+		SubCategory func(childComplexity int) int
+	}
+
 	DateOfBirth struct {
 		Day   func(childComplexity int) int
 		Month func(childComplexity int) int
@@ -93,10 +97,10 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateCompany   func(childComplexity int, input models.CompanyInput) int
-		DeleteCompanies func(childComplexity int, ids []*int) int
-		DeleteCompany   func(childComplexity int, id int) int
-		UpdateCompany   func(childComplexity int, input models.CompanyInput) int
+		CreateBusinessAcount   func(childComplexity int, input proto.CreateBusinessAccountRequest) int
+		DeleteBusinessAccount  func(childComplexity int, id proto.DeleteBusinessAccountRequest) int
+		DeleteBusinessAccounts func(childComplexity int, ids proto.DeleteBusinessAccountsRequest) int
+		UpdateBusinessAccount  func(childComplexity int, input proto.UpdateBusinessAccountRequest) int
 	}
 
 	PaymentProcessingMethods struct {
@@ -110,12 +114,8 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		GetCompanies                func(childComplexity int) int
-		GetCompaniesByBusinessStage func(childComplexity int, stage *string) int
-		GetCompaniesByBusinessType  func(childComplexity int, businessType *string) int
-		GetCompaniesByMerchantType  func(childComplexity int, merchantType *string) int
-		GetCompany                  func(childComplexity int, id int) int
-		GetPaginatedCompanies       func(childComplexity int, limit int) int
+		GetBusinessAccount  func(childComplexity int, input proto.GetBusinessAccountRequest) int
+		GetBusinessAccounts func(childComplexity int, limit proto.GetBusinessAccountsRequest) int
 	}
 
 	Topics struct {
@@ -134,19 +134,24 @@ type ComplexityRoot struct {
 	}
 }
 
+type BusinessAccountResolver interface {
+	ID(ctx context.Context, obj *proto.BusinessAccount) (*int, error)
+}
+type MediaResolver interface {
+	ID(ctx context.Context, obj *proto.Media) (*int, error)
+}
 type MutationResolver interface {
-	UpdateCompany(ctx context.Context, input models.CompanyInput) (*models.Company, error)
-	CreateCompany(ctx context.Context, input models.CompanyInput) (int, error)
-	DeleteCompany(ctx context.Context, id int) (bool, error)
-	DeleteCompanies(ctx context.Context, ids []*int) ([]*bool, error)
+	CreateBusinessAcount(ctx context.Context, input proto.CreateBusinessAccountRequest) (*proto.BusinessAccount, error)
+	UpdateBusinessAccount(ctx context.Context, input proto.UpdateBusinessAccountRequest) (*proto.BusinessAccount, error)
+	DeleteBusinessAccount(ctx context.Context, id proto.DeleteBusinessAccountRequest) (bool, error)
+	DeleteBusinessAccounts(ctx context.Context, ids proto.DeleteBusinessAccountsRequest) ([]*bool, error)
 }
 type QueryResolver interface {
-	GetCompanies(ctx context.Context) ([]*models.Company, error)
-	GetPaginatedCompanies(ctx context.Context, limit int) ([]*models.Company, error)
-	GetCompany(ctx context.Context, id int) (*models.Company, error)
-	GetCompaniesByBusinessStage(ctx context.Context, stage *string) ([]*models.Company, error)
-	GetCompaniesByBusinessType(ctx context.Context, businessType *string) ([]*models.Company, error)
-	GetCompaniesByMerchantType(ctx context.Context, merchantType *string) ([]*models.Company, error)
+	GetBusinessAccount(ctx context.Context, input proto.GetBusinessAccountRequest) ([]*proto.BusinessAccount, error)
+	GetBusinessAccounts(ctx context.Context, limit proto.GetBusinessAccountsRequest) ([]*proto.BusinessAccount, error)
+}
+type TopicsResolver interface {
+	ID(ctx context.Context, obj *proto.Topics) (*int, error)
 }
 
 type executableSchema struct {
@@ -206,6 +211,125 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Address.ZipCode(childComplexity), true
 
+	case "BusinessAccount.businessGoals":
+		if e.complexity.BusinessAccount.BusinessGoals == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.BusinessGoals(childComplexity), true
+
+	case "BusinessAccount.businessStage":
+		if e.complexity.BusinessAccount.BusinessStage == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.BusinessStage(childComplexity), true
+
+	case "BusinessAccount.category":
+		if e.complexity.BusinessAccount.Category == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.Category(childComplexity), true
+
+	case "BusinessAccount.companyAddress":
+		if e.complexity.BusinessAccount.CompanyAddress == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.CompanyAddress(childComplexity), true
+
+	case "BusinessAccount.companyName":
+		if e.complexity.BusinessAccount.CompanyName == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.CompanyName(childComplexity), true
+
+	case "BusinessAccount.email":
+		if e.complexity.BusinessAccount.Email == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.Email(childComplexity), true
+
+	case "BusinessAccount.founderAddress":
+		if e.complexity.BusinessAccount.FounderAddress == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.FounderAddress(childComplexity), true
+
+	case "BusinessAccount.id":
+		if e.complexity.BusinessAccount.ID == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.ID(childComplexity), true
+
+	case "BusinessAccount.isActive":
+		if e.complexity.BusinessAccount.IsActive == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.IsActive(childComplexity), true
+
+	case "BusinessAccount.media":
+		if e.complexity.BusinessAccount.Media == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.Media(childComplexity), true
+
+	case "BusinessAccount.merchantType":
+		if e.complexity.BusinessAccount.MerchantType == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.MerchantType(childComplexity), true
+
+	case "BusinessAccount.password":
+		if e.complexity.BusinessAccount.Password == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.Password(childComplexity), true
+
+	case "BusinessAccount.paymentDetails":
+		if e.complexity.BusinessAccount.PaymentDetails == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.PaymentDetails(childComplexity), true
+
+	case "BusinessAccount.phoneNumber":
+		if e.complexity.BusinessAccount.PhoneNumber == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.PhoneNumber(childComplexity), true
+
+	case "BusinessAccount.servicesManagedByBlackspace":
+		if e.complexity.BusinessAccount.ServicesManagedByBlackspace == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.ServicesManagedByBlackspace(childComplexity), true
+
+	case "BusinessAccount.subscribedTopics":
+		if e.complexity.BusinessAccount.SubscribedTopics == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.SubscribedTopics(childComplexity), true
+
+	case "BusinessAccount.typeOfBusiness":
+		if e.complexity.BusinessAccount.TypeOfBusiness == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.TypeOfBusiness(childComplexity), true
+
 	case "BusinessType.category":
 		if e.complexity.BusinessType.Category == nil {
 			break
@@ -219,125 +343,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BusinessType.SubCategory(childComplexity), true
-
-	case "Company.businessGoals":
-		if e.complexity.Company.BusinessGoals == nil {
-			break
-		}
-
-		return e.complexity.Company.BusinessGoals(childComplexity), true
-
-	case "Company.businessStage":
-		if e.complexity.Company.BusinessStage == nil {
-			break
-		}
-
-		return e.complexity.Company.BusinessStage(childComplexity), true
-
-	case "Company.category":
-		if e.complexity.Company.Category == nil {
-			break
-		}
-
-		return e.complexity.Company.Category(childComplexity), true
-
-	case "Company.companyAddress":
-		if e.complexity.Company.CompanyAddress == nil {
-			break
-		}
-
-		return e.complexity.Company.CompanyAddress(childComplexity), true
-
-	case "Company.companyName":
-		if e.complexity.Company.CompanyName == nil {
-			break
-		}
-
-		return e.complexity.Company.CompanyName(childComplexity), true
-
-	case "Company.email":
-		if e.complexity.Company.Email == nil {
-			break
-		}
-
-		return e.complexity.Company.Email(childComplexity), true
-
-	case "Company.founderAddress":
-		if e.complexity.Company.FounderAddress == nil {
-			break
-		}
-
-		return e.complexity.Company.FounderAddress(childComplexity), true
-
-	case "Company.id":
-		if e.complexity.Company.ID == nil {
-			break
-		}
-
-		return e.complexity.Company.ID(childComplexity), true
-
-	case "Company.isActive":
-		if e.complexity.Company.IsActive == nil {
-			break
-		}
-
-		return e.complexity.Company.IsActive(childComplexity), true
-
-	case "Company.media":
-		if e.complexity.Company.Media == nil {
-			break
-		}
-
-		return e.complexity.Company.Media(childComplexity), true
-
-	case "Company.merchantType":
-		if e.complexity.Company.MerchantType == nil {
-			break
-		}
-
-		return e.complexity.Company.MerchantType(childComplexity), true
-
-	case "Company.password":
-		if e.complexity.Company.Password == nil {
-			break
-		}
-
-		return e.complexity.Company.Password(childComplexity), true
-
-	case "Company.paymentDetails":
-		if e.complexity.Company.PaymentDetails == nil {
-			break
-		}
-
-		return e.complexity.Company.PaymentDetails(childComplexity), true
-
-	case "Company.phoneNumber":
-		if e.complexity.Company.PhoneNumber == nil {
-			break
-		}
-
-		return e.complexity.Company.PhoneNumber(childComplexity), true
-
-	case "Company.servicesManagedByBlackspace":
-		if e.complexity.Company.ServicesManagedByBlackspace == nil {
-			break
-		}
-
-		return e.complexity.Company.ServicesManagedByBlackspace(childComplexity), true
-
-	case "Company.subscribedTopics":
-		if e.complexity.Company.SubscribedTopics == nil {
-			break
-		}
-
-		return e.complexity.Company.SubscribedTopics(childComplexity), true
-
-	case "Company.typeOfBusiness":
-		if e.complexity.Company.TypeOfBusiness == nil {
-			break
-		}
-
-		return e.complexity.Company.TypeOfBusiness(childComplexity), true
 
 	case "DateOfBirth.Day":
 		if e.complexity.DateOfBirth.Day == nil {
@@ -402,53 +407,53 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Media.Website(childComplexity), true
 
-	case "Mutation.createCompany":
-		if e.complexity.Mutation.CreateCompany == nil {
+	case "Mutation.CreateBusinessAcount":
+		if e.complexity.Mutation.CreateBusinessAcount == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_createCompany_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_CreateBusinessAcount_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateCompany(childComplexity, args["input"].(models.CompanyInput)), true
+		return e.complexity.Mutation.CreateBusinessAcount(childComplexity, args["input"].(proto.CreateBusinessAccountRequest)), true
 
-	case "Mutation.deleteCompanies":
-		if e.complexity.Mutation.DeleteCompanies == nil {
+	case "Mutation.deleteBusinessAccount":
+		if e.complexity.Mutation.DeleteBusinessAccount == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteCompanies_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_deleteBusinessAccount_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteCompanies(childComplexity, args["ids"].([]*int)), true
+		return e.complexity.Mutation.DeleteBusinessAccount(childComplexity, args["id"].(proto.DeleteBusinessAccountRequest)), true
 
-	case "Mutation.deleteCompany":
-		if e.complexity.Mutation.DeleteCompany == nil {
+	case "Mutation.deleteBusinessAccounts":
+		if e.complexity.Mutation.DeleteBusinessAccounts == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteCompany_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_deleteBusinessAccounts_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteCompany(childComplexity, args["id"].(int)), true
+		return e.complexity.Mutation.DeleteBusinessAccounts(childComplexity, args["ids"].(proto.DeleteBusinessAccountsRequest)), true
 
-	case "Mutation.updateCompany":
-		if e.complexity.Mutation.UpdateCompany == nil {
+	case "Mutation.UpdateBusinessAccount":
+		if e.complexity.Mutation.UpdateBusinessAccount == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_updateCompany_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_UpdateBusinessAccount_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateCompany(childComplexity, args["input"].(models.CompanyInput)), true
+		return e.complexity.Mutation.UpdateBusinessAccount(childComplexity, args["input"].(proto.UpdateBusinessAccountRequest)), true
 
 	case "PaymentProcessingMethods.medium":
 		if e.complexity.PaymentProcessingMethods.Medium == nil {
@@ -478,72 +483,29 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.PhoneNumber.Type(childComplexity), true
 
-	case "Query.getCompanies":
-		if e.complexity.Query.GetCompanies == nil {
+	case "Query.getBusinessAccount":
+		if e.complexity.Query.GetBusinessAccount == nil {
 			break
 		}
 
-		return e.complexity.Query.GetCompanies(childComplexity), true
-
-	case "Query.getCompaniesByBusinessStage":
-		if e.complexity.Query.GetCompaniesByBusinessStage == nil {
-			break
-		}
-
-		args, err := ec.field_Query_getCompaniesByBusinessStage_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getBusinessAccount_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetCompaniesByBusinessStage(childComplexity, args["stage"].(*string)), true
+		return e.complexity.Query.GetBusinessAccount(childComplexity, args["input"].(proto.GetBusinessAccountRequest)), true
 
-	case "Query.getCompaniesByBusinessType":
-		if e.complexity.Query.GetCompaniesByBusinessType == nil {
+	case "Query.getBusinessAccounts":
+		if e.complexity.Query.GetBusinessAccounts == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getCompaniesByBusinessType_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getBusinessAccounts_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetCompaniesByBusinessType(childComplexity, args["businessType"].(*string)), true
-
-	case "Query.getCompaniesByMerchantType":
-		if e.complexity.Query.GetCompaniesByMerchantType == nil {
-			break
-		}
-
-		args, err := ec.field_Query_getCompaniesByMerchantType_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.GetCompaniesByMerchantType(childComplexity, args["merchantType"].(*string)), true
-
-	case "Query.getCompany":
-		if e.complexity.Query.GetCompany == nil {
-			break
-		}
-
-		args, err := ec.field_Query_getCompany_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.GetCompany(childComplexity, args["id"].(int)), true
-
-	case "Query.getPaginatedCompanies":
-		if e.complexity.Query.GetPaginatedCompanies == nil {
-			break
-		}
-
-		args, err := ec.field_Query_getPaginatedCompanies_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.GetPaginatedCompanies(childComplexity, args["limit"].(int)), true
+		return e.complexity.Query.GetBusinessAccounts(childComplexity, args["limit"].(proto.GetBusinessAccountsRequest)), true
 
 	case "Topics.Art":
 		if e.complexity.Topics.Art == nil {
@@ -693,15 +655,27 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "schema/inputs.graphql", Input: `input CompanyInput {
+	{Name: "schema/inputs.graphql", Input: `input IBusinessAccount {
 	id: Int
-	companyName: String!
-	companyAddress: String!
-	phoneNumber: PhoneNumberInput!
-	category: String!
+	companyName: String
+	companyAddress: String
+	phoneNumber: IPhoneNumber
+	category: String
+	media: IMedia
+	password: String
+	email: String
+	isActive: Boolean
+	typeOfBusiness: IBusinessType
+	businessGoals: [String]
+	businessStage: String
+	merchantType: MerchantType
+	paymentDetails: IPaymentProcessingMethods
+	servicesManagedByBlackspace: ServicesManagedByBlackspace
+	founderAddress: IAddress
+	subscribedTopics: ITopics
 }
 
-input TopicsInput {
+input ITopics {
 	id: Int
 	Technology: Boolean
 	Health: Boolean
@@ -716,7 +690,7 @@ input TopicsInput {
 	Art: Boolean
 }
 
-input MediaInput {
+input IMedia {
 	id: Int
 	website: String
 	instagram: String
@@ -725,54 +699,74 @@ input MediaInput {
 	pinterest: String
 }
 
-input AddressInput {
+input IAddress {
 	Address: String
 	ApartmentUnit: String
 	ZipCode: String
 	City: String
 	State: String
-	birthdate: DateOfBirthInput
+	birthdate: IDateOfBirth
 }
 
-input DateOfBirthInput {
+input IDateOfBirth {
 	Month: String
 	Day: String
 	Year: String
 }
 
-input PaymentProcessingMethodsInput {
+input IPaymentProcessingMethods {
 	paymentOptions: [PaymentOptions]
 	medium: [PaymentMedium]
 }
 
-input BusinessTypeInput {
+input IBusinessType {
 	category: BusinessCategory
 	subCategory: BusinessSubCategory
 }
 
-input PhoneNumberInput {
+input IPhoneNumber {
 	number: String
-	type: PhoneType
+	input: PhoneType
+}
+`, BuiltIn: false},
+	{Name: "schema/mutation.graphql", Input: `input CreateBusinessAccountRequest {
+	businessAccount: IBusinessAccount
 }
 
-`, BuiltIn: false},
-	{Name: "schema/mutation.graphql", Input: `type Mutation {
-	updateCompany(input: CompanyInput!): Company!
-	createCompany(input: CompanyInput!): Int!
-	deleteCompany(id: Int!): Boolean!
-	deleteCompanies(ids: [Int]!): [Boolean]!
+input UpdateBusinessAccountRequest {
+	id: Int
+	businessAccount: IBusinessAccount
+}
+
+input DeleteBusinessAccountRequest {
+	id: Int
+}
+
+input DeleteBusinessAccountsRequest{
+	id: [Int]
+}
+
+type Mutation {
+	CreateBusinessAcount(input: CreateBusinessAccountRequest!): BusinessAccount!
+	UpdateBusinessAccount(input: UpdateBusinessAccountRequest!): BusinessAccount!
+	deleteBusinessAccount(id: DeleteBusinessAccountRequest!): Boolean!
+	deleteBusinessAccounts(ids: DeleteBusinessAccountsRequest!): [Boolean]!
 }
 `, BuiltIn: false},
-	{Name: "schema/query.graphql", Input: `type Query {
-	getCompanies: [Company!]!
-	getPaginatedCompanies(limit: Int!): [Company!]!
-	getCompany(id: Int!): Company!
-	getCompaniesByBusinessStage(stage: String): [Company!]
-	getCompaniesByBusinessType(businessType: String): [Company]
-	getCompaniesByMerchantType(merchantType: String): [Company]
+	{Name: "schema/query.graphql", Input: `input GetBusinessAccountRequest {
+	id: Int
+}
+
+input GetBusinessAccountsRequest{
+	limit: Int
+}
+
+type Query {
+	getBusinessAccount(input: GetBusinessAccountRequest!): [BusinessAccount!]!
+	getBusinessAccounts(limit: GetBusinessAccountsRequest!): [BusinessAccount!]!
 }
 `, BuiltIn: false},
-	{Name: "schema/schema.graphql", Input: `type Company {
+	{Name: "schema/schema.graphql", Input: `type BusinessAccount {
   id: Int
   companyName: String
   companyAddress: String
@@ -914,13 +908,13 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_createCompany_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_CreateBusinessAcount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 models.CompanyInput
+	var arg0 proto.CreateBusinessAccountRequest
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCompanyInput2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompanyInput(ctx, tmp)
+		arg0, err = ec.unmarshalNCreateBusinessAccountRequest2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐCreateBusinessAccountRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -929,28 +923,28 @@ func (ec *executionContext) field_Mutation_createCompany_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteCompanies_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_UpdateBusinessAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 []*int
-	if tmp, ok := rawArgs["ids"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ids"))
-		arg0, err = ec.unmarshalNInt2ᚕᚖint(ctx, tmp)
+	var arg0 proto.UpdateBusinessAccountRequest
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNUpdateBusinessAccountRequest2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐUpdateBusinessAccountRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["ids"] = arg0
+	args["input"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteCompany_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_deleteBusinessAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
+	var arg0 proto.DeleteBusinessAccountRequest
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		arg0, err = ec.unmarshalNDeleteBusinessAccountRequest2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐDeleteBusinessAccountRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -959,18 +953,18 @@ func (ec *executionContext) field_Mutation_deleteCompany_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_updateCompany_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_deleteBusinessAccounts_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 models.CompanyInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNCompanyInput2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompanyInput(ctx, tmp)
+	var arg0 proto.DeleteBusinessAccountsRequest
+	if tmp, ok := rawArgs["ids"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ids"))
+		arg0, err = ec.unmarshalNDeleteBusinessAccountsRequest2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐDeleteBusinessAccountsRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["ids"] = arg0
 	return args, nil
 }
 
@@ -989,73 +983,28 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getCompaniesByBusinessStage_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getBusinessAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *string
-	if tmp, ok := rawArgs["stage"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("stage"))
-		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+	var arg0 proto.GetBusinessAccountRequest
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNGetBusinessAccountRequest2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐGetBusinessAccountRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["stage"] = arg0
+	args["input"] = arg0
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getCompaniesByBusinessType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getBusinessAccounts_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *string
-	if tmp, ok := rawArgs["businessType"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("businessType"))
-		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["businessType"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_getCompaniesByMerchantType_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 *string
-	if tmp, ok := rawArgs["merchantType"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("merchantType"))
-		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["merchantType"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_getCompany_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_getPaginatedCompanies_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 int
+	var arg0 proto.GetBusinessAccountsRequest
 	if tmp, ok := rawArgs["limit"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
-		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		arg0, err = ec.unmarshalNGetBusinessAccountsRequest2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐGetBusinessAccountsRequest(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1102,7 +1051,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Address_Address(ctx context.Context, field graphql.CollectedField, obj *models.Address) (ret graphql.Marshaler) {
+func (ec *executionContext) _Address_Address(ctx context.Context, field graphql.CollectedField, obj *proto.Address) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1129,12 +1078,12 @@ func (ec *executionContext) _Address_Address(ctx context.Context, field graphql.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Address_ApartmentUnit(ctx context.Context, field graphql.CollectedField, obj *models.Address) (ret graphql.Marshaler) {
+func (ec *executionContext) _Address_ApartmentUnit(ctx context.Context, field graphql.CollectedField, obj *proto.Address) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1161,12 +1110,12 @@ func (ec *executionContext) _Address_ApartmentUnit(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Address_ZipCode(ctx context.Context, field graphql.CollectedField, obj *models.Address) (ret graphql.Marshaler) {
+func (ec *executionContext) _Address_ZipCode(ctx context.Context, field graphql.CollectedField, obj *proto.Address) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1193,12 +1142,12 @@ func (ec *executionContext) _Address_ZipCode(ctx context.Context, field graphql.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Address_City(ctx context.Context, field graphql.CollectedField, obj *models.Address) (ret graphql.Marshaler) {
+func (ec *executionContext) _Address_City(ctx context.Context, field graphql.CollectedField, obj *proto.Address) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1225,12 +1174,12 @@ func (ec *executionContext) _Address_City(ctx context.Context, field graphql.Col
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Address_State(ctx context.Context, field graphql.CollectedField, obj *models.Address) (ret graphql.Marshaler) {
+func (ec *executionContext) _Address_State(ctx context.Context, field graphql.CollectedField, obj *proto.Address) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1257,12 +1206,12 @@ func (ec *executionContext) _Address_State(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Address_birthdate(ctx context.Context, field graphql.CollectedField, obj *models.Address) (ret graphql.Marshaler) {
+func (ec *executionContext) _Address_birthdate(ctx context.Context, field graphql.CollectedField, obj *proto.Address) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1289,12 +1238,556 @@ func (ec *executionContext) _Address_birthdate(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*models.DateOfBirth)
+	res := resTmp.(*proto.DateOfBirth)
 	fc.Result = res
-	return ec.marshalODateOfBirth2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐDateOfBirth(ctx, field.Selections, res)
+	return ec.marshalODateOfBirth2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐDateOfBirth(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _BusinessType_category(ctx context.Context, field graphql.CollectedField, obj *models.BusinessType) (ret graphql.Marshaler) {
+func (ec *executionContext) _BusinessAccount_id(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BusinessAccount().ID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_companyName(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CompanyName, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_companyAddress(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CompanyAddress, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_phoneNumber(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PhoneNumber, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*proto.PhoneNumber)
+	fc.Result = res
+	return ec.marshalOPhoneNumber2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPhoneNumber(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_category(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Category, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_media(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Media, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*proto.Media)
+	fc.Result = res
+	return ec.marshalOMedia2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐMedia(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_password(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Password, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_email(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Email, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_isActive(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsActive, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_typeOfBusiness(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TypeOfBusiness, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*proto.BusinessType)
+	fc.Result = res
+	return ec.marshalOBusinessType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_businessGoals(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.BusinessGoals, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalOString2ᚕstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_businessStage(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.BusinessStage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_merchantType(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MerchantType, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(proto.MerchantType)
+	fc.Result = res
+	return ec.marshalOMerchantType2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐMerchantType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_paymentDetails(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PaymentDetails, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*proto.PaymentProcessingMethods)
+	fc.Result = res
+	return ec.marshalOPaymentProcessingMethods2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentProcessingMethods(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_servicesManagedByBlackspace(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ServicesManagedByBlackspace, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(proto.ServicesManagedByBlackspace)
+	fc.Result = res
+	return ec.marshalOServicesManagedByBlackspace2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐServicesManagedByBlackspace(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_founderAddress(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.FounderAddress, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*proto.Address)
+	fc.Result = res
+	return ec.marshalOAddress2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐAddress(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_subscribedTopics(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SubscribedTopics, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*proto.Topics)
+	fc.Result = res
+	return ec.marshalOTopics2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐTopics(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessType_category(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessType) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1321,12 +1814,12 @@ func (ec *executionContext) _BusinessType_category(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*models.BusinessCategory)
+	res := resTmp.(proto.BusinessCategory)
 	fc.Result = res
-	return ec.marshalOBusinessCategory2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐBusinessCategory(ctx, field.Selections, res)
+	return ec.marshalOBusinessCategory2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessCategory(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _BusinessType_subCategory(ctx context.Context, field graphql.CollectedField, obj *models.BusinessType) (ret graphql.Marshaler) {
+func (ec *executionContext) _BusinessType_subCategory(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessType) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1353,556 +1846,12 @@ func (ec *executionContext) _BusinessType_subCategory(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*models.BusinessSubCategory)
+	res := resTmp.(proto.BusinessSubCategory)
 	fc.Result = res
-	return ec.marshalOBusinessSubCategory2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐBusinessSubCategory(ctx, field.Selections, res)
+	return ec.marshalOBusinessSubCategory2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessSubCategory(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Company_id(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*int)
-	fc.Result = res
-	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Company_companyName(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.CompanyName, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Company_companyAddress(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.CompanyAddress, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Company_phoneNumber(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PhoneNumber, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*models.PhoneNumber)
-	fc.Result = res
-	return ec.marshalOPhoneNumber2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPhoneNumber(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Company_category(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Category, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Company_media(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Media, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*models.Media)
-	fc.Result = res
-	return ec.marshalOMedia2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐMedia(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Company_password(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Password, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Company_email(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Email, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Company_isActive(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.IsActive, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*bool)
-	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Company_typeOfBusiness(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.TypeOfBusiness, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*models.BusinessType)
-	fc.Result = res
-	return ec.marshalOBusinessType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐBusinessType(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Company_businessGoals(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.BusinessGoals, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*string)
-	fc.Result = res
-	return ec.marshalOString2ᚕᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Company_businessStage(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.BusinessStage, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Company_merchantType(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.MerchantType, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*models.MerchantType)
-	fc.Result = res
-	return ec.marshalOMerchantType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐMerchantType(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Company_paymentDetails(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PaymentDetails, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*models.PaymentProcessingMethods)
-	fc.Result = res
-	return ec.marshalOPaymentProcessingMethods2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentProcessingMethods(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Company_servicesManagedByBlackspace(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ServicesManagedByBlackspace, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*models.ServicesManagedByBlackspace)
-	fc.Result = res
-	return ec.marshalOServicesManagedByBlackspace2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐServicesManagedByBlackspace(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Company_founderAddress(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.FounderAddress, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*models.Address)
-	fc.Result = res
-	return ec.marshalOAddress2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐAddress(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Company_subscribedTopics(ctx context.Context, field graphql.CollectedField, obj *models.Company) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Company",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.SubscribedTopics, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*models.Topics)
-	fc.Result = res
-	return ec.marshalOTopics2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐTopics(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _DateOfBirth_Month(ctx context.Context, field graphql.CollectedField, obj *models.DateOfBirth) (ret graphql.Marshaler) {
+func (ec *executionContext) _DateOfBirth_Month(ctx context.Context, field graphql.CollectedField, obj *proto.DateOfBirth) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1929,12 +1878,12 @@ func (ec *executionContext) _DateOfBirth_Month(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _DateOfBirth_Day(ctx context.Context, field graphql.CollectedField, obj *models.DateOfBirth) (ret graphql.Marshaler) {
+func (ec *executionContext) _DateOfBirth_Day(ctx context.Context, field graphql.CollectedField, obj *proto.DateOfBirth) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1961,12 +1910,12 @@ func (ec *executionContext) _DateOfBirth_Day(ctx context.Context, field graphql.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _DateOfBirth_Year(ctx context.Context, field graphql.CollectedField, obj *models.DateOfBirth) (ret graphql.Marshaler) {
+func (ec *executionContext) _DateOfBirth_Year(ctx context.Context, field graphql.CollectedField, obj *proto.DateOfBirth) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1993,12 +1942,12 @@ func (ec *executionContext) _DateOfBirth_Year(ctx context.Context, field graphql
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Media_id(ctx context.Context, field graphql.CollectedField, obj *models.Media) (ret graphql.Marshaler) {
+func (ec *executionContext) _Media_id(ctx context.Context, field graphql.CollectedField, obj *proto.Media) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2009,14 +1958,14 @@ func (ec *executionContext) _Media_id(ctx context.Context, field graphql.Collect
 		Object:     "Media",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return ec.resolvers.Media().ID(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2030,7 +1979,7 @@ func (ec *executionContext) _Media_id(ctx context.Context, field graphql.Collect
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Media_website(ctx context.Context, field graphql.CollectedField, obj *models.Media) (ret graphql.Marshaler) {
+func (ec *executionContext) _Media_website(ctx context.Context, field graphql.CollectedField, obj *proto.Media) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2057,12 +2006,12 @@ func (ec *executionContext) _Media_website(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Media_instagram(ctx context.Context, field graphql.CollectedField, obj *models.Media) (ret graphql.Marshaler) {
+func (ec *executionContext) _Media_instagram(ctx context.Context, field graphql.CollectedField, obj *proto.Media) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2089,12 +2038,12 @@ func (ec *executionContext) _Media_instagram(ctx context.Context, field graphql.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Media_facebook(ctx context.Context, field graphql.CollectedField, obj *models.Media) (ret graphql.Marshaler) {
+func (ec *executionContext) _Media_facebook(ctx context.Context, field graphql.CollectedField, obj *proto.Media) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2121,12 +2070,12 @@ func (ec *executionContext) _Media_facebook(ctx context.Context, field graphql.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Media_linkedIn(ctx context.Context, field graphql.CollectedField, obj *models.Media) (ret graphql.Marshaler) {
+func (ec *executionContext) _Media_linkedIn(ctx context.Context, field graphql.CollectedField, obj *proto.Media) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2153,12 +2102,12 @@ func (ec *executionContext) _Media_linkedIn(ctx context.Context, field graphql.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Media_pinterest(ctx context.Context, field graphql.CollectedField, obj *models.Media) (ret graphql.Marshaler) {
+func (ec *executionContext) _Media_pinterest(ctx context.Context, field graphql.CollectedField, obj *proto.Media) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2185,12 +2134,12 @@ func (ec *executionContext) _Media_pinterest(ctx context.Context, field graphql.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_updateCompany(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_CreateBusinessAcount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2207,7 +2156,7 @@ func (ec *executionContext) _Mutation_updateCompany(ctx context.Context, field g
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_updateCompany_args(ctx, rawArgs)
+	args, err := ec.field_Mutation_CreateBusinessAcount_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -2215,7 +2164,7 @@ func (ec *executionContext) _Mutation_updateCompany(ctx context.Context, field g
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateCompany(rctx, args["input"].(models.CompanyInput))
+		return ec.resolvers.Mutation().CreateBusinessAcount(rctx, args["input"].(proto.CreateBusinessAccountRequest))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2227,12 +2176,12 @@ func (ec *executionContext) _Mutation_updateCompany(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*models.Company)
+	res := resTmp.(*proto.BusinessAccount)
 	fc.Result = res
-	return ec.marshalNCompany2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompany(ctx, field.Selections, res)
+	return ec.marshalNBusinessAccount2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessAccount(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_createCompany(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_UpdateBusinessAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2249,7 +2198,7 @@ func (ec *executionContext) _Mutation_createCompany(ctx context.Context, field g
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_createCompany_args(ctx, rawArgs)
+	args, err := ec.field_Mutation_UpdateBusinessAccount_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -2257,7 +2206,7 @@ func (ec *executionContext) _Mutation_createCompany(ctx context.Context, field g
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateCompany(rctx, args["input"].(models.CompanyInput))
+		return ec.resolvers.Mutation().UpdateBusinessAccount(rctx, args["input"].(proto.UpdateBusinessAccountRequest))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2269,12 +2218,12 @@ func (ec *executionContext) _Mutation_createCompany(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*proto.BusinessAccount)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNBusinessAccount2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessAccount(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_deleteCompany(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteBusinessAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2291,7 +2240,7 @@ func (ec *executionContext) _Mutation_deleteCompany(ctx context.Context, field g
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_deleteCompany_args(ctx, rawArgs)
+	args, err := ec.field_Mutation_deleteBusinessAccount_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -2299,7 +2248,7 @@ func (ec *executionContext) _Mutation_deleteCompany(ctx context.Context, field g
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteCompany(rctx, args["id"].(int))
+		return ec.resolvers.Mutation().DeleteBusinessAccount(rctx, args["id"].(proto.DeleteBusinessAccountRequest))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2316,7 +2265,7 @@ func (ec *executionContext) _Mutation_deleteCompany(ctx context.Context, field g
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Mutation_deleteCompanies(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Mutation_deleteBusinessAccounts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2333,7 +2282,7 @@ func (ec *executionContext) _Mutation_deleteCompanies(ctx context.Context, field
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_deleteCompanies_args(ctx, rawArgs)
+	args, err := ec.field_Mutation_deleteBusinessAccounts_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -2341,7 +2290,7 @@ func (ec *executionContext) _Mutation_deleteCompanies(ctx context.Context, field
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteCompanies(rctx, args["ids"].([]*int))
+		return ec.resolvers.Mutation().DeleteBusinessAccounts(rctx, args["ids"].(proto.DeleteBusinessAccountsRequest))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2358,7 +2307,7 @@ func (ec *executionContext) _Mutation_deleteCompanies(ctx context.Context, field
 	return ec.marshalNBoolean2ᚕᚖbool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PaymentProcessingMethods_paymentOptions(ctx context.Context, field graphql.CollectedField, obj *models.PaymentProcessingMethods) (ret graphql.Marshaler) {
+func (ec *executionContext) _PaymentProcessingMethods_paymentOptions(ctx context.Context, field graphql.CollectedField, obj *proto.PaymentProcessingMethods) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2385,12 +2334,12 @@ func (ec *executionContext) _PaymentProcessingMethods_paymentOptions(ctx context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*models.PaymentOptions)
+	res := resTmp.([]proto.PaymentOptions)
 	fc.Result = res
-	return ec.marshalOPaymentOptions2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentOptions(ctx, field.Selections, res)
+	return ec.marshalOPaymentOptions2ᚕgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentOptions(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PaymentProcessingMethods_medium(ctx context.Context, field graphql.CollectedField, obj *models.PaymentProcessingMethods) (ret graphql.Marshaler) {
+func (ec *executionContext) _PaymentProcessingMethods_medium(ctx context.Context, field graphql.CollectedField, obj *proto.PaymentProcessingMethods) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2417,12 +2366,12 @@ func (ec *executionContext) _PaymentProcessingMethods_medium(ctx context.Context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*models.PaymentMedium)
+	res := resTmp.([]proto.PaymentMedium)
 	fc.Result = res
-	return ec.marshalOPaymentMedium2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentMedium(ctx, field.Selections, res)
+	return ec.marshalOPaymentMedium2ᚕgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentMedium(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PhoneNumber_number(ctx context.Context, field graphql.CollectedField, obj *models.PhoneNumber) (ret graphql.Marshaler) {
+func (ec *executionContext) _PhoneNumber_number(ctx context.Context, field graphql.CollectedField, obj *proto.PhoneNumber) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2449,12 +2398,12 @@ func (ec *executionContext) _PhoneNumber_number(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PhoneNumber_type(ctx context.Context, field graphql.CollectedField, obj *models.PhoneNumber) (ret graphql.Marshaler) {
+func (ec *executionContext) _PhoneNumber_type(ctx context.Context, field graphql.CollectedField, obj *proto.PhoneNumber) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2481,12 +2430,12 @@ func (ec *executionContext) _PhoneNumber_type(ctx context.Context, field graphql
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*models.PhoneType)
+	res := resTmp.(proto.PhoneType)
 	fc.Result = res
-	return ec.marshalOPhoneType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPhoneType(ctx, field.Selections, res)
+	return ec.marshalOPhoneType2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPhoneType(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_getCompanies(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_getBusinessAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2502,9 +2451,16 @@ func (ec *executionContext) _Query_getCompanies(ctx context.Context, field graph
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_getBusinessAccount_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetCompanies(rctx)
+		return ec.resolvers.Query().GetBusinessAccount(rctx, args["input"].(proto.GetBusinessAccountRequest))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2516,12 +2472,12 @@ func (ec *executionContext) _Query_getCompanies(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*models.Company)
+	res := resTmp.([]*proto.BusinessAccount)
 	fc.Result = res
-	return ec.marshalNCompany2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompanyᚄ(ctx, field.Selections, res)
+	return ec.marshalNBusinessAccount2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessAccountᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_getPaginatedCompanies(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_getBusinessAccounts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2538,7 +2494,7 @@ func (ec *executionContext) _Query_getPaginatedCompanies(ctx context.Context, fi
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getPaginatedCompanies_args(ctx, rawArgs)
+	args, err := ec.field_Query_getBusinessAccounts_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -2546,7 +2502,7 @@ func (ec *executionContext) _Query_getPaginatedCompanies(ctx context.Context, fi
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetPaginatedCompanies(rctx, args["limit"].(int))
+		return ec.resolvers.Query().GetBusinessAccounts(rctx, args["limit"].(proto.GetBusinessAccountsRequest))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2558,168 +2514,9 @@ func (ec *executionContext) _Query_getPaginatedCompanies(ctx context.Context, fi
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*models.Company)
+	res := resTmp.([]*proto.BusinessAccount)
 	fc.Result = res
-	return ec.marshalNCompany2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompanyᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_getCompany(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getCompany_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetCompany(rctx, args["id"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*models.Company)
-	fc.Result = res
-	return ec.marshalNCompany2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompany(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_getCompaniesByBusinessStage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getCompaniesByBusinessStage_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetCompaniesByBusinessStage(rctx, args["stage"].(*string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*models.Company)
-	fc.Result = res
-	return ec.marshalOCompany2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompanyᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_getCompaniesByBusinessType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getCompaniesByBusinessType_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetCompaniesByBusinessType(rctx, args["businessType"].(*string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*models.Company)
-	fc.Result = res
-	return ec.marshalOCompany2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompany(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Query_getCompaniesByMerchantType(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_getCompaniesByMerchantType_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetCompaniesByMerchantType(rctx, args["merchantType"].(*string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*models.Company)
-	fc.Result = res
-	return ec.marshalOCompany2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompany(ctx, field.Selections, res)
+	return ec.marshalNBusinessAccount2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessAccountᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2793,7 +2590,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Topics_id(ctx context.Context, field graphql.CollectedField, obj *models.Topics) (ret graphql.Marshaler) {
+func (ec *executionContext) _Topics_id(ctx context.Context, field graphql.CollectedField, obj *proto.Topics) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2804,14 +2601,14 @@ func (ec *executionContext) _Topics_id(ctx context.Context, field graphql.Collec
 		Object:     "Topics",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return ec.resolvers.Topics().ID(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2825,7 +2622,7 @@ func (ec *executionContext) _Topics_id(ctx context.Context, field graphql.Collec
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Topics_Technology(ctx context.Context, field graphql.CollectedField, obj *models.Topics) (ret graphql.Marshaler) {
+func (ec *executionContext) _Topics_Technology(ctx context.Context, field graphql.CollectedField, obj *proto.Topics) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2852,12 +2649,12 @@ func (ec *executionContext) _Topics_Technology(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Topics_Health(ctx context.Context, field graphql.CollectedField, obj *models.Topics) (ret graphql.Marshaler) {
+func (ec *executionContext) _Topics_Health(ctx context.Context, field graphql.CollectedField, obj *proto.Topics) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2884,12 +2681,12 @@ func (ec *executionContext) _Topics_Health(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Topics_Food(ctx context.Context, field graphql.CollectedField, obj *models.Topics) (ret graphql.Marshaler) {
+func (ec *executionContext) _Topics_Food(ctx context.Context, field graphql.CollectedField, obj *proto.Topics) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2916,12 +2713,12 @@ func (ec *executionContext) _Topics_Food(ctx context.Context, field graphql.Coll
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Topics_Science(ctx context.Context, field graphql.CollectedField, obj *models.Topics) (ret graphql.Marshaler) {
+func (ec *executionContext) _Topics_Science(ctx context.Context, field graphql.CollectedField, obj *proto.Topics) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2948,12 +2745,12 @@ func (ec *executionContext) _Topics_Science(ctx context.Context, field graphql.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Topics_Music(ctx context.Context, field graphql.CollectedField, obj *models.Topics) (ret graphql.Marshaler) {
+func (ec *executionContext) _Topics_Music(ctx context.Context, field graphql.CollectedField, obj *proto.Topics) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2980,12 +2777,12 @@ func (ec *executionContext) _Topics_Music(ctx context.Context, field graphql.Col
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Topics_Travel(ctx context.Context, field graphql.CollectedField, obj *models.Topics) (ret graphql.Marshaler) {
+func (ec *executionContext) _Topics_Travel(ctx context.Context, field graphql.CollectedField, obj *proto.Topics) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3012,12 +2809,12 @@ func (ec *executionContext) _Topics_Travel(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Topics_Business(ctx context.Context, field graphql.CollectedField, obj *models.Topics) (ret graphql.Marshaler) {
+func (ec *executionContext) _Topics_Business(ctx context.Context, field graphql.CollectedField, obj *proto.Topics) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3044,12 +2841,12 @@ func (ec *executionContext) _Topics_Business(ctx context.Context, field graphql.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Topics_Cooking(ctx context.Context, field graphql.CollectedField, obj *models.Topics) (ret graphql.Marshaler) {
+func (ec *executionContext) _Topics_Cooking(ctx context.Context, field graphql.CollectedField, obj *proto.Topics) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3076,12 +2873,12 @@ func (ec *executionContext) _Topics_Cooking(ctx context.Context, field graphql.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Topics_FashionAndStyle(ctx context.Context, field graphql.CollectedField, obj *models.Topics) (ret graphql.Marshaler) {
+func (ec *executionContext) _Topics_FashionAndStyle(ctx context.Context, field graphql.CollectedField, obj *proto.Topics) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3108,12 +2905,12 @@ func (ec *executionContext) _Topics_FashionAndStyle(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Topics_Design(ctx context.Context, field graphql.CollectedField, obj *models.Topics) (ret graphql.Marshaler) {
+func (ec *executionContext) _Topics_Design(ctx context.Context, field graphql.CollectedField, obj *proto.Topics) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3140,12 +2937,12 @@ func (ec *executionContext) _Topics_Design(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Topics_Art(ctx context.Context, field graphql.CollectedField, obj *models.Topics) (ret graphql.Marshaler) {
+func (ec *executionContext) _Topics_Art(ctx context.Context, field graphql.CollectedField, obj *proto.Topics) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3172,9 +2969,9 @@ func (ec *executionContext) _Topics_Art(ctx context.Context, field graphql.Colle
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -4264,8 +4061,108 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputAddressInput(ctx context.Context, obj interface{}) (models.AddressInput, error) {
-	var it models.AddressInput
+func (ec *executionContext) unmarshalInputCreateBusinessAccountRequest(ctx context.Context, obj interface{}) (proto.CreateBusinessAccountRequest, error) {
+	var it proto.CreateBusinessAccountRequest
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "businessAccount":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("businessAccount"))
+			it.BusinessAccount, err = ec.unmarshalOIBusinessAccount2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐIBusinessAccount(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputDeleteBusinessAccountRequest(ctx context.Context, obj interface{}) (proto.DeleteBusinessAccountRequest, error) {
+	var it proto.DeleteBusinessAccountRequest
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputDeleteBusinessAccountsRequest(ctx context.Context, obj interface{}) (proto.DeleteBusinessAccountsRequest, error) {
+	var it proto.DeleteBusinessAccountsRequest
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOInt2ᚕᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputGetBusinessAccountRequest(ctx context.Context, obj interface{}) (proto.GetBusinessAccountRequest, error) {
+	var it proto.GetBusinessAccountRequest
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputGetBusinessAccountsRequest(ctx context.Context, obj interface{}) (proto.GetBusinessAccountsRequest, error) {
+	var it proto.GetBusinessAccountsRequest
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "limit":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+			it.Limit, err = ec.unmarshalOInt2int64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputIAddress(ctx context.Context, obj interface{}) (proto1.IAddress, error) {
+	var it proto1.IAddress
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -4314,7 +4211,7 @@ func (ec *executionContext) unmarshalInputAddressInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("birthdate"))
-			it.Birthdate, err = ec.unmarshalODateOfBirthInput2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐDateOfBirthInput(ctx, v)
+			it.Birthdate, err = ec.unmarshalOIDateOfBirth2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐIDateOfBirth(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4324,36 +4221,8 @@ func (ec *executionContext) unmarshalInputAddressInput(ctx context.Context, obj 
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputBusinessTypeInput(ctx context.Context, obj interface{}) (models.BusinessTypeInput, error) {
-	var it models.BusinessTypeInput
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "category":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("category"))
-			it.Category, err = ec.unmarshalOBusinessCategory2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐBusinessCategory(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "subCategory":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("subCategory"))
-			it.SubCategory, err = ec.unmarshalOBusinessSubCategory2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐBusinessSubCategory(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputCompanyInput(ctx context.Context, obj interface{}) (models.CompanyInput, error) {
-	var it models.CompanyInput
+func (ec *executionContext) unmarshalInputIBusinessAccount(ctx context.Context, obj interface{}) (proto1.IBusinessAccount, error) {
+	var it proto1.IBusinessAccount
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -4370,7 +4239,7 @@ func (ec *executionContext) unmarshalInputCompanyInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("companyName"))
-			it.CompanyName, err = ec.unmarshalNString2string(ctx, v)
+			it.CompanyName, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4378,7 +4247,7 @@ func (ec *executionContext) unmarshalInputCompanyInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("companyAddress"))
-			it.CompanyAddress, err = ec.unmarshalNString2string(ctx, v)
+			it.CompanyAddress, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4386,7 +4255,7 @@ func (ec *executionContext) unmarshalInputCompanyInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("phoneNumber"))
-			it.PhoneNumber, err = ec.unmarshalNPhoneNumberInput2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPhoneNumberInput(ctx, v)
+			it.PhoneNumber, err = ec.unmarshalOIPhoneNumber2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐIPhoneNumber(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4394,7 +4263,103 @@ func (ec *executionContext) unmarshalInputCompanyInput(ctx context.Context, obj 
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("category"))
-			it.Category, err = ec.unmarshalNString2string(ctx, v)
+			it.Category, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "media":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("media"))
+			it.Media, err = ec.unmarshalOIMedia2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐIMedia(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "password":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
+			it.Password, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "email":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+			it.Email, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "isActive":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("isActive"))
+			it.IsActive, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "typeOfBusiness":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("typeOfBusiness"))
+			it.TypeOfBusiness, err = ec.unmarshalOIBusinessType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐIBusinessType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "businessGoals":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("businessGoals"))
+			it.BusinessGoals, err = ec.unmarshalOString2ᚕᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "businessStage":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("businessStage"))
+			it.BusinessStage, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "merchantType":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("merchantType"))
+			it.MerchantType, err = ec.unmarshalOMerchantType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐMerchantType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "paymentDetails":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("paymentDetails"))
+			it.PaymentDetails, err = ec.unmarshalOIPaymentProcessingMethods2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐIPaymentProcessingMethods(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "servicesManagedByBlackspace":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("servicesManagedByBlackspace"))
+			it.ServicesManagedByBlackspace, err = ec.unmarshalOServicesManagedByBlackspace2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐServicesManagedByBlackspace(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "founderAddress":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("founderAddress"))
+			it.FounderAddress, err = ec.unmarshalOIAddress2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐIAddress(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "subscribedTopics":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("subscribedTopics"))
+			it.SubscribedTopics, err = ec.unmarshalOITopics2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐITopics(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4404,8 +4369,36 @@ func (ec *executionContext) unmarshalInputCompanyInput(ctx context.Context, obj 
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputDateOfBirthInput(ctx context.Context, obj interface{}) (models.DateOfBirthInput, error) {
-	var it models.DateOfBirthInput
+func (ec *executionContext) unmarshalInputIBusinessType(ctx context.Context, obj interface{}) (proto1.IBusinessType, error) {
+	var it proto1.IBusinessType
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "category":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("category"))
+			it.Category, err = ec.unmarshalOBusinessCategory2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessCategory(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "subCategory":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("subCategory"))
+			it.SubCategory, err = ec.unmarshalOBusinessSubCategory2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessSubCategory(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputIDateOfBirth(ctx context.Context, obj interface{}) (proto1.IDateOfBirth, error) {
+	var it proto1.IDateOfBirth
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -4440,8 +4433,8 @@ func (ec *executionContext) unmarshalInputDateOfBirthInput(ctx context.Context, 
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputMediaInput(ctx context.Context, obj interface{}) (models.MediaInput, error) {
-	var it models.MediaInput
+func (ec *executionContext) unmarshalInputIMedia(ctx context.Context, obj interface{}) (proto1.IMedia, error) {
+	var it proto1.IMedia
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -4500,8 +4493,8 @@ func (ec *executionContext) unmarshalInputMediaInput(ctx context.Context, obj in
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputPaymentProcessingMethodsInput(ctx context.Context, obj interface{}) (models.PaymentProcessingMethodsInput, error) {
-	var it models.PaymentProcessingMethodsInput
+func (ec *executionContext) unmarshalInputIPaymentProcessingMethods(ctx context.Context, obj interface{}) (proto1.IPaymentProcessingMethods, error) {
+	var it proto1.IPaymentProcessingMethods
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -4510,7 +4503,7 @@ func (ec *executionContext) unmarshalInputPaymentProcessingMethodsInput(ctx cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("paymentOptions"))
-			it.PaymentOptions, err = ec.unmarshalOPaymentOptions2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentOptions(ctx, v)
+			it.PaymentOptions, err = ec.unmarshalOPaymentOptions2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentOptions(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4518,7 +4511,7 @@ func (ec *executionContext) unmarshalInputPaymentProcessingMethodsInput(ctx cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("medium"))
-			it.Medium, err = ec.unmarshalOPaymentMedium2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentMedium(ctx, v)
+			it.Medium, err = ec.unmarshalOPaymentMedium2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentMedium(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4528,8 +4521,8 @@ func (ec *executionContext) unmarshalInputPaymentProcessingMethodsInput(ctx cont
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputPhoneNumberInput(ctx context.Context, obj interface{}) (models.PhoneNumberInput, error) {
-	var it models.PhoneNumberInput
+func (ec *executionContext) unmarshalInputIPhoneNumber(ctx context.Context, obj interface{}) (proto1.IPhoneNumber, error) {
+	var it proto1.IPhoneNumber
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -4542,11 +4535,11 @@ func (ec *executionContext) unmarshalInputPhoneNumberInput(ctx context.Context, 
 			if err != nil {
 				return it, err
 			}
-		case "type":
+		case "input":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
-			it.Type, err = ec.unmarshalOPhoneType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPhoneType(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+			it.Input, err = ec.unmarshalOPhoneType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPhoneType(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4556,8 +4549,8 @@ func (ec *executionContext) unmarshalInputPhoneNumberInput(ctx context.Context, 
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputTopicsInput(ctx context.Context, obj interface{}) (models.TopicsInput, error) {
-	var it models.TopicsInput
+func (ec *executionContext) unmarshalInputITopics(ctx context.Context, obj interface{}) (proto1.ITopics, error) {
+	var it proto1.ITopics
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -4664,6 +4657,34 @@ func (ec *executionContext) unmarshalInputTopicsInput(ctx context.Context, obj i
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUpdateBusinessAccountRequest(ctx context.Context, obj interface{}) (proto.UpdateBusinessAccountRequest, error) {
+	var it proto.UpdateBusinessAccountRequest
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "businessAccount":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("businessAccount"))
+			it.BusinessAccount, err = ec.unmarshalOIBusinessAccount2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐIBusinessAccount(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -4674,7 +4695,7 @@ func (ec *executionContext) unmarshalInputTopicsInput(ctx context.Context, obj i
 
 var addressImplementors = []string{"Address"}
 
-func (ec *executionContext) _Address(ctx context.Context, sel ast.SelectionSet, obj *models.Address) graphql.Marshaler {
+func (ec *executionContext) _Address(ctx context.Context, sel ast.SelectionSet, obj *proto.Address) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, addressImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -4706,9 +4727,74 @@ func (ec *executionContext) _Address(ctx context.Context, sel ast.SelectionSet, 
 	return out
 }
 
+var businessAccountImplementors = []string{"BusinessAccount"}
+
+func (ec *executionContext) _BusinessAccount(ctx context.Context, sel ast.SelectionSet, obj *proto.BusinessAccount) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, businessAccountImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BusinessAccount")
+		case "id":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._BusinessAccount_id(ctx, field, obj)
+				return res
+			})
+		case "companyName":
+			out.Values[i] = ec._BusinessAccount_companyName(ctx, field, obj)
+		case "companyAddress":
+			out.Values[i] = ec._BusinessAccount_companyAddress(ctx, field, obj)
+		case "phoneNumber":
+			out.Values[i] = ec._BusinessAccount_phoneNumber(ctx, field, obj)
+		case "category":
+			out.Values[i] = ec._BusinessAccount_category(ctx, field, obj)
+		case "media":
+			out.Values[i] = ec._BusinessAccount_media(ctx, field, obj)
+		case "password":
+			out.Values[i] = ec._BusinessAccount_password(ctx, field, obj)
+		case "email":
+			out.Values[i] = ec._BusinessAccount_email(ctx, field, obj)
+		case "isActive":
+			out.Values[i] = ec._BusinessAccount_isActive(ctx, field, obj)
+		case "typeOfBusiness":
+			out.Values[i] = ec._BusinessAccount_typeOfBusiness(ctx, field, obj)
+		case "businessGoals":
+			out.Values[i] = ec._BusinessAccount_businessGoals(ctx, field, obj)
+		case "businessStage":
+			out.Values[i] = ec._BusinessAccount_businessStage(ctx, field, obj)
+		case "merchantType":
+			out.Values[i] = ec._BusinessAccount_merchantType(ctx, field, obj)
+		case "paymentDetails":
+			out.Values[i] = ec._BusinessAccount_paymentDetails(ctx, field, obj)
+		case "servicesManagedByBlackspace":
+			out.Values[i] = ec._BusinessAccount_servicesManagedByBlackspace(ctx, field, obj)
+		case "founderAddress":
+			out.Values[i] = ec._BusinessAccount_founderAddress(ctx, field, obj)
+		case "subscribedTopics":
+			out.Values[i] = ec._BusinessAccount_subscribedTopics(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var businessTypeImplementors = []string{"BusinessType"}
 
-func (ec *executionContext) _BusinessType(ctx context.Context, sel ast.SelectionSet, obj *models.BusinessType) graphql.Marshaler {
+func (ec *executionContext) _BusinessType(ctx context.Context, sel ast.SelectionSet, obj *proto.BusinessType) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, businessTypeImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -4732,65 +4818,9 @@ func (ec *executionContext) _BusinessType(ctx context.Context, sel ast.Selection
 	return out
 }
 
-var companyImplementors = []string{"Company"}
-
-func (ec *executionContext) _Company(ctx context.Context, sel ast.SelectionSet, obj *models.Company) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, companyImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	var invalids uint32
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("Company")
-		case "id":
-			out.Values[i] = ec._Company_id(ctx, field, obj)
-		case "companyName":
-			out.Values[i] = ec._Company_companyName(ctx, field, obj)
-		case "companyAddress":
-			out.Values[i] = ec._Company_companyAddress(ctx, field, obj)
-		case "phoneNumber":
-			out.Values[i] = ec._Company_phoneNumber(ctx, field, obj)
-		case "category":
-			out.Values[i] = ec._Company_category(ctx, field, obj)
-		case "media":
-			out.Values[i] = ec._Company_media(ctx, field, obj)
-		case "password":
-			out.Values[i] = ec._Company_password(ctx, field, obj)
-		case "email":
-			out.Values[i] = ec._Company_email(ctx, field, obj)
-		case "isActive":
-			out.Values[i] = ec._Company_isActive(ctx, field, obj)
-		case "typeOfBusiness":
-			out.Values[i] = ec._Company_typeOfBusiness(ctx, field, obj)
-		case "businessGoals":
-			out.Values[i] = ec._Company_businessGoals(ctx, field, obj)
-		case "businessStage":
-			out.Values[i] = ec._Company_businessStage(ctx, field, obj)
-		case "merchantType":
-			out.Values[i] = ec._Company_merchantType(ctx, field, obj)
-		case "paymentDetails":
-			out.Values[i] = ec._Company_paymentDetails(ctx, field, obj)
-		case "servicesManagedByBlackspace":
-			out.Values[i] = ec._Company_servicesManagedByBlackspace(ctx, field, obj)
-		case "founderAddress":
-			out.Values[i] = ec._Company_founderAddress(ctx, field, obj)
-		case "subscribedTopics":
-			out.Values[i] = ec._Company_subscribedTopics(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch()
-	if invalids > 0 {
-		return graphql.Null
-	}
-	return out
-}
-
 var dateOfBirthImplementors = []string{"DateOfBirth"}
 
-func (ec *executionContext) _DateOfBirth(ctx context.Context, sel ast.SelectionSet, obj *models.DateOfBirth) graphql.Marshaler {
+func (ec *executionContext) _DateOfBirth(ctx context.Context, sel ast.SelectionSet, obj *proto.DateOfBirth) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, dateOfBirthImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -4818,7 +4848,7 @@ func (ec *executionContext) _DateOfBirth(ctx context.Context, sel ast.SelectionS
 
 var mediaImplementors = []string{"Media"}
 
-func (ec *executionContext) _Media(ctx context.Context, sel ast.SelectionSet, obj *models.Media) graphql.Marshaler {
+func (ec *executionContext) _Media(ctx context.Context, sel ast.SelectionSet, obj *proto.Media) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, mediaImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -4828,7 +4858,16 @@ func (ec *executionContext) _Media(ctx context.Context, sel ast.SelectionSet, ob
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Media")
 		case "id":
-			out.Values[i] = ec._Media_id(ctx, field, obj)
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Media_id(ctx, field, obj)
+				return res
+			})
 		case "website":
 			out.Values[i] = ec._Media_website(ctx, field, obj)
 		case "instagram":
@@ -4865,23 +4904,23 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
-		case "updateCompany":
-			out.Values[i] = ec._Mutation_updateCompany(ctx, field)
+		case "CreateBusinessAcount":
+			out.Values[i] = ec._Mutation_CreateBusinessAcount(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "createCompany":
-			out.Values[i] = ec._Mutation_createCompany(ctx, field)
+		case "UpdateBusinessAccount":
+			out.Values[i] = ec._Mutation_UpdateBusinessAccount(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "deleteCompany":
-			out.Values[i] = ec._Mutation_deleteCompany(ctx, field)
+		case "deleteBusinessAccount":
+			out.Values[i] = ec._Mutation_deleteBusinessAccount(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "deleteCompanies":
-			out.Values[i] = ec._Mutation_deleteCompanies(ctx, field)
+		case "deleteBusinessAccounts":
+			out.Values[i] = ec._Mutation_deleteBusinessAccounts(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -4898,7 +4937,7 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 var paymentProcessingMethodsImplementors = []string{"PaymentProcessingMethods"}
 
-func (ec *executionContext) _PaymentProcessingMethods(ctx context.Context, sel ast.SelectionSet, obj *models.PaymentProcessingMethods) graphql.Marshaler {
+func (ec *executionContext) _PaymentProcessingMethods(ctx context.Context, sel ast.SelectionSet, obj *proto.PaymentProcessingMethods) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, paymentProcessingMethodsImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -4924,7 +4963,7 @@ func (ec *executionContext) _PaymentProcessingMethods(ctx context.Context, sel a
 
 var phoneNumberImplementors = []string{"PhoneNumber"}
 
-func (ec *executionContext) _PhoneNumber(ctx context.Context, sel ast.SelectionSet, obj *models.PhoneNumber) graphql.Marshaler {
+func (ec *executionContext) _PhoneNumber(ctx context.Context, sel ast.SelectionSet, obj *proto.PhoneNumber) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, phoneNumberImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -4963,7 +5002,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "getCompanies":
+		case "getBusinessAccount":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
 				defer func() {
@@ -4971,13 +5010,13 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getCompanies(ctx, field)
+				res = ec._Query_getBusinessAccount(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
 				return res
 			})
-		case "getPaginatedCompanies":
+		case "getBusinessAccounts":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
 				defer func() {
@@ -4985,57 +5024,10 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getPaginatedCompanies(ctx, field)
+				res = ec._Query_getBusinessAccounts(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
-				return res
-			})
-		case "getCompany":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_getCompany(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
-		case "getCompaniesByBusinessStage":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_getCompaniesByBusinessStage(ctx, field)
-				return res
-			})
-		case "getCompaniesByBusinessType":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_getCompaniesByBusinessType(ctx, field)
-				return res
-			})
-		case "getCompaniesByMerchantType":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_getCompaniesByMerchantType(ctx, field)
 				return res
 			})
 		case "__type":
@@ -5055,7 +5047,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 
 var topicsImplementors = []string{"Topics"}
 
-func (ec *executionContext) _Topics(ctx context.Context, sel ast.SelectionSet, obj *models.Topics) graphql.Marshaler {
+func (ec *executionContext) _Topics(ctx context.Context, sel ast.SelectionSet, obj *proto.Topics) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, topicsImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -5065,7 +5057,16 @@ func (ec *executionContext) _Topics(ctx context.Context, sel ast.SelectionSet, o
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Topics")
 		case "id":
-			out.Values[i] = ec._Topics_id(ctx, field, obj)
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Topics_id(ctx, field, obj)
+				return res
+			})
 		case "Technology":
 			out.Values[i] = ec._Topics_Technology(ctx, field, obj)
 		case "Health":
@@ -5389,11 +5390,11 @@ func (ec *executionContext) marshalNBoolean2ᚕᚖbool(ctx context.Context, sel 
 	return ret
 }
 
-func (ec *executionContext) marshalNCompany2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompany(ctx context.Context, sel ast.SelectionSet, v models.Company) graphql.Marshaler {
-	return ec._Company(ctx, sel, &v)
+func (ec *executionContext) marshalNBusinessAccount2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessAccount(ctx context.Context, sel ast.SelectionSet, v proto.BusinessAccount) graphql.Marshaler {
+	return ec._BusinessAccount(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNCompany2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompanyᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.Company) graphql.Marshaler {
+func (ec *executionContext) marshalNBusinessAccount2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessAccountᚄ(ctx context.Context, sel ast.SelectionSet, v []*proto.BusinessAccount) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -5417,7 +5418,7 @@ func (ec *executionContext) marshalNCompany2ᚕᚖgithubᚗcomᚋBlackspaceInc�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNCompany2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompany(ctx, sel, v[i])
+			ret[i] = ec.marshalNBusinessAccount2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessAccount(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -5430,69 +5431,39 @@ func (ec *executionContext) marshalNCompany2ᚕᚖgithubᚗcomᚋBlackspaceInc�
 	return ret
 }
 
-func (ec *executionContext) marshalNCompany2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompany(ctx context.Context, sel ast.SelectionSet, v *models.Company) graphql.Marshaler {
+func (ec *executionContext) marshalNBusinessAccount2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessAccount(ctx context.Context, sel ast.SelectionSet, v *proto.BusinessAccount) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
 		}
 		return graphql.Null
 	}
-	return ec._Company(ctx, sel, v)
+	return ec._BusinessAccount(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNCompanyInput2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompanyInput(ctx context.Context, v interface{}) (models.CompanyInput, error) {
-	res, err := ec.unmarshalInputCompanyInput(ctx, v)
+func (ec *executionContext) unmarshalNCreateBusinessAccountRequest2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐCreateBusinessAccountRequest(ctx context.Context, v interface{}) (proto.CreateBusinessAccountRequest, error) {
+	res, err := ec.unmarshalInputCreateBusinessAccountRequest(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
-	res, err := graphql.UnmarshalInt(v)
+func (ec *executionContext) unmarshalNDeleteBusinessAccountRequest2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐDeleteBusinessAccountRequest(ctx context.Context, v interface{}) (proto.DeleteBusinessAccountRequest, error) {
+	res, err := ec.unmarshalInputDeleteBusinessAccountRequest(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
-	res := graphql.MarshalInt(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-	}
-	return res
+func (ec *executionContext) unmarshalNDeleteBusinessAccountsRequest2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐDeleteBusinessAccountsRequest(ctx context.Context, v interface{}) (proto.DeleteBusinessAccountsRequest, error) {
+	res, err := ec.unmarshalInputDeleteBusinessAccountsRequest(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNInt2ᚕᚖint(ctx context.Context, v interface{}) ([]*int, error) {
-	var vSlice []interface{}
-	if v != nil {
-		if tmp1, ok := v.([]interface{}); ok {
-			vSlice = tmp1
-		} else {
-			vSlice = []interface{}{v}
-		}
-	}
-	var err error
-	res := make([]*int, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOInt2ᚖint(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
+func (ec *executionContext) unmarshalNGetBusinessAccountRequest2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐGetBusinessAccountRequest(ctx context.Context, v interface{}) (proto.GetBusinessAccountRequest, error) {
+	res, err := ec.unmarshalInputGetBusinessAccountRequest(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNInt2ᚕᚖint(ctx context.Context, sel ast.SelectionSet, v []*int) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalOInt2ᚖint(ctx, sel, v[i])
-	}
-
-	return ret
-}
-
-func (ec *executionContext) unmarshalNPhoneNumberInput2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPhoneNumberInput(ctx context.Context, v interface{}) (*models.PhoneNumberInput, error) {
-	res, err := ec.unmarshalInputPhoneNumberInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
+func (ec *executionContext) unmarshalNGetBusinessAccountsRequest2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐGetBusinessAccountsRequest(ctx context.Context, v interface{}) (proto.GetBusinessAccountsRequest, error) {
+	res, err := ec.unmarshalInputGetBusinessAccountsRequest(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -5508,6 +5479,11 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNUpdateBusinessAccountRequest2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐUpdateBusinessAccountRequest(ctx context.Context, v interface{}) (proto.UpdateBusinessAccountRequest, error) {
+	res, err := ec.unmarshalInputUpdateBusinessAccountRequest(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -5739,7 +5715,7 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) marshalOAddress2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐAddress(ctx context.Context, sel ast.SelectionSet, v *models.Address) graphql.Marshaler {
+func (ec *executionContext) marshalOAddress2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐAddress(ctx context.Context, sel ast.SelectionSet, v *proto.Address) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -5770,145 +5746,175 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return graphql.MarshalBoolean(*v)
 }
 
-func (ec *executionContext) unmarshalOBusinessCategory2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐBusinessCategory(ctx context.Context, v interface{}) (*models.BusinessCategory, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(models.BusinessCategory)
-	err := res.UnmarshalGQL(v)
+func (ec *executionContext) unmarshalOBusinessCategory2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessCategory(ctx context.Context, v interface{}) (proto.BusinessCategory, error) {
+	res, err := ec.unmarshalInputBusinessCategory(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOBusinessCategory2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐBusinessCategory(ctx context.Context, sel ast.SelectionSet, v *models.BusinessCategory) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
+func (ec *executionContext) marshalOBusinessCategory2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessCategory(ctx context.Context, sel ast.SelectionSet, v proto.BusinessCategory) graphql.Marshaler {
+	return ec._BusinessCategory(ctx, sel, &v)
 }
 
-func (ec *executionContext) unmarshalOBusinessSubCategory2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐBusinessSubCategory(ctx context.Context, v interface{}) (*models.BusinessSubCategory, error) {
+func (ec *executionContext) unmarshalOBusinessCategory2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessCategory(ctx context.Context, v interface{}) (*proto.BusinessCategory, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(models.BusinessSubCategory)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
+	res, err := ec.unmarshalInputBusinessCategory(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOBusinessSubCategory2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐBusinessSubCategory(ctx context.Context, sel ast.SelectionSet, v *models.BusinessSubCategory) graphql.Marshaler {
+func (ec *executionContext) marshalOBusinessCategory2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessCategory(ctx context.Context, sel ast.SelectionSet, v *proto.BusinessCategory) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return v
+	return ec._BusinessCategory(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOBusinessType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐBusinessType(ctx context.Context, sel ast.SelectionSet, v *models.BusinessType) graphql.Marshaler {
+func (ec *executionContext) unmarshalOBusinessSubCategory2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessSubCategory(ctx context.Context, v interface{}) (proto.BusinessSubCategory, error) {
+	res, err := ec.unmarshalInputBusinessSubCategory(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOBusinessSubCategory2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessSubCategory(ctx context.Context, sel ast.SelectionSet, v proto.BusinessSubCategory) graphql.Marshaler {
+	return ec._BusinessSubCategory(ctx, sel, &v)
+}
+
+func (ec *executionContext) unmarshalOBusinessSubCategory2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessSubCategory(ctx context.Context, v interface{}) (*proto.BusinessSubCategory, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputBusinessSubCategory(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOBusinessSubCategory2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessSubCategory(ctx context.Context, sel ast.SelectionSet, v *proto.BusinessSubCategory) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._BusinessSubCategory(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOBusinessType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessType(ctx context.Context, sel ast.SelectionSet, v *proto.BusinessType) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._BusinessType(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOCompany2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompany(ctx context.Context, sel ast.SelectionSet, v []*models.Company) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOCompany2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompany(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-	return ret
-}
-
-func (ec *executionContext) marshalOCompany2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompanyᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.Company) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNCompany2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompany(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-	return ret
-}
-
-func (ec *executionContext) marshalOCompany2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐCompany(ctx context.Context, sel ast.SelectionSet, v *models.Company) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._Company(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalODateOfBirth2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐDateOfBirth(ctx context.Context, sel ast.SelectionSet, v *models.DateOfBirth) graphql.Marshaler {
+func (ec *executionContext) marshalODateOfBirth2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐDateOfBirth(ctx context.Context, sel ast.SelectionSet, v *proto.DateOfBirth) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._DateOfBirth(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalODateOfBirthInput2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐDateOfBirthInput(ctx context.Context, v interface{}) (*models.DateOfBirthInput, error) {
+func (ec *executionContext) unmarshalOIAddress2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐIAddress(ctx context.Context, v interface{}) (*proto1.IAddress, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := ec.unmarshalInputDateOfBirthInput(ctx, v)
+	res, err := ec.unmarshalInputIAddress(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOIBusinessAccount2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐIBusinessAccount(ctx context.Context, v interface{}) (*proto1.IBusinessAccount, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputIBusinessAccount(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOIBusinessType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐIBusinessType(ctx context.Context, v interface{}) (*proto1.IBusinessType, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputIBusinessType(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOIDateOfBirth2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐIDateOfBirth(ctx context.Context, v interface{}) (*proto1.IDateOfBirth, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputIDateOfBirth(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOIMedia2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐIMedia(ctx context.Context, v interface{}) (*proto1.IMedia, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputIMedia(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOIPaymentProcessingMethods2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐIPaymentProcessingMethods(ctx context.Context, v interface{}) (*proto1.IPaymentProcessingMethods, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputIPaymentProcessingMethods(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOIPhoneNumber2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐIPhoneNumber(ctx context.Context, v interface{}) (*proto1.IPhoneNumber, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputIPhoneNumber(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOITopics2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋprotoᚐITopics(ctx context.Context, v interface{}) (*proto1.ITopics, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputITopics(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOInt2int64(ctx context.Context, v interface{}) (int64, error) {
+	res, err := graphql.UnmarshalInt64(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOInt2int64(ctx context.Context, sel ast.SelectionSet, v int64) graphql.Marshaler {
+	return graphql.MarshalInt64(v)
+}
+
+func (ec *executionContext) unmarshalOInt2ᚕᚖint(ctx context.Context, v interface{}) ([]*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*int, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOInt2ᚖint(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOInt2ᚕᚖint(ctx context.Context, sel ast.SelectionSet, v []*int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalOInt2ᚖint(ctx, sel, v[i])
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
@@ -5926,30 +5932,47 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 	return graphql.MarshalInt(*v)
 }
 
-func (ec *executionContext) marshalOMedia2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐMedia(ctx context.Context, sel ast.SelectionSet, v *models.Media) graphql.Marshaler {
+func (ec *executionContext) marshalOMedia2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐMedia(ctx context.Context, sel ast.SelectionSet, v *proto.Media) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Media(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOMerchantType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐMerchantType(ctx context.Context, v interface{}) (*models.MerchantType, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(models.MerchantType)
-	err := res.UnmarshalGQL(v)
+func (ec *executionContext) unmarshalOMerchantType2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐMerchantType(ctx context.Context, v interface{}) (proto.MerchantType, error) {
+	res, err := ec.unmarshalInputMerchantType(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOMerchantType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐMerchantType(ctx context.Context, sel ast.SelectionSet, v *models.MerchantType) graphql.Marshaler {
+func (ec *executionContext) marshalOMerchantType2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐMerchantType(ctx context.Context, sel ast.SelectionSet, v proto.MerchantType) graphql.Marshaler {
+	return ec._MerchantType(ctx, sel, &v)
+}
+
+func (ec *executionContext) unmarshalOMerchantType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐMerchantType(ctx context.Context, v interface{}) (*proto.MerchantType, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputMerchantType(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOMerchantType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐMerchantType(ctx context.Context, sel ast.SelectionSet, v *proto.MerchantType) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return v
+	return ec._MerchantType(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOPaymentMedium2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentMedium(ctx context.Context, v interface{}) ([]*models.PaymentMedium, error) {
+func (ec *executionContext) unmarshalOPaymentMedium2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentMedium(ctx context.Context, v interface{}) (proto.PaymentMedium, error) {
+	res, err := ec.unmarshalInputPaymentMedium(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOPaymentMedium2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentMedium(ctx context.Context, sel ast.SelectionSet, v proto.PaymentMedium) graphql.Marshaler {
+	return ec._PaymentMedium(ctx, sel, &v)
+}
+
+func (ec *executionContext) unmarshalOPaymentMedium2ᚕgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentMedium(ctx context.Context, v interface{}) ([]proto.PaymentMedium, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -5962,10 +5985,10 @@ func (ec *executionContext) unmarshalOPaymentMedium2ᚕᚖgithubᚗcomᚋBlacksp
 		}
 	}
 	var err error
-	res := make([]*models.PaymentMedium, len(vSlice))
+	res := make([]proto.PaymentMedium, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOPaymentMedium2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentMedium(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOPaymentMedium2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentMedium(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -5973,7 +5996,7 @@ func (ec *executionContext) unmarshalOPaymentMedium2ᚕᚖgithubᚗcomᚋBlacksp
 	return res, nil
 }
 
-func (ec *executionContext) marshalOPaymentMedium2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentMedium(ctx context.Context, sel ast.SelectionSet, v []*models.PaymentMedium) graphql.Marshaler {
+func (ec *executionContext) marshalOPaymentMedium2ᚕgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentMedium(ctx context.Context, sel ast.SelectionSet, v []proto.PaymentMedium) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -6000,7 +6023,7 @@ func (ec *executionContext) marshalOPaymentMedium2ᚕᚖgithubᚗcomᚋBlackspac
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOPaymentMedium2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentMedium(ctx, sel, v[i])
+			ret[i] = ec.marshalOPaymentMedium2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentMedium(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -6013,23 +6036,7 @@ func (ec *executionContext) marshalOPaymentMedium2ᚕᚖgithubᚗcomᚋBlackspac
 	return ret
 }
 
-func (ec *executionContext) unmarshalOPaymentMedium2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentMedium(ctx context.Context, v interface{}) (*models.PaymentMedium, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(models.PaymentMedium)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOPaymentMedium2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentMedium(ctx context.Context, sel ast.SelectionSet, v *models.PaymentMedium) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
-}
-
-func (ec *executionContext) unmarshalOPaymentOptions2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentOptions(ctx context.Context, v interface{}) ([]*models.PaymentOptions, error) {
+func (ec *executionContext) unmarshalOPaymentMedium2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentMedium(ctx context.Context, v interface{}) ([]*proto.PaymentMedium, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -6042,10 +6049,10 @@ func (ec *executionContext) unmarshalOPaymentOptions2ᚕᚖgithubᚗcomᚋBlacks
 		}
 	}
 	var err error
-	res := make([]*models.PaymentOptions, len(vSlice))
+	res := make([]*proto.PaymentMedium, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOPaymentOptions2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentOptions(ctx, vSlice[i])
+		res[i], err = ec.unmarshalOPaymentMedium2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentMedium(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -6053,7 +6060,7 @@ func (ec *executionContext) unmarshalOPaymentOptions2ᚕᚖgithubᚗcomᚋBlacks
 	return res, nil
 }
 
-func (ec *executionContext) marshalOPaymentOptions2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentOptions(ctx context.Context, sel ast.SelectionSet, v []*models.PaymentOptions) graphql.Marshaler {
+func (ec *executionContext) marshalOPaymentMedium2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentMedium(ctx context.Context, sel ast.SelectionSet, v []*proto.PaymentMedium) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -6080,7 +6087,7 @@ func (ec *executionContext) marshalOPaymentOptions2ᚕᚖgithubᚗcomᚋBlackspa
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOPaymentOptions2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentOptions(ctx, sel, v[i])
+			ret[i] = ec.marshalOPaymentMedium2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentMedium(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -6093,66 +6100,233 @@ func (ec *executionContext) marshalOPaymentOptions2ᚕᚖgithubᚗcomᚋBlackspa
 	return ret
 }
 
-func (ec *executionContext) unmarshalOPaymentOptions2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentOptions(ctx context.Context, v interface{}) (*models.PaymentOptions, error) {
+func (ec *executionContext) unmarshalOPaymentMedium2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentMedium(ctx context.Context, v interface{}) (*proto.PaymentMedium, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(models.PaymentOptions)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
+	res, err := ec.unmarshalInputPaymentMedium(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOPaymentOptions2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentOptions(ctx context.Context, sel ast.SelectionSet, v *models.PaymentOptions) graphql.Marshaler {
+func (ec *executionContext) marshalOPaymentMedium2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentMedium(ctx context.Context, sel ast.SelectionSet, v *proto.PaymentMedium) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return v
+	return ec._PaymentMedium(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOPaymentProcessingMethods2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPaymentProcessingMethods(ctx context.Context, sel ast.SelectionSet, v *models.PaymentProcessingMethods) graphql.Marshaler {
+func (ec *executionContext) unmarshalOPaymentOptions2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentOptions(ctx context.Context, v interface{}) (proto.PaymentOptions, error) {
+	res, err := ec.unmarshalInputPaymentOptions(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOPaymentOptions2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentOptions(ctx context.Context, sel ast.SelectionSet, v proto.PaymentOptions) graphql.Marshaler {
+	return ec._PaymentOptions(ctx, sel, &v)
+}
+
+func (ec *executionContext) unmarshalOPaymentOptions2ᚕgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentOptions(ctx context.Context, v interface{}) ([]proto.PaymentOptions, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]proto.PaymentOptions, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOPaymentOptions2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentOptions(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOPaymentOptions2ᚕgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentOptions(ctx context.Context, sel ast.SelectionSet, v []proto.PaymentOptions) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOPaymentOptions2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentOptions(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) unmarshalOPaymentOptions2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentOptions(ctx context.Context, v interface{}) ([]*proto.PaymentOptions, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*proto.PaymentOptions, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOPaymentOptions2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentOptions(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOPaymentOptions2ᚕᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentOptions(ctx context.Context, sel ast.SelectionSet, v []*proto.PaymentOptions) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOPaymentOptions2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentOptions(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) unmarshalOPaymentOptions2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentOptions(ctx context.Context, v interface{}) (*proto.PaymentOptions, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputPaymentOptions(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOPaymentOptions2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentOptions(ctx context.Context, sel ast.SelectionSet, v *proto.PaymentOptions) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._PaymentOptions(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOPaymentProcessingMethods2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPaymentProcessingMethods(ctx context.Context, sel ast.SelectionSet, v *proto.PaymentProcessingMethods) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._PaymentProcessingMethods(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOPhoneNumber2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPhoneNumber(ctx context.Context, sel ast.SelectionSet, v *models.PhoneNumber) graphql.Marshaler {
+func (ec *executionContext) marshalOPhoneNumber2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPhoneNumber(ctx context.Context, sel ast.SelectionSet, v *proto.PhoneNumber) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._PhoneNumber(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOPhoneType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPhoneType(ctx context.Context, v interface{}) (*models.PhoneType, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(models.PhoneType)
-	err := res.UnmarshalGQL(v)
+func (ec *executionContext) unmarshalOPhoneType2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPhoneType(ctx context.Context, v interface{}) (proto.PhoneType, error) {
+	res, err := ec.unmarshalInputPhoneType(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOPhoneType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐPhoneType(ctx context.Context, sel ast.SelectionSet, v *models.PhoneType) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
+func (ec *executionContext) marshalOPhoneType2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPhoneType(ctx context.Context, sel ast.SelectionSet, v proto.PhoneType) graphql.Marshaler {
+	return ec._PhoneType(ctx, sel, &v)
 }
 
-func (ec *executionContext) unmarshalOServicesManagedByBlackspace2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐServicesManagedByBlackspace(ctx context.Context, v interface{}) (*models.ServicesManagedByBlackspace, error) {
+func (ec *executionContext) unmarshalOPhoneType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPhoneType(ctx context.Context, v interface{}) (*proto.PhoneType, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res = new(models.ServicesManagedByBlackspace)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
+	res, err := ec.unmarshalInputPhoneType(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOServicesManagedByBlackspace2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐServicesManagedByBlackspace(ctx context.Context, sel ast.SelectionSet, v *models.ServicesManagedByBlackspace) graphql.Marshaler {
+func (ec *executionContext) marshalOPhoneType2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐPhoneType(ctx context.Context, sel ast.SelectionSet, v *proto.PhoneType) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return v
+	return ec._PhoneType(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOServicesManagedByBlackspace2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐServicesManagedByBlackspace(ctx context.Context, v interface{}) (proto.ServicesManagedByBlackspace, error) {
+	res, err := ec.unmarshalInputServicesManagedByBlackspace(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOServicesManagedByBlackspace2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐServicesManagedByBlackspace(ctx context.Context, sel ast.SelectionSet, v proto.ServicesManagedByBlackspace) graphql.Marshaler {
+	return ec._ServicesManagedByBlackspace(ctx, sel, &v)
+}
+
+func (ec *executionContext) unmarshalOServicesManagedByBlackspace2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐServicesManagedByBlackspace(ctx context.Context, v interface{}) (*proto.ServicesManagedByBlackspace, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputServicesManagedByBlackspace(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOServicesManagedByBlackspace2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐServicesManagedByBlackspace(ctx context.Context, sel ast.SelectionSet, v *proto.ServicesManagedByBlackspace) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ServicesManagedByBlackspace(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {
@@ -6162,6 +6336,42 @@ func (ec *executionContext) unmarshalOString2string(ctx context.Context, v inter
 
 func (ec *executionContext) marshalOString2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
 	return graphql.MarshalString(v)
+}
+
+func (ec *executionContext) unmarshalOString2ᚕstring(ctx context.Context, v interface{}) ([]string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOString2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOString2ᚕstring(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalOString2string(ctx, sel, v[i])
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOString2ᚕᚖstring(ctx context.Context, v interface{}) ([]*string, error) {
@@ -6215,7 +6425,7 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	return graphql.MarshalString(*v)
 }
 
-func (ec *executionContext) marshalOTopics2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgraphqlᚋgeneratedᚋmodelsᚐTopics(ctx context.Context, sel ast.SelectionSet, v *models.Topics) graphql.Marshaler {
+func (ec *executionContext) marshalOTopics2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐTopics(ctx context.Context, sel ast.SelectionSet, v *proto.Topics) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

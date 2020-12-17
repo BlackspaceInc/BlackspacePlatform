@@ -1,12 +1,24 @@
-input CompanyInput {
+input IBusinessAccount {
 	id: Int
-	companyName: String!
-	companyAddress: String!
-	phoneNumber: PhoneNumberInput!
-	category: String!
+	companyName: String
+	companyAddress: String
+	phoneNumber: IPhoneNumber
+	category: String
+	media: IMedia
+	password: String
+	email: String
+	isActive: Boolean
+	typeOfBusiness: IBusinessType
+	businessGoals: [String]
+	businessStage: String
+	merchantType: MerchantType
+	paymentDetails: IPaymentProcessingMethods
+	servicesManagedByBlackspace: ServicesManagedByBlackspace
+	founderAddress: IAddress
+	subscribedTopics: ITopics
 }
 
-input TopicsInput {
+input ITopics {
 	id: Int
 	Technology: Boolean
 	Health: Boolean
@@ -21,7 +33,7 @@ input TopicsInput {
 	Art: Boolean
 }
 
-input MediaInput {
+input IMedia {
 	id: Int
 	website: String
 	instagram: String
@@ -30,33 +42,32 @@ input MediaInput {
 	pinterest: String
 }
 
-input AddressInput {
+input IAddress {
 	Address: String
 	ApartmentUnit: String
 	ZipCode: String
 	City: String
 	State: String
-	birthdate: DateOfBirthInput
+	birthdate: IDateOfBirth
 }
 
-input DateOfBirthInput {
+input IDateOfBirth {
 	Month: String
 	Day: String
 	Year: String
 }
 
-input PaymentProcessingMethodsInput {
+input IPaymentProcessingMethods {
 	paymentOptions: [PaymentOptions]
 	medium: [PaymentMedium]
 }
 
-input BusinessTypeInput {
+input IBusinessType {
 	category: BusinessCategory
 	subCategory: BusinessSubCategory
 }
 
-input PhoneNumberInput {
+input IPhoneNumber {
 	number: String
-	type: PhoneType
+	input: PhoneType
 }
-

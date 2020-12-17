@@ -1,4 +1,4 @@
-type Company {
+type BusinessAccount {
   id: Int
   companyName: String
   companyAddress: String
