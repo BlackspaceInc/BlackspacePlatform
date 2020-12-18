@@ -30,6 +30,9 @@ var (
 	ErrFailedToHashPassword                     = errors.New("failed to hash password")
 	ErrFailedToCreateAccount                    = errors.New("failed to create account")
 	ErrFailedToDeleteBusinessAccount            = errors.New("failed to delete business account")
+	ErrFailedToUpdateAccountEmail           = errors.New("failed to updated business account email through distributed transaction")
+	ErrFailedToSaveUpdatedAccountRecord           = errors.New("failed to save updated business account record")
+	ErrCannotUpdatePassword           = errors.New("cannot update password field")
 )
 
 func NewError(msg string) error {

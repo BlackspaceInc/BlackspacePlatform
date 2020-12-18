@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/jinzhu/gorm"
@@ -32,20 +33,128 @@ type DatabaseOperations interface {
 	// CreateBusinessAccount creates a business account
 	CreateBusinessAccount(ctx context.Context, account *proto.BusinessAccount) (*proto.BusinessAccount, error)
 	// UpdateBusinessAccount updates a business account by Id
-	UpdateBusinessAccount(ctx context.Context, id int32, account *proto.BusinessAccount) (*proto.BusinessAccount, error)
+	UpdateBusinessAccount(ctx context.Context, id uint32, account *proto.BusinessAccount) (*proto.BusinessAccount, error)
 	// DeleteBusinessAccount deletes a business account by Id
-	DeleteBusinessAccount(ctx context.Context, id int32) (bool, error)
+	DeleteBusinessAccount(ctx context.Context, id uint32) (bool, error)
 	// DeleteBusinessAccounts deletes a set of business accounts by Id
-	DeleteBusinessAccounts(ctx context.Context, ids []int32) ([]bool, error)
+	DeleteBusinessAccounts(ctx context.Context, ids []uint32) ([]bool, error)
 	// GetBusinessAccount gets a business account by id
-	GetBusinessAccount(ctx context.Context, id int32) (*proto.BusinessAccount, error)
+	GetBusinessAccount(ctx context.Context, id uint32) (*proto.BusinessAccount, error)
 	// GetBusinessAccounts gets a set of business accounts by id
-	GetBusinessAccounts(ctx context.Context, ids []int32) ([]*proto.BusinessAccount, error)
+	GetBusinessAccounts(ctx context.Context, ids []uint32) ([]*proto.BusinessAccount, error)
+}
+
+// UpdateBusinessAccount updates a business account
+func (db *Db) UpdateBusinessAccount(ctx context.Context, id uint32, account *proto.BusinessAccount) (*proto.BusinessAccount, error){
+	db.Logger.For(ctx).Info(fmt.Sprintf("updated business account - id : %d", id))
+	ctx, span := db.startRootSpan(ctx, UPDATE_ONE)
+	defer span.Finish()
+
+	tx := func(ctx context.Context, tx *gorm.DB)(interface{}, error){
+		db.Logger.For(ctx).Info("starting update account operation for account with id :%id", id)
+		childSpan := db.TracingEngine.CreateChildSpan(ctx, "update business account")
+		defer childSpan.Finish()
+
+		// attempt to see if account exists
+		result := db.GetBusinessById(ctx, id)
+		if result == nil {
+			db.Logger.ErrorM(errors.ErrAccountDoesNotExist, errors.ErrAccountDoesNotExist.Error())
+			return nil, errors.ErrAccountDoesNotExist
+		}
+
+		// TODO compare the passwords and if they differ update the field through /password auth handler service call
+		// As of now we do not allow users the ability to update their passwords through this call
+		if !db.ComparePasswords(result.Password, []byte(account.Password)){
+			db.Logger.ErrorM(errors.ErrCannotUpdatePassword, errors.ErrCannotUpdatePassword.Error())
+			return nil, errors.ErrCannotUpdatePassword
+		}
+
+		// figure out if the email or password fields differ
+		// first we check email
+		if result.Email != account.Email {
+			failCaseFunc := func() error {
+				return errors.ErrFailedToUpdateAccountEmail
+			}
+
+			updateEmailFunc := func(from *proto.BusinessAccount, to *proto.BusinessAccount) error{
+				to.Email = from.Email
+				return nil
+			}
+
+			// we initiate a saga to update the record's email entry in the authentication service
+			dtxTx := saga.NewSaga("update account email")
+			store := saga.New()
+
+			err := dtxTx.AddStep(&saga.Step{
+				Name:           "update account email entry in authentication handler service",
+				Func:           db.DistributedTxUpdateAccountEmail(ctx, id, account.Email, childSpan),
+				CompensateFunc: failCaseFunc(),
+			})
+
+			if err != nil {
+				db.Logger.Error(errors.ErrFailedToConfigureSaga, errors.ErrFailedToConfigureSaga.Error())
+				return nil, errors.ErrFailedToConfigureSaga
+			}
+
+			// then we update the email field of the resulting record
+			err = dtxTx.AddStep(&saga.Step{
+				Name:           "update email field of record stored in db",
+				Func:           updateEmailFunc(result, account),
+				CompensateFunc: failCaseFunc(),
+			})
+
+			if err != nil {
+				db.Logger.Error(errors.ErrFailedToConfigureSaga, errors.ErrFailedToConfigureSaga.Error())
+				return nil, errors.ErrFailedToConfigureSaga
+			}
+
+			// TODO refactor saga logic into generic impl and move to its own function
+			coordinator := saga.NewCoordinator(ctx, ctx, dtxTx, store)
+			if result := coordinator.Play(); result != nil && (len(result.CompensateErrors) > 0 || result.ExecutionError != nil) {
+				// log the saga operation errors
+				db.Logger.Error(errors.ErrSagaFailedToExecuteSuccessfully, errors.ErrSagaFailedToExecuteSuccessfully.Error(),
+					zap.Errors("compensate error", result.CompensateErrors), zap.Error(result.ExecutionError))
+
+				// construct error
+				errMsg := fmt.Sprintf("compensate errors : %s , execution errors %s", zap.Errors("compensate error",
+					result.CompensateErrors).String+zap.Error(result.ExecutionError).String)
+				err := errors.NewError(errMsg)
+				return nil, err
+			}
+		}
+
+		// convert account record to ORM type
+		businessAccountOrm, err := account.ToORM(ctx)
+		if err != nil {
+			db.Logger.Error(errors.ErrFailedToConvertToOrmType, err.Error())
+			return nil, err
+		}
+
+		// save the account
+		if err := tx.Save(&businessAccountOrm).Error; err != nil {
+			db.Logger.Error(errors.ErrFailedToSaveUpdatedAccountRecord, err.Error())
+			return nil, err
+		}
+
+		updatedAccount, err := businessAccountOrm.ToPB(ctx)
+		if err != nil {
+			db.Logger.Error(errors.ErrFailedToConvertFromOrmType, err.Error())
+			return nil, err
+		}
+
+		return &updatedAccount, nil
+	}
+
+	res, err := db.PerformComplexTransaction(ctx, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	return res.(*proto.BusinessAccount), nil
 }
 
 // DeleteBusinessAccounts deletes a set of business accounts by ids
 func (db *Db) DeleteBusinessAccounts(ctx context.Context, ids []uint32) ([]bool, error) {
-	// define initial log entry
 	db.Logger.For(ctx).Info("delete business accounts")
 	ctx, span := db.startRootSpan(ctx, DELETE_MANY)
 	defer span.Finish()
@@ -505,7 +614,42 @@ func (db *Db) DistributedTxLockAccount(ctx context.Context, id uint32, childSpan
 		// perform call to the authentication handler service
 		httpClient := &http.Client{}
 		url := db.AuthenticationHandlerServiceBaseEndpoint + "/lock/" + fmt.Sprint(id)
-		httpReq := db.createRequestAndPropagateTraces(url, subSpan)
+		httpReq := db.createRequestAndPropagateTraces(url, subSpan, nil)
+
+		resp, err := db.performHttpRequest(httpClient, httpReq, ctx)
+		if err != nil || db.processResponseStatusCode(resp, ctx) {
+			// todo: retry the operation with exponential backoff
+			return err
+		}
+
+		return nil
+	}()
+}
+
+// DistributedTxUpdateAccountEmail updates the account record's email entry in a distributed transaction
+func (db *Db) DistributedTxUpdateAccountEmail(ctx context.Context, id uint32, email string, childSpan opentracing.Span) error {
+	return func() error {
+		subSpan, ctx := opentracing.StartSpanFromContext(ctx, "lock account", opentracing.ChildOf(childSpan.Context()))
+		defer subSpan.Finish()
+
+		// perform call to the authentication handler service
+		httpClient := &http.Client{}
+		url := db.AuthenticationHandlerServiceBaseEndpoint + "/update/" + fmt.Sprint(id)
+
+		type updateEmailReq struct {
+			Email string `json:"email"`
+		}
+
+		reqBody := updateEmailReq{
+			Email: email,
+		}
+
+		body, err := utils.CreateRequestBody(reqBody)
+		if err != nil {
+			return err
+		}
+
+		httpReq := db.createRequestAndPropagateTraces(url, subSpan, body)
 
 		resp, err := db.performHttpRequest(httpClient, httpReq, ctx)
 		if err != nil || db.processResponseStatusCode(resp, ctx) {
@@ -518,8 +662,8 @@ func (db *Db) DistributedTxLockAccount(ctx context.Context, id uint32, childSpan
 }
 
 // createRequestAndPropagateTraces creates a request and propagates the contexts to tracing engine
-func (db *Db) createRequestAndPropagateTraces(url string, childSpan opentracing.Span) *http.Request {
-	httpReq, _ := http.NewRequest("POST", url, nil)
+func (db *Db) createRequestAndPropagateTraces(url string, childSpan opentracing.Span, body io.Reader) *http.Request {
+	httpReq, _ := http.NewRequest("POST", url, body)
 
 	// Transmit the span's TraceContext as HTTP headers on our
 	// outbound request.

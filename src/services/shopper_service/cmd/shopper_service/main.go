@@ -60,10 +60,21 @@ func main() {
 	fs.Int("stress-cpu", 0, "number of CPU cores with 100 load")
 	fs.Int("stress-memory", 0, "MB of data to load into memory")
 	fs.String("cache-server", "", "Redis address in the format <host>:<port>")
+
 	// service configurations
 	fs.String("service_name", "business_account_service", "microservice name")
+
+	// authentication service configurations
+	fs.String("authentication_handler_service_base", "http://authentication-handler-service",
+		"authentication handler service endpoint base address")
+	fs.Int("authentication_handler_service_port", 9898,
+		"authentication handler service endpoint port")
+	fs.String("authentication_handler_service_sub_address", "/v1/account",
+		"authentication handler service endpoint base address")
+
 	// tracing configurations
 	fs.String("jaeger-endpoint", "http://jaeger-collector:14268/api/traces", "jaeger collector endpoint")
+
 	// database connection configurations
 	fs.String("db_host", "localhost", "database host string")
 	fs.Int("db_port", 5432, "database port")
@@ -131,9 +142,13 @@ func main() {
 	// configure metrics
 	coreMetrics := core_metrics.NewCoreMetricsEngineInstance(serviceName, nil)
 
+	authSvcBase := viper.GetString("authentication_handler_service_base")
+	authSvcPort := viper.GetInt("authentication_handler_service_port")
+	authSvcSubAddress := viper.GetString("authentication_handler_service_sub_address")
+	authSvcEndpoint := fmt.Sprintf("%s:%d%s", authSvcBase, authSvcPort, authSvcSubAddress)
 	// configure db connection
 	connectionString := configureConnectionString()
-	db, err := database.New(ctx, connectionString, tracerEngine, coreMetrics, logger)
+	db, err := database.New(ctx, connectionString, tracerEngine, coreMetrics, logger, authSvcEndpoint)
 
 	// start stress tests if any
 	beginStressTest(viper.GetInt("stress-cpu"), viper.GetInt("stress-memory"), logger)

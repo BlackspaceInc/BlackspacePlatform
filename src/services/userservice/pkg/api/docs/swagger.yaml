@@ -10,7 +10,7 @@ definitions:
       This just tries to make it worry-free.
     format: date-time
     type: string
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   DeleteUserBadRequestBody:
     description: DeleteUserBadRequestBody delete user bad request body
     properties:
@@ -33,7 +33,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   DeleteUserInternalServerErrorBody:
     description: DeleteUserInternalServerErrorBody DeleteUserInternalServerErrorBody
       DeleteUserInternalServerErrorBody DeleteUserInternalServerErrorBody DeleteUserInternalServerErrorBody
@@ -46,7 +46,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   DeleteUserNotAcceptableBody:
     description: DeleteUserNotAcceptableBody DeleteUserNotAcceptableBody DeleteUserNotAcceptableBody
       delete user not acceptable body
@@ -58,7 +58,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   DeleteUserNotFoundBody:
     description: DeleteUserNotFoundBody delete user not found body
     properties:
@@ -80,7 +80,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   DeleteUserUnauthorizedBody:
     description: DeleteUserUnauthorizedBody DeleteUserUnauthorizedBody DeleteUserUnauthorizedBody
       DeleteUserUnauthorizedBody delete user unauthorized body
@@ -92,7 +92,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   Gender:
     description: Gender Gender Gender Gender Gender Gender Gender Gender Gender gender
     properties:
@@ -113,7 +113,7 @@ definitions:
         type: boolean
         x-go-name: Transgender
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   GetUserRequestBadRequestBody:
     description: GetUserRequestBadRequestBody GetUserRequestBadRequestBody get user
       request bad request body
@@ -125,7 +125,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   GetUserRequestBody:
     description: GetUserRequestBody get user request body
     properties:
@@ -151,7 +151,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   GetUserRequestInternalServerErrorBody:
     description: GetUserRequestInternalServerErrorBody get user request internal server
       error body
@@ -175,7 +175,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   GetUserRequestNotFoundBody:
     description: GetUserRequestNotFoundBody GetUserRequestNotFoundBody GetUserRequestNotFoundBody
       GetUserRequestNotFoundBody get user request not found body
@@ -187,7 +187,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   GetUserRequestOKBody:
     description: GetUserRequestOKBody get user request o k body
     properties:
@@ -239,7 +239,7 @@ definitions:
     - password
     - username
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   LoginUserRequestForbiddenBody:
     description: LoginUserRequestForbiddenBody login user request forbidden body
     properties:
@@ -262,7 +262,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   LoginUserRequestNotAcceptableBody:
     description: LoginUserRequestNotAcceptableBody login user request not acceptable
       body
@@ -286,7 +286,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   LoginUserRequestOKBody:
     description: LoginUserRequestOKBody LoginUserRequestOKBody LoginUserRequestOKBody
       LoginUserRequestOKBody login user request o k body
@@ -303,7 +303,7 @@ definitions:
     - error
     - token
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   LoginUserRequestUnauthorizedBody:
     description: LoginUserRequestUnauthorizedBody LoginUserRequestUnauthorizedBody
       LoginUserRequestUnauthorizedBody LoginUserRequestUnauthorizedBody LoginUserRequestUnauthorizedBody
@@ -316,7 +316,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   SignUpUserReqBadRequestBody:
     description: SignUpUserReqBadRequestBody SignUpUserReqBadRequestBody sign up user
       req bad request body
@@ -328,7 +328,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   SignUpUserReqBody:
     description: SignUpUserReqBody sign up user req body
     properties:
@@ -372,7 +372,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   SignUpUserReqInternalServerErrorBody:
     description: SignUpUserReqInternalServerErrorBody sign up user req internal server
       error body
@@ -396,7 +396,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   SignUpUserReqNotFoundBody:
     description: SignUpUserReqNotFoundBody sign up user req not found body
     properties:
@@ -430,7 +430,7 @@ definitions:
     - id
     - jwt
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   SignUpUserReqUnauthorizedBody:
     description: SignUpUserReqUnauthorizedBody SignUpUserReqUnauthorizedBody SignUpUserReqUnauthorizedBody
       SignUpUserReqUnauthorizedBody SignUpUserReqUnauthorizedBody sign up user req
@@ -443,7 +443,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   Timestamp:
     description: |-
       All minutes are 60 seconds long. Leap seconds are "smeared" so that no leap
@@ -547,7 +547,7 @@ definitions:
       January 1, 1970, in the proleptic Gregorian calendar which extends the
       Gregorian calendar backwards to year one.
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   UpdateSwaggerUserBody:
     description: UpdateSwaggerUserBody UpdateSwaggerUserBody UpdateSwaggerUserBody
       update swagger user body
@@ -557,7 +557,7 @@ definitions:
     required:
     - result
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   UpdateSwaggerUserOKBody:
     description: UpdateSwaggerUserOKBody UpdateSwaggerUserOKBody update swagger user
       o k body
@@ -569,7 +569,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   UpdateUserBadRequestBody:
     description: UpdateUserBadRequestBody update user bad request body
     properties:
@@ -624,7 +624,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   UpdateUserNotFoundBody:
     description: UpdateUserNotFoundBody UpdateUserNotFoundBody update user not found
       body
@@ -636,7 +636,7 @@ definitions:
     required:
     - error
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   UpdateUserOKBody:
     description: UpdateUserOKBody update user o k body
     properties:
@@ -713,7 +713,7 @@ definitions:
         type: string
         x-go-name: Username
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
   UserORM:
     description: UserORM UserORM UserORM UserORM UserORM UserORM UserORM UserORM UserORM
       user o r m
@@ -794,7 +794,7 @@ definitions:
         description: username
         type: string
     type: object
-    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/models
+    x-go-package: github.com/BlackspaceInc/Backend/user-management-service/sdk/proto
 host: localhost
 info:
   contact:

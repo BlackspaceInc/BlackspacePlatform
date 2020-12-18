@@ -27,6 +27,7 @@ github.com/Azure/go-autorest/autorest/mocks v0.2.0/go.mod h1:OTyCOPRA2IgIlWxVYxB
 github.com/Azure/go-autorest/autorest/mocks v0.3.0/go.mod h1:a8FDP3DYzQ4RYfVAxAN3SVSiiO77gL2j2ronKKP0syM=
 github.com/Azure/go-autorest/logger v0.1.0/go.mod h1:oExouG+K6PryycPJfVSxi/koC6LSNgds39diKLz7Vrc=
 github.com/Azure/go-autorest/tracing v0.5.0/go.mod h1:r/s2XiOKccPW3HrqB+W0TQzfbtp2fGCgRFtBroKn4Dk=
+github.com/BlackspaceInc/BlackspacePlatform v0.0.0-20200829195722-6e58dfc58222 h1:tQdbiD+vc79DHOo23IpbrJGQG1m5EMwS5BAIpcy+ajc=
 github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201212160433-673b9a2d221b h1:Uhf7aU23c43WfC5TVAw4gZFW/9taGFfGJjknWSY7cNs=
 github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201212160433-673b9a2d221b/go.mod h1:hOQTqcf8uVTJS5QLaR0OiwaxVffDlvSZmMR1+h0wOaU=
 github.com/BlackspaceInc/common v1.0.1/go.mod h1:bnMwAz2Rq97hxV//CWtn8BSU8cXYzNqbo2hC8NDdyBE=

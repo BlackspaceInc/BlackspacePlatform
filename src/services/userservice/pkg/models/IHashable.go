@@ -1,6 +1,6 @@
 package models
 
-// IHashable provides interface definitions for various models associated with this service
+// IHashable provides interface definitions for various proto associated with this service
 type IHashable interface {
 	GetPasswordToHash() string
 }

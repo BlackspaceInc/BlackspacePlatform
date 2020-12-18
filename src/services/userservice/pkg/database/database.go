@@ -69,7 +69,7 @@ func New(connString string, logger *zap.Logger) (*Db, error) {
 	}, nil
 }
 
-// MigrateSchemas creates or updates a given set of models based on a schema
+// MigrateSchemas creates or updates a given set of proto based on a schema
 // if it does not exist or migrates the model schemas to the latest version
 func MigrateSchemas(db *gorm.DB, logger *zap.Logger) error {
 	migration := gormigrate.New(db, gormigrate.DefaultOptions, []*gormigrate.Migration{

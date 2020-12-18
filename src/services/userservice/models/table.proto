@@ -3,9 +3,9 @@ syntax = "proto3";
 import "github.com/infobloxopen/protoc-gen-gorm/options/gorm.proto";
 import "github.com/mwitkow/go-proto-validators/validator.proto";
 import "github.com/protobuf/src/google/protobuf/timestamp.proto";
-import "models/common.proto";
+import "proto/common.proto";
 
-option go_package = "models";
+option go_package = "proto";
 
 message User {
     option (gorm.opts) = {
