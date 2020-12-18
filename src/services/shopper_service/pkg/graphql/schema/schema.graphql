@@ -16,6 +16,7 @@ type BusinessAccount {
   servicesManagedByBlackspace: ServicesManagedByBlackspace
   founderAddress: Address
   subscribedTopics: Topics
+  authnId: Int
 }
 type Topics {
   id: Int

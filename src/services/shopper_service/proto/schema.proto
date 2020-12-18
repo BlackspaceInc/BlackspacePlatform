@@ -40,6 +40,8 @@ message BusinessAccount {
 	Address founderAddress = 16;
 	// Business Interests
 	Topics subscribedTopics = 17 [(gorm.field).has_one.preload = true];
+	// authentication service ref
+	uint32 authnId = 18;
 }
 
 message Topics {

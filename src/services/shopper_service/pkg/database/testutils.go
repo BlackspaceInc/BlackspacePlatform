@@ -32,7 +32,7 @@ func Setup() *Db {
 	// initialize connection to the database
 	db := Initialize(connSettings)
 	// spin up/migrate tables for testing
-	_ = database.MigrateSchemas(db.Engine, db.Logger)
+	_ = MigrateSchemas(db, db.Logger)
 	return db
 }
 

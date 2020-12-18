@@ -57,6 +57,7 @@ type ComplexityRoot struct {
 	}
 
 	BusinessAccount struct {
+		AuthnID                     func(childComplexity int) int
 		BusinessGoals               func(childComplexity int) int
 		BusinessStage               func(childComplexity int) int
 		Category                    func(childComplexity int) int
@@ -136,6 +137,8 @@ type ComplexityRoot struct {
 
 type BusinessAccountResolver interface {
 	ID(ctx context.Context, obj *proto.BusinessAccount) (*int, error)
+
+	AuthnID(ctx context.Context, obj *proto.BusinessAccount) (*int, error)
 }
 type MediaResolver interface {
 	ID(ctx context.Context, obj *proto.Media) (*int, error)
@@ -210,6 +213,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Address.ZipCode(childComplexity), true
+
+	case "BusinessAccount.authnId":
+		if e.complexity.BusinessAccount.AuthnID == nil {
+			break
+		}
+
+		return e.complexity.BusinessAccount.AuthnID(childComplexity), true
 
 	case "BusinessAccount.businessGoals":
 		if e.complexity.BusinessAccount.BusinessGoals == nil {
@@ -784,6 +794,7 @@ type Query {
   servicesManagedByBlackspace: ServicesManagedByBlackspace
   founderAddress: Address
   subscribedTopics: Topics
+  authnId: Int
 }
 type Topics {
   id: Int
@@ -1785,6 +1796,38 @@ func (ec *executionContext) _BusinessAccount_subscribedTopics(ctx context.Contex
 	res := resTmp.(*proto.Topics)
 	fc.Result = res
 	return ec.marshalOTopics2ᚖgithubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐTopics(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BusinessAccount_authnId(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessAccount) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "BusinessAccount",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BusinessAccount().AuthnID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _BusinessType_category(ctx context.Context, field graphql.CollectedField, obj *proto.BusinessType) (ret graphql.Marshaler) {
@@ -4781,6 +4824,17 @@ func (ec *executionContext) _BusinessAccount(ctx context.Context, sel ast.Select
 			out.Values[i] = ec._BusinessAccount_founderAddress(ctx, field, obj)
 		case "subscribedTopics":
 			out.Values[i] = ec._BusinessAccount_subscribedTopics(ctx, field, obj)
+		case "authnId":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._BusinessAccount_authnId(ctx, field, obj)
+				return res
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

@@ -11,6 +11,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/color v1.10.0
 	github.com/fsnotify/fsnotify v1.4.9
+	github.com/giantswarm/retry-go v0.0.0-20151203102909-d78cea247d5e
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.4.3
 	github.com/gomodule/redigo v1.8.3
@@ -22,6 +23,7 @@ require (
 	github.com/infobloxopen/protoc-gen-gorm v0.20.0
 	github.com/itimofeev/go-saga v0.1.0
 	github.com/jinzhu/gorm v1.9.16
+	github.com/juju/errgo v0.0.0-20140925100237-08cceb5d0b53 // indirect
 	github.com/keratin/authn-go v1.1.0
 	github.com/lib/pq v1.9.0
 	github.com/mitchellh/mapstructure v1.3.2 // indirect

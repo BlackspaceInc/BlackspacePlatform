@@ -15,6 +15,10 @@ func (r *businessAccountResolver) ID(ctx context.Context, obj *proto.BusinessAcc
 	panic(fmt.Errorf("not implemented"))
 }
 
+func (r *businessAccountResolver) AuthnID(ctx context.Context, obj *proto.BusinessAccount) (*int, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mediaResolver) ID(ctx context.Context, obj *proto.Media) (*int, error) {
 	panic(fmt.Errorf("not implemented"))
 }

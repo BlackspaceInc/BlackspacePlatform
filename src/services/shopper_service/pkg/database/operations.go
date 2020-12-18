@@ -43,6 +43,120 @@ type DatabaseOperations interface {
 	GetBusinessAccounts(ctx context.Context, ids []int32) ([]*proto.BusinessAccount, error)
 }
 
+// DeleteBusinessAccounts deletes a set of business accounts by ids
+func (db *Db) DeleteBusinessAccounts(ctx context.Context, ids []uint32) ([]bool, error) {
+	// define initial log entry
+	db.Logger.For(ctx).Info("delete business accounts")
+	ctx, span := db.startRootSpan(ctx, DELETE_MANY)
+	defer span.Finish()
+
+	tx := func(ctx context.Context, tx *gorm.DB) (interface{}, error) {
+		// start child span
+		db.Logger.For(ctx).Info("starting db transactions")
+		childSpan := db.TracingEngine.CreateChildSpan(ctx, "delete business accounts - operation")
+		defer childSpan.Finish()
+
+		var deleteStatus = make([]bool, len(ids))
+		for _, id := range ids {
+			success, err := db.DeleteBusinessAccount(ctx, id)
+			if !success {
+				db.Logger.For(ctx).Error(err, fmt.Sprintf("%s - for id %d ", errors.ErrFailedToDeleteBusinessAccount.Error(), id))
+			}
+
+			deleteStatus = append(deleteStatus, success)
+		}
+
+		return deleteStatus, nil
+	}
+
+	res, err := db.PerformComplexTransaction(ctx, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	return res.([]bool), nil
+}
+
+// DeleteBusinessAccount archives a business account by id
+func (db *Db) DeleteBusinessAccount(ctx context.Context, id uint32) (bool, error) {
+	db.Logger.For(ctx).Info("delete business account")
+	ctx, span := db.startRootSpan(ctx, DELETE_ONE)
+	defer span.Finish()
+
+	tx := func(ctx context.Context, tx *gorm.DB) (interface{}, error) {
+		db.Logger.For(ctx).Info("starting db transactions")
+		childSpan := db.TracingEngine.CreateChildSpan(ctx, "delete business account - operation")
+		defer childSpan.Finish()
+
+		// check if business actually exists
+		account := db.GetBusinessById(ctx, id)
+		if account == nil {
+			db.Logger.For(ctx).ErrorM(errors.ErrAccountDoesNotExist, errors.ErrAccountDoesNotExist.Error())
+			return false, nil
+		}
+
+		accountOrm, err := account.ToORM(ctx)
+		if err != nil {
+			db.Logger.For(ctx).ErrorM(errors.ErrFailedToConvertFromOrmType, errors.ErrFailedToConvertToOrmType.Error())
+			return false, err
+		}
+
+		// since we never truly delete the account from our backend we set the record to inactive
+		// while also ensuring from the context of the authentication handler service the account is locked
+		// define saga
+		dstTx := saga.NewSaga("archive business account")
+		// define coordinator store
+		store := saga.New()
+
+		// first operation is to perform a distributed transaction and lock the account if possible
+		err = dstTx.AddStep(&saga.Step{
+			Name:           "distributed unlock operation",
+			Func:           db.DistributedTxLockAccount(ctx, accountOrm.AuthnId, childSpan),
+			CompensateFunc: db.DistributedTxUnlockAccount(ctx, accountOrm.AuthnId, childSpan),
+		})
+
+		if err != nil {
+			db.Logger.Error(errors.ErrFailedToConfigureSaga, errors.ErrFailedToConfigureSaga.Error())
+			return nil, errors.ErrFailedToConfigureSaga
+		}
+
+		// second operation is to update the state of the account and save to database
+		err = dstTx.AddStep(&saga.Step{
+			Name:           "update business account and save to db operation",
+			Func:           db.SetBusinessAccountStatusAndSave(ctx, accountOrm, false), // deactivate account
+			CompensateFunc: db.SetBusinessAccountStatusAndSave(ctx, accountOrm, true),  // activate account
+			Options:        nil,
+		})
+
+		if err != nil {
+			db.Logger.Error(errors.ErrFailedToConfigureSaga, errors.ErrFailedToConfigureSaga.Error())
+			return nil, errors.ErrFailedToConfigureSaga
+		}
+
+		coordinator := saga.NewCoordinator(ctx, ctx, dstTx, store)
+		if result := coordinator.Play(); result != nil && (len(result.CompensateErrors) > 0 || result.ExecutionError != nil) {
+			// log the saga operation errors
+			db.Logger.Error(errors.ErrSagaFailedToExecuteSuccessfully, errors.ErrSagaFailedToExecuteSuccessfully.Error(),
+				zap.Errors("compensate error", result.CompensateErrors), zap.Error(result.ExecutionError))
+
+			// construct error
+			errMsg := fmt.Sprintf("compensate errors : %s , execution errors %s", zap.Errors("compensate error",
+				result.CompensateErrors).String+zap.Error(result.ExecutionError).String)
+			err := errors.NewError(errMsg)
+			return false, err
+		}
+
+		return true, nil
+	}
+
+	res, err := db.PerformComplexTransaction(ctx, tx)
+	if err != nil {
+		return false, err
+	}
+
+	return res.(bool), nil
+}
+
 // GetBusinessAccount gets a set of business accounts by ids
 func (db *Db) GetBusinessAccounts(ctx context.Context, ids []uint32) ([]*proto.BusinessAccount, error) {
 	// define initial log entry
@@ -69,7 +183,7 @@ func (db *Db) GetBusinessAccounts(ctx context.Context, ids []uint32) ([]*proto.B
 		return accounts, nil
 	}
 
-	res, err := db.PerformComplexTransaction(tx)
+	res, err := db.PerformComplexTransaction(ctx, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +213,7 @@ func (db *Db) GetBusinessAccount(ctx context.Context, id uint32) (*proto.Busines
 		return account, nil
 	}
 
-	res, err := db.PerformComplexTransaction(tx)
+	res, err := db.PerformComplexTransaction(ctx, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -141,7 +255,7 @@ func (db *Db) GetBusinessById(ctx context.Context, id uint32) *proto.BusinessAcc
 		return &account, nil
 	}
 
-	res, err := db.PerformComplexTransaction(tx)
+	res, err := db.PerformComplexTransaction(ctx, tx)
 	if err != nil {
 		return nil
 	}
@@ -183,7 +297,7 @@ func (db *Db) GetBusinessByEmail(ctx context.Context, email string) *proto.Busin
 		return &account, nil
 	}
 
-	res, err := db.PerformComplexTransaction(tx)
+	res, err := db.PerformComplexTransaction(ctx, tx)
 	if err != nil {
 		return nil
 	}
@@ -291,6 +405,7 @@ func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.Business
 			return nil, err
 		}
 
+		// TODO perform saga and allow interactions with the authentication handler service
 		// set the activity status
 		if err = db.SetBusinessAccountStatusAndSave(ctx, businessAccount, true); err != nil {
 			db.Logger.For(ctx).Error(errors.ErrFailedToUpdateAccountActiveStatus, err.Error())
@@ -318,7 +433,7 @@ func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.Business
 		return &createdAccount, nil
 	}
 
-	result, err := db.PerformComplexTransaction(tx)
+	result, err := db.PerformComplexTransaction(ctx, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -346,7 +461,7 @@ func (db *Db) SetBusinessAccountStatusAndSave(ctx context.Context, businessAccou
 		return nil
 	}
 
-	return db.PerformTransaction(tx)
+	return db.PerformTransaction(ctx, tx)
 }
 
 // DistributedTxUnlockAccount unlocks an account in a distributed transaction
@@ -362,7 +477,7 @@ func (db *Db) DistributedTxUnlockAccount(ctx context.Context, id uint32, childSp
 
 		// Transmit the span's TraceContext as HTTP headers on our
 		// outbound request.
-		opentracing.GlobalTracer().Inject(
+		_ = opentracing.GlobalTracer().Inject(
 			childSpan.Context(),
 			opentracing.HTTPHeaders,
 			opentracing.HTTPHeadersCarrier(httpReq.Header))

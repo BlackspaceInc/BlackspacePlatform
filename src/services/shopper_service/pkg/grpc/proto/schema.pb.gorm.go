@@ -48,6 +48,7 @@ var _ = fmt.Errorf
 var _ = math.Inf
 
 type BusinessAccountORM struct {
+	AuthnId                     uint32
 	BusinessGoals               pq1.StringArray `gorm:"type:text[]"`
 	BusinessStage               string
 	Category                    string
@@ -106,6 +107,7 @@ func (m *BusinessAccount) ToORM(ctx context.Context) (BusinessAccountORM, error)
 		}
 		to.SubscribedTopics = &tempSubscribedTopics
 	}
+	to.AuthnId = m.AuthnId
 	if posthook, ok := interface{}(m).(BusinessAccountWithAfterToORM); ok {
 		err = posthook.AfterToORM(ctx, &to)
 	}
@@ -150,6 +152,7 @@ func (m *BusinessAccountORM) ToPB(ctx context.Context) (BusinessAccount, error) 
 		}
 		to.SubscribedTopics = &tempSubscribedTopics
 	}
+	to.AuthnId = m.AuthnId
 	if posthook, ok := interface{}(m).(BusinessAccountWithAfterToPB); ok {
 		err = posthook.AfterToPB(ctx, &to)
 	}
@@ -842,6 +845,10 @@ func DefaultApplyFieldMaskBusinessAccount(ctx context.Context, patchee *Business
 		if f == prefix+"SubscribedTopics" {
 			updatedSubscribedTopics = true
 			patchee.SubscribedTopics = patcher.SubscribedTopics
+			continue
+		}
+		if f == prefix+"AuthnId" {
+			patchee.AuthnId = patcher.AuthnId
 			continue
 		}
 	}

@@ -29,6 +29,7 @@ var (
 	ErrSagaFailedToExecuteSuccessfully          = errors.New("saga failed to execute successfully")
 	ErrFailedToHashPassword                     = errors.New("failed to hash password")
 	ErrFailedToCreateAccount                    = errors.New("failed to create account")
+	ErrFailedToDeleteBusinessAccount            = errors.New("failed to delete business account")
 )
 
 func NewError(msg string) error {

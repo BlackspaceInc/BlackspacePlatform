@@ -13,6 +13,7 @@ import (
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/errors"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/utils"
+	retry"github.com/giantswarm/retry-go"
 )
 
 // IDatabase provides an interface which any database tied to this service should implement
@@ -91,24 +92,29 @@ func New(ctx context.Context, connectionString string, tracingEngine *core_traci
 	}, nil
 }
 
+// ConnectToDb attempts to connect to the database using retries
 func ConnectToDb(connectionString string, logger core_logging.ILog) (*gorm.DB, error) {
-	retries := 0
-	for retries < maxConnectionRetryAttempts {
-		// perform connection request
-		conn, err := gorm.Open(postgres, connectionString)
-		if err != nil {
-			if retries == maxConnectionRetryAttempts {
-				logger.Error(err, errors.ErrFailedToConnectToDatabase.Error())
-				return nil, err
-			}
-			retries += 1
-		} else {
-			return conn, nil
-		}
+	var connection = make(chan *gorm.DB)
+	err := retry.Do(func() error {
+			conn, err := gorm.Open(postgres, connectionString)
+			connection <- conn
+			return err
+		},
+		retry.MaxTries(maxConnectionRetryAttempts),
+		// TODO: emit metrics
+		// retry.AfterRetryLimit()
+		// TODO move this to config/env var
+		retry.Timeout(time.Millisecond*200),
+		// TODO move this config/env var
+		retry.Sleep(1 * time.Second),
+	)
 
-		time.Sleep(1 * time.Second)
+	if err != nil {
+		logger.Error(err, errors.ErrExceededMaxRetryAttempts.Error())
+		return nil,  errors.ErrExceededMaxRetryAttempts
 	}
-	return nil, errors.ErrExceededMaxRetryAttempts
+
+	return <- connection, nil
 }
 
 // configureDbConnection configures the database connection object
