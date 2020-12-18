@@ -25,12 +25,12 @@ import (
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
+	gql "github.com/99designs/gqlgen/graphql/handler"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/database"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/errors"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/fscache"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/graphql"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/graphql/generated"
-	gql "github.com/99designs/gqlgen/graphql/handler"
 )
 
 // @title Podinfo API
@@ -82,15 +82,15 @@ type Config struct {
 }
 
 type Server struct {
-	router  *mux.Router
-	logger  core_logging.ILog
+	router        *mux.Router
+	logger        core_logging.ILog
 	tracingEngine *core_tracing.TracingEngine
 	metricsEngine *core_metrics.CoreMetricsEngine
-	config  *Config
-	pool    *redis.Pool
-	handler http.Handler
-	gqlServer *gql.Server
-	db        *database.Db
+	config        *Config
+	pool          *redis.Pool
+	handler       http.Handler
+	gqlServer     *gql.Server
+	db            *database.Db
 }
 
 func NewServer(config *Config, logger core_logging.ILog, tracer *core_tracing.TracingEngine, metrics *core_metrics.CoreMetricsEngine,
@@ -100,11 +100,11 @@ func NewServer(config *Config, logger core_logging.ILog, tracer *core_tracing.Tr
 	}}))
 
 	srv := &Server{
-		router: mux.NewRouter(),
-		logger: logger,
-		config: config,
-		gqlServer: gqlServer,
-		db: db,
+		router:        mux.NewRouter(),
+		logger:        logger,
+		config:        config,
+		gqlServer:     gqlServer,
+		db:            db,
 		tracingEngine: tracer,
 		metricsEngine: metrics,
 	}

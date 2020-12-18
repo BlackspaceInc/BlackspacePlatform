@@ -16,8 +16,8 @@ import (
 )
 
 type Server struct {
-	logger core_logging.ILog
-	config *Config
+	logger        core_logging.ILog
+	config        *Config
 	tracingEngine *core_tracing.TracingEngine
 	metricsEngine *core_metrics.CoreMetricsEngine
 }
@@ -29,8 +29,8 @@ type Config struct {
 
 func NewServer(config *Config, logger core_logging.ILog, tracer *core_tracing.TracingEngine, metrics *core_metrics.CoreMetricsEngine) (*Server, error) {
 	srv := &Server{
-		logger: logger,
-		config: config,
+		logger:        logger,
+		config:        config,
 		tracingEngine: tracer,
 		metricsEngine: metrics,
 	}
@@ -41,7 +41,7 @@ func NewServer(config *Config, logger core_logging.ILog, tracer *core_tracing.Tr
 func (s *Server) ListenAndServe() {
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%v", s.config.Port))
 	if err != nil {
-		s.logger.FatalM(errors.ErrFailedToStartGRPCServer,fmt.Sprintf("failed to listen on port %d", s.config.Port))
+		s.logger.FatalM(errors.ErrFailedToStartGRPCServer, fmt.Sprintf("failed to listen on port %d", s.config.Port))
 	}
 
 	srv := grpc.NewServer()

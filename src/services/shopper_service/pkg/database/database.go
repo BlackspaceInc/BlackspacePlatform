@@ -22,17 +22,18 @@ type IDatabase interface {
 
 // Db witholds connection to a postgres database as well as a logging handler
 type Db struct {
-	Engine *gorm.DB
-	Logger core_logging.ILog
-	TracingEngine *core_tracing.TracingEngine
-	MetricsEngine *core_metrics.CoreMetricsEngine
+	Engine                                   *gorm.DB
+	Logger                                   core_logging.ILog
+	TracingEngine                            *core_tracing.TracingEngine
+	MetricsEngine                            *core_metrics.CoreMetricsEngine
+	AuthenticationHandlerServiceBaseEndpoint string
 }
 
 // Tx is a type serving as a function decorator for common database transactions
-type Tx func(tx *gorm.DB) error
+type Tx func(ctx context.Context, tx *gorm.DB) error
 
 // CmplxTx is a type serving as a function decorator for complex database transactions
-type CmplxTx func(tx *gorm.DB) (interface{}, error)
+type CmplxTx func(ctx context.Context, tx *gorm.DB) (interface{}, error)
 
 // type of database
 var postgres = "postgres"
@@ -46,10 +47,10 @@ var maxConnectionRetryAttempts = 5
 
 // New creates a database connection and returns the connection object
 func New(ctx context.Context, connectionString string, tracingEngine *core_tracing.TracingEngine, metricsEngine *core_metrics.CoreMetricsEngine,
-	logger core_logging.ILog) (*Db,
+	logger core_logging.ILog, svcEndpoint string) (*Db,
 	error) {
 
-	if connectionString == utils.EMPTY || tracingEngine ==  nil || metricsEngine == nil || logger == nil {
+	if connectionString == utils.EMPTY || tracingEngine == nil || metricsEngine == nil || logger == nil {
 		// crash the process
 		os.Exit(1)
 	}
@@ -77,11 +78,16 @@ func New(ctx context.Context, connectionString string, tracingEngine *core_traci
 	}
 	logger.Info("Successfully migrated database")
 
+	var endpoint = svcEndpoint
+	if endpoint == "" {
+		endpoint = "http://authentication-handler-service:9898/v1/account"
+	}
 	return &Db{
-		Engine:        conn,
-		Logger:        logger,
-		TracingEngine: tracingEngine,
-		MetricsEngine: metricsEngine,
+		Engine:                                   conn,
+		Logger:                                   logger,
+		TracingEngine:                            tracingEngine,
+		MetricsEngine:                            metricsEngine,
+		AuthenticationHandlerServiceBaseEndpoint: svcEndpoint,
 	}, nil
 }
 

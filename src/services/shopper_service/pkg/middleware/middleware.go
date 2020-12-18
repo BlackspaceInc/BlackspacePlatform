@@ -1,11 +1,11 @@
 package middleware
 
 import (
-"context"
-"net/http"
-"strings"
+	"context"
+	"net/http"
+	"strings"
 
-"github.com/keratin/authn-go/authn"
+	"github.com/keratin/authn-go/authn"
 )
 
 var userCtxKey = &contextKey{"user"}

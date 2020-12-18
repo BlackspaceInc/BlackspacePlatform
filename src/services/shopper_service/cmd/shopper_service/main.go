@@ -107,8 +107,8 @@ func main() {
 		if readErr := viper.ReadInConfig(); readErr != nil {
 			fmt.Printf("Error reading config file, %v\n", readErr)
 		}
-	}else{
-		fmt.Printf("Error to open config file, %v\n",fileErr)
+	} else {
+		fmt.Printf("Error to open config file, %v\n", fileErr)
 	}
 
 	// configure tracing
@@ -152,7 +152,7 @@ func main() {
 
 	// validate random delay options
 	if viper.GetInt("random-delay-max") < viper.GetInt("random-delay-min") {
-		logger.FatalM(errors.ErrInvalidEnvironmentVariableConfigurations,"`--random-delay-max` should be greater than `--random-delay-min`")
+		logger.FatalM(errors.ErrInvalidEnvironmentVariableConfigurations, "`--random-delay-max` should be greater than `--random-delay-min`")
 	}
 
 	switch delayUnit := viper.GetString("random-delay-unit"); delayUnit {

@@ -23,7 +23,7 @@ func StartRootSpanFromRequest(r *http.Request, operationType string, tracerEngin
 	return ctx, parentSpan
 }
 
-func StartRootOperationSpan(ctx context.Context, operationType string, tracerEngine *core_tracing.TracingEngine, logger core_logging.ILog)(context.Context,
+func StartRootOperationSpan(ctx context.Context, operationType string, tracerEngine *core_tracing.TracingEngine, logger core_logging.ILog) (context.Context,
 	opentracing.Span) {
 	logger.For(ctx).InfoM("Starting parent span for operation")
 	span, ctx := opentracing.StartSpanFromContext(ctx, operationType)
