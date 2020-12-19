@@ -33,6 +33,7 @@ var (
 	ErrFailedToUpdateAccountEmail           = errors.New("failed to updated business account email through distributed transaction")
 	ErrFailedToSaveUpdatedAccountRecord           = errors.New("failed to save updated business account record")
 	ErrCannotUpdatePassword           = errors.New("cannot update password field")
+	ErrCannotConfigureAccount = errors.New("cannot configure account")
 )
 
 func NewError(msg string) error {

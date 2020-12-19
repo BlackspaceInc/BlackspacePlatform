@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -415,9 +416,7 @@ func (db *Db) GetBusinessByEmail(ctx context.Context, email string) *proto.Busin
 }
 
 func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.BusinessAccount) (*proto.BusinessAccount, error) {
-	// 4. emit metrics
 	db.Logger.For(ctx).Info("creating business account")
-
 	ctx, span := db.startRootSpan(ctx, CREATE_ONE)
 	defer span.Finish()
 
@@ -451,46 +450,20 @@ func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.Business
 			childSpan := opentracing.StartSpan("authentication handler service - unlock operation", opentracing.ChildOf(span.Context()))
 			defer childSpan.Finish()
 
-			// define saga
-			dstTx := saga.NewSaga("unlock business account")
-			// define coordinator store
-			store := saga.New()
-
-			// first operation is to perform a distributed transaction and unlock the account if possible
-			err := dstTx.AddStep(&saga.Step{
+			lockAccount := saga.Step{
 				Name:           "distributed unlock operation",
 				Func:           db.DistributedTxUnlockAccount(ctx, businessAccount.Id, childSpan),
 				CompensateFunc: db.DistributedTxLockAccount(ctx, businessAccount.Id, childSpan),
-			})
-
-			if err != nil {
-				db.Logger.Error(errors.ErrFailedToConfigureSaga, errors.ErrFailedToConfigureSaga.Error())
-				return nil, errors.ErrFailedToConfigureSaga
 			}
 
-			// second operation is to update the state of the account and save to database
-			err = dstTx.AddStep(&saga.Step{
+			activateAccount := saga.Step{
 				Name:           "update business account and save to db operation",
 				Func:           db.SetBusinessAccountStatusAndSave(ctx, businessAccount, true),  // activate account
 				CompensateFunc: db.SetBusinessAccountStatusAndSave(ctx, businessAccount, false), // deactivate account
-				Options:        nil,
-			})
-
-			if err != nil {
-				db.Logger.Error(errors.ErrFailedToConfigureSaga, errors.ErrFailedToConfigureSaga.Error())
-				return nil, errors.ErrFailedToConfigureSaga
 			}
 
-			coordinator := saga.NewCoordinator(ctx, ctx, dstTx, store)
-			if result := coordinator.Play(); result != nil && (len(result.CompensateErrors) > 0 || result.ExecutionError != nil) {
-				// log the saga operation errors
-				db.Logger.Error(errors.ErrSagaFailedToExecuteSuccessfully, errors.ErrSagaFailedToExecuteSuccessfully.Error(),
-					zap.Errors("compensate error", result.CompensateErrors), zap.Error(result.ExecutionError))
-
-				// construct error
-				errMsg := fmt.Sprintf("compensate errors : %s , execution errors %s", zap.Errors("compensate error",
-					result.CompensateErrors).String+zap.Error(result.ExecutionError).String)
-				err := errors.NewError(errMsg)
+			if err := db.Saga.RunSaga(ctx, "unlock business account", lockAccount, activateAccount); err != nil {
+				db.Logger.ErrorM(err, err.Error())
 				return nil, err
 			}
 
@@ -514,19 +487,37 @@ func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.Business
 			return nil, err
 		}
 
-		// TODO perform saga and allow interactions with the authentication handler service
-		// set the activity status
-		if err = db.SetBusinessAccountStatusAndSave(ctx, businessAccount, true); err != nil {
-			db.Logger.For(ctx).Error(errors.ErrFailedToUpdateAccountActiveStatus, err.Error())
+		// run first saga to properly configure the business account
+		configureAccount := saga.Step{
+			Name: "setup business and activate account",
+			Func: func(ctx context.Context) error {
+				businessAccount.IsActive = true
+				if businessAccount.Password, err = db.ValidateAndHashPassword(businessAccount.Password); err != nil {
+					db.Logger.For(ctx).Error(errors.ErrFailedToHashPassword, err.Error())
+					return err
+				}
+				return nil
+			},
+			// activate account
+			CompensateFunc: func(ctx context.Context) error {
+				businessAccount.IsActive = false
+				return errors.ErrCannotConfigureAccount
+			}, // deactivate account
+			Options: nil,
+		}
+
+		if err = db.Saga.RunSaga(ctx, "configure account", configureAccount); err != nil {
+			db.Logger.ErrorM(errors.ErrSagaFailedToExecuteSuccessfully, err.Error())
 			return nil, err
 		}
 
-		// hash password
-		if businessAccount.Password, err = db.ValidateAndHashPassword(businessAccount.Password); err != nil {
-			db.Logger.For(ctx).Error(errors.ErrFailedToHashPassword, err.Error())
+		authnId, err := db.DistributedTxCreateAccount(ctx, businessAccount.Email, businessAccount.Password, span)
+		if err != nil {
+			db.Logger.ErrorM(err, err.Error())
 			return nil, err
 		}
 
+		businessAccount.AuthnId = *authnId
 		// save the account record in the db
 		if err := tx.Create(&businessAccount).Error; err != nil {
 			db.Logger.For(ctx).Error(errors.ErrFailedToCreateAccount, err.Error())
@@ -658,6 +649,54 @@ func (db *Db) DistributedTxUpdateAccountEmail(ctx context.Context, id uint32, em
 		}
 
 		return nil
+	}()
+}
+
+// DistributedTxCreateAccount creates the account record in a distributed transaction
+func (db *Db) DistributedTxCreateAccount(ctx context.Context, email, password string, childSpan opentracing.Span) (*uint32, error) {
+	return func() (*uint32, error) {
+		subSpan, ctx := opentracing.StartSpanFromContext(ctx, "create account", opentracing.ChildOf(childSpan.Context()))
+		defer subSpan.Finish()
+
+		// perform call to the authentication handler service
+		httpClient := &http.Client{}
+		url := db.AuthenticationHandlerServiceBaseEndpoint + "/create"
+
+		type createAccountReq struct {
+			Email string `json:"email"`
+			Password string `json:"password"`
+		}
+
+		type createAccountRes struct {
+			Error string `json:"error"`
+			Id uint32 `json:"id"`
+		}
+
+		var result createAccountRes
+		reqBody := createAccountReq{
+			Email: email,
+			Password: password,
+		}
+
+		body, err := utils.CreateRequestBody(reqBody)
+		if err != nil {
+			return nil, err
+		}
+
+		httpReq := db.createRequestAndPropagateTraces(url, subSpan, body)
+
+		resp, err := db.performHttpRequest(httpClient, httpReq, ctx)
+		if err != nil || db.processResponseStatusCode(resp, ctx) {
+			// todo: retry the operation with exponential backoff
+			return nil, err
+		}
+
+		if err = json.NewDecoder(resp.Body).Decode(&result); err != nil {
+			return nil, err
+		}
+
+		// update the id by reference
+		return &result.Id, nil
 	}()
 }
 

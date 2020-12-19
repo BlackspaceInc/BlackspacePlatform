@@ -12,6 +12,7 @@ import (
 	"gopkg.in/gormigrate.v1"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/errors"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/saga"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/utils"
 	retry"github.com/giantswarm/retry-go"
 )
@@ -28,6 +29,7 @@ type Db struct {
 	TracingEngine                            *core_tracing.TracingEngine
 	MetricsEngine                            *core_metrics.CoreMetricsEngine
 	AuthenticationHandlerServiceBaseEndpoint string
+	Saga    *saga.SagaCoordinator
 }
 
 // Tx is a type serving as a function decorator for common database transactions
@@ -89,6 +91,7 @@ func New(ctx context.Context, connectionString string, tracingEngine *core_traci
 		TracingEngine:                            tracingEngine,
 		MetricsEngine:                            metricsEngine,
 		AuthenticationHandlerServiceBaseEndpoint: svcEndpoint,
+		Saga: saga.NewSagaCoordinator(logger),
 	}, nil
 }
 

@@ -16,7 +16,7 @@ Specifications:
 * Instrumented with Prometheus
 * Tracing with Istio and Jaeger
 * Linkerd service profile
-* Structured logging with zap 
+* Structured logging with zap
 * 12-factor app with viper
 * Fault injection (random errors and latency)
 * Swagger docs
@@ -29,7 +29,7 @@ Specifications:
 Web API:
 
 * `GET /` prints runtime information
-* `GET /version` prints podinfo version and git commit hash 
+* `GET /version` prints podinfo version and git commit hash
 * `GET /metrics` return HTTP requests duration and Go runtime metrics
 * `GET /healthz` used by Kubernetes liveness probe
 * `GET /readyz` used by Kubernetes readiness probe
@@ -37,7 +37,7 @@ Web API:
 * `POST /readyz/disable` signals the Kubernetes LB to stop sending requests to this instance
 * `GET /status/{code}` returns the status code
 * `GET /panic` crashes the process with exit code 255
-* `POST /echo` forwards the call to the backend service and echos the posted content 
+* `POST /echo` forwards the call to the backend service and echos the posted content
 * `GET /env` returns the environment variables as a JSON array
 * `GET /headers` returns a JSON with the request HTTP headers
 * `GET /delay/{seconds}` waits for the specified period
@@ -106,3 +106,36 @@ Docker:
 ```bash
 docker run -dp 9898:9898 stefanprodan/podinfo
 ```
+
+## TODO (this weekend)
+### Business Account Service
+- update account creation logic
+- place auth middleware
+- refactor db logic and make functions shorter
+- add graphql impl (business logic)
+- write database unit tests
+- write graphql unit tests
+- emit metrics
+- provide service level documentation
+- setup kubernetes local environment for end to end testing
+- set up end to end testing flow using .github actions and kubernetes
+- setup automatic docker container deployment as a github action with all platform support
+- learn about k8, kustomize, helm and linkerd deployment options & ensure CI flow to run all tests (unit and end to end tests)
+### API Gateway Service (Graphql)
+- implement api gateway & coordinate authentication and business account creation
+### Frontend
+- build business account registration flow in typescript
+
+## TODO (next week)
+### Shopper Account Service
+- implement business logic and get production ready
+- document all service level interactions
+### API Gateway Service
+- coordinate interactions via the api gateway
+### Frontend
+- build shopper account registration flow in typescript
+- build business account admin page
+    - product input
+    - coupon input
+
+
