@@ -24,10 +24,9 @@ jobs:
       - name: Validate Helm chart
         uses: stefanprodan/kube-tools@v1
         with:
-          working-directory: ./src/services/authentication_handler_service
           command: |
             ls -al 
-            helmv3 template ./charts/authentication_handler_service | kubeval --strict
+            helmv3 template ./src/services/authentication_handler_service/charts/authentication_handler_service | kubeval --strict
       - name: Validate kustomization
         uses: stefanprodan/kube-tools@v1
         with:
