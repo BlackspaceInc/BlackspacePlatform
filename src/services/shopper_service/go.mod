@@ -8,6 +8,7 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.5.0 // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e
+	github.com/danielvladco/go-proto-gql v0.8.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fatih/color v1.10.0
 	github.com/fsnotify/fsnotify v1.4.9
@@ -48,4 +49,5 @@ require (
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/gormigrate.v1 v1.6.0
 	gopkg.in/square/go-jose.v2 v2.3.1 // indirect
+	gorm.io/gorm v1.20.8
 )

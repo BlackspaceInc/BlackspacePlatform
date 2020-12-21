@@ -23,8 +23,6 @@ type BusinessAccountServiceClient interface {
 	UpdateBusinessAccount(ctx context.Context, in *UpdateBusinessAccountRequest, opts ...grpc.CallOption) (*BusinessAccount, error)
 	// Deletes a given business account
 	DeleteBusinessAccount(ctx context.Context, in *DeleteBusinessAccountRequest, opts ...grpc.CallOption) (*ResponseStatus, error)
-	// Deletes multiple business accounts
-	DeleteBusinessAccounts(ctx context.Context, in *DeleteBusinessAccountsRequest, opts ...grpc.CallOption) (*ResponseStatus, error)
 	// Gets a business account
 	GetBusinessAccount(ctx context.Context, in *GetBusinessAccountRequest, opts ...grpc.CallOption) (*BusinessAccount, error)
 	// Gets multiple business accounts
@@ -66,15 +64,6 @@ func (c *businessAccountServiceClient) DeleteBusinessAccount(ctx context.Context
 	return out, nil
 }
 
-func (c *businessAccountServiceClient) DeleteBusinessAccounts(ctx context.Context, in *DeleteBusinessAccountsRequest, opts ...grpc.CallOption) (*ResponseStatus, error) {
-	out := new(ResponseStatus)
-	err := c.cc.Invoke(ctx, "/BusinessAccountService/DeleteBusinessAccounts", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *businessAccountServiceClient) GetBusinessAccount(ctx context.Context, in *GetBusinessAccountRequest, opts ...grpc.CallOption) (*BusinessAccount, error) {
 	out := new(BusinessAccount)
 	err := c.cc.Invoke(ctx, "/BusinessAccountService/GetBusinessAccount", in, out, opts...)
@@ -103,8 +92,6 @@ type BusinessAccountServiceServer interface {
 	UpdateBusinessAccount(context.Context, *UpdateBusinessAccountRequest) (*BusinessAccount, error)
 	// Deletes a given business account
 	DeleteBusinessAccount(context.Context, *DeleteBusinessAccountRequest) (*ResponseStatus, error)
-	// Deletes multiple business accounts
-	DeleteBusinessAccounts(context.Context, *DeleteBusinessAccountsRequest) (*ResponseStatus, error)
 	// Gets a business account
 	GetBusinessAccount(context.Context, *GetBusinessAccountRequest) (*BusinessAccount, error)
 	// Gets multiple business accounts
@@ -124,9 +111,6 @@ func (UnimplementedBusinessAccountServiceServer) UpdateBusinessAccount(context.C
 }
 func (UnimplementedBusinessAccountServiceServer) DeleteBusinessAccount(context.Context, *DeleteBusinessAccountRequest) (*ResponseStatus, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteBusinessAccount not implemented")
-}
-func (UnimplementedBusinessAccountServiceServer) DeleteBusinessAccounts(context.Context, *DeleteBusinessAccountsRequest) (*ResponseStatus, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteBusinessAccounts not implemented")
 }
 func (UnimplementedBusinessAccountServiceServer) GetBusinessAccount(context.Context, *GetBusinessAccountRequest) (*BusinessAccount, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBusinessAccount not implemented")
@@ -202,24 +186,6 @@ func _BusinessAccountService_DeleteBusinessAccount_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _BusinessAccountService_DeleteBusinessAccounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteBusinessAccountsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(BusinessAccountServiceServer).DeleteBusinessAccounts(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/BusinessAccountService/DeleteBusinessAccounts",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BusinessAccountServiceServer).DeleteBusinessAccounts(ctx, req.(*DeleteBusinessAccountsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _BusinessAccountService_GetBusinessAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetBusinessAccountRequest)
 	if err := dec(in); err != nil {
@@ -271,10 +237,6 @@ var _BusinessAccountService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteBusinessAccount",
 			Handler:    _BusinessAccountService_DeleteBusinessAccount_Handler,
-		},
-		{
-			MethodName: "DeleteBusinessAccounts",
-			Handler:    _BusinessAccountService_DeleteBusinessAccounts_Handler,
 		},
 		{
 			MethodName: "GetBusinessAccount",

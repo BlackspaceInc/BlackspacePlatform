@@ -5,12 +5,12 @@ package proto
 
 import (
 	fmt "fmt"
+	math "math"
 	proto "github.com/golang/protobuf/proto"
-	_ "github.com/golang/protobuf/ptypes/timestamp"
 	_ "github.com/infobloxopen/protoc-gen-gorm/options"
 	_ "github.com/mwitkow/go-proto-validators"
+	_ "github.com/golang/protobuf/ptypes/timestamp"
 	github_com_mwitkow_go_proto_validators "github.com/mwitkow/go-proto-validators"
-	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -35,9 +35,6 @@ func (this *UpdateBusinessAccountRequest) Validate() error {
 	return nil
 }
 func (this *DeleteBusinessAccountRequest) Validate() error {
-	return nil
-}
-func (this *DeleteBusinessAccountsRequest) Validate() error {
 	return nil
 }
 func (this *GetBusinessAccountRequest) Validate() error {

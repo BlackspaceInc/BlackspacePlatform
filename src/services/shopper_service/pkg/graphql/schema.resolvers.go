@@ -5,26 +5,28 @@ package graphql
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/graphql/generated"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/grpc/proto"
 )
 
 func (r *businessAccountResolver) ID(ctx context.Context, obj *proto.BusinessAccount) (*int, error) {
-	panic(fmt.Errorf("not implemented"))
-}
+	id := int(obj.Id)
+	return handleErrorIfPresent(id)}
 
 func (r *businessAccountResolver) AuthnID(ctx context.Context, obj *proto.BusinessAccount) (*int, error) {
-	panic(fmt.Errorf("not implemented"))
+	id := int(obj.AuthnId)
+	return handleErrorIfPresent(id)
 }
 
 func (r *mediaResolver) ID(ctx context.Context, obj *proto.Media) (*int, error) {
-	panic(fmt.Errorf("not implemented"))
+	id := int(obj.Id)
+	return handleErrorIfPresent(id)
 }
 
 func (r *topicsResolver) ID(ctx context.Context, obj *proto.Topics) (*int, error) {
-	panic(fmt.Errorf("not implemented"))
+	id := int(obj.Id)
+	return handleErrorIfPresent(id)
 }
 
 // BusinessAccount returns generated.BusinessAccountResolver implementation.

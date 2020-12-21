@@ -17,8 +17,6 @@ service BusinessAccountService {
 	rpc UpdateBusinessAccount(UpdateBusinessAccountRequest) returns (BusinessAccount) {}
 	// Deletes a given business account
 	rpc DeleteBusinessAccount(DeleteBusinessAccountRequest) returns (ResponseStatus) {}
-	// Deletes multiple business accounts
-	rpc DeleteBusinessAccounts(DeleteBusinessAccountsRequest) returns (ResponseStatus) {}
 	// Gets a business account
 	rpc GetBusinessAccount(GetBusinessAccountRequest) returns (BusinessAccount) {}
 	// Gets multiple business accounts
@@ -29,6 +27,8 @@ service BusinessAccountService {
 message CreateBusinessAccountRequest {
 	// the business account to create
 	BusinessAccount businessAccount = 1;
+	// authentication service account id
+	uint32 authnId = 2;
 }
 
 // Request message for the update business account method
@@ -43,11 +43,6 @@ message UpdateBusinessAccountRequest {
 message DeleteBusinessAccountRequest {
 	// the account id
 	uint32 id = 1;
-}
-
-// Request message for the delete business accounts method
-message DeleteBusinessAccountsRequest {
-	repeated uint32 ids = 1;
 }
 
 // Request message for the get business account method

@@ -34,6 +34,8 @@ var (
 	ErrFailedToSaveUpdatedAccountRecord           = errors.New("failed to save updated business account record")
 	ErrCannotUpdatePassword           = errors.New("cannot update password field")
 	ErrCannotConfigureAccount = errors.New("cannot configure account")
+	ErrInvalidInputArguments = errors.New("invalid input arguments")
+	ErrUnableToObtainBusinessAccounts = errors.New("unable to obtain business accounts")
 )
 
 func NewError(msg string) error {

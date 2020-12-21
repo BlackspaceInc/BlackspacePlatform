@@ -7,14 +7,17 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/giantswarm/retry-go"
 	"github.com/jinzhu/gorm"
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 
+	saga "github.com/itimofeev/go-saga"
+	"gorm.io/gorm/clause"
+
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/errors"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/grpc/proto"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/utils"
-	saga "github.com/itimofeev/go-saga"
 )
 
 type dbOperationType string
@@ -36,9 +39,9 @@ type DatabaseOperations interface {
 	// UpdateBusinessAccount updates a business account by Id
 	UpdateBusinessAccount(ctx context.Context, id uint32, account *proto.BusinessAccount) (*proto.BusinessAccount, error)
 	// DeleteBusinessAccount deletes a business account by Id
-	DeleteBusinessAccount(ctx context.Context, id uint32) (bool, error)
+	ArchiveBusinessAccount(ctx context.Context, id uint32) (bool, error)
 	// DeleteBusinessAccounts deletes a set of business accounts by Id
-	DeleteBusinessAccounts(ctx context.Context, ids []uint32) ([]bool, error)
+	ArchiveBusinessAccounts(ctx context.Context, ids []uint32) ([]bool, error)
 	// GetBusinessAccount gets a business account by id
 	GetBusinessAccount(ctx context.Context, id uint32) (*proto.BusinessAccount, error)
 	// GetBusinessAccounts gets a set of business accounts by id
@@ -48,12 +51,12 @@ type DatabaseOperations interface {
 // UpdateBusinessAccount updates a business account
 func (db *Db) UpdateBusinessAccount(ctx context.Context, id uint32, account *proto.BusinessAccount) (*proto.BusinessAccount, error){
 	db.Logger.For(ctx).Info(fmt.Sprintf("updated business account - id : %d", id))
-	ctx, span := db.startRootSpan(ctx, UPDATE_ONE)
+	ctx, span := db.startRootSpan(ctx, "get_business_accounts_db_op")
 	defer span.Finish()
 
 	tx := func(ctx context.Context, tx *gorm.DB)(interface{}, error){
 		db.Logger.For(ctx).Info("starting update account operation for account with id :%id", id)
-		childSpan := db.TracingEngine.CreateChildSpan(ctx, "update business account")
+		childSpan := db.TracingEngine.CreateChildSpan(ctx, "update_business_accounts_db_tx")
 		defer childSpan.Finish()
 
 		// attempt to see if account exists
@@ -68,60 +71,6 @@ func (db *Db) UpdateBusinessAccount(ctx context.Context, id uint32, account *pro
 		if !db.ComparePasswords(result.Password, []byte(account.Password)){
 			db.Logger.ErrorM(errors.ErrCannotUpdatePassword, errors.ErrCannotUpdatePassword.Error())
 			return nil, errors.ErrCannotUpdatePassword
-		}
-
-		// figure out if the email or password fields differ
-		// first we check email
-		if result.Email != account.Email {
-			failCaseFunc := func() error {
-				return errors.ErrFailedToUpdateAccountEmail
-			}
-
-			updateEmailFunc := func(from *proto.BusinessAccount, to *proto.BusinessAccount) error{
-				to.Email = from.Email
-				return nil
-			}
-
-			// we initiate a saga to update the record's email entry in the authentication service
-			dtxTx := saga.NewSaga("update account email")
-			store := saga.New()
-
-			err := dtxTx.AddStep(&saga.Step{
-				Name:           "update account email entry in authentication handler service",
-				Func:           db.DistributedTxUpdateAccountEmail(ctx, id, account.Email, childSpan),
-				CompensateFunc: failCaseFunc(),
-			})
-
-			if err != nil {
-				db.Logger.Error(errors.ErrFailedToConfigureSaga, errors.ErrFailedToConfigureSaga.Error())
-				return nil, errors.ErrFailedToConfigureSaga
-			}
-
-			// then we update the email field of the resulting record
-			err = dtxTx.AddStep(&saga.Step{
-				Name:           "update email field of record stored in db",
-				Func:           updateEmailFunc(result, account),
-				CompensateFunc: failCaseFunc(),
-			})
-
-			if err != nil {
-				db.Logger.Error(errors.ErrFailedToConfigureSaga, errors.ErrFailedToConfigureSaga.Error())
-				return nil, errors.ErrFailedToConfigureSaga
-			}
-
-			// TODO refactor saga logic into generic impl and move to its own function
-			coordinator := saga.NewCoordinator(ctx, ctx, dtxTx, store)
-			if result := coordinator.Play(); result != nil && (len(result.CompensateErrors) > 0 || result.ExecutionError != nil) {
-				// log the saga operation errors
-				db.Logger.Error(errors.ErrSagaFailedToExecuteSuccessfully, errors.ErrSagaFailedToExecuteSuccessfully.Error(),
-					zap.Errors("compensate error", result.CompensateErrors), zap.Error(result.ExecutionError))
-
-				// construct error
-				errMsg := fmt.Sprintf("compensate errors : %s , execution errors %s", zap.Errors("compensate error",
-					result.CompensateErrors).String+zap.Error(result.ExecutionError).String)
-				err := errors.NewError(errMsg)
-				return nil, err
-			}
 		}
 
 		// convert account record to ORM type
@@ -155,20 +104,20 @@ func (db *Db) UpdateBusinessAccount(ctx context.Context, id uint32, account *pro
 }
 
 // DeleteBusinessAccounts deletes a set of business accounts by ids
-func (db *Db) DeleteBusinessAccounts(ctx context.Context, ids []uint32) ([]bool, error) {
+func (db *Db) ArchiveBusinessAccounts(ctx context.Context, ids []uint32) ([]bool, error) {
 	db.Logger.For(ctx).Info("delete business accounts")
-	ctx, span := db.startRootSpan(ctx, DELETE_MANY)
+	ctx, span := db.startRootSpan(ctx, "archive_business_accounts_db_op")
 	defer span.Finish()
 
 	tx := func(ctx context.Context, tx *gorm.DB) (interface{}, error) {
 		// start child span
 		db.Logger.For(ctx).Info("starting db transactions")
-		childSpan := db.TracingEngine.CreateChildSpan(ctx, "delete business accounts - operation")
+		childSpan := db.TracingEngine.CreateChildSpan(ctx, "archive_business_accounts_db_tx")
 		defer childSpan.Finish()
 
 		var deleteStatus = make([]bool, len(ids))
 		for _, id := range ids {
-			success, err := db.DeleteBusinessAccount(ctx, id)
+			success, err := db.ArchiveBusinessAccount(ctx, id)
 			if !success {
 				db.Logger.For(ctx).Error(err, fmt.Sprintf("%s - for id %d ", errors.ErrFailedToDeleteBusinessAccount.Error(), id))
 			}
@@ -188,14 +137,14 @@ func (db *Db) DeleteBusinessAccounts(ctx context.Context, ids []uint32) ([]bool,
 }
 
 // DeleteBusinessAccount archives a business account by id
-func (db *Db) DeleteBusinessAccount(ctx context.Context, id uint32) (bool, error) {
+func (db *Db) ArchiveBusinessAccount(ctx context.Context, id uint32) (bool, error) {
 	db.Logger.For(ctx).Info("delete business account")
-	ctx, span := db.startRootSpan(ctx, DELETE_ONE)
+	ctx, span := db.startRootSpan(ctx, "archive_business_account_db_op")
 	defer span.Finish()
 
 	tx := func(ctx context.Context, tx *gorm.DB) (interface{}, error) {
 		db.Logger.For(ctx).Info("starting db transactions")
-		childSpan := db.TracingEngine.CreateChildSpan(ctx, "delete business account - operation")
+		childSpan := db.TracingEngine.CreateChildSpan(ctx, "archive_business_account_db_tx")
 		defer childSpan.Finish()
 
 		// check if business actually exists
@@ -205,55 +154,17 @@ func (db *Db) DeleteBusinessAccount(ctx context.Context, id uint32) (bool, error
 			return false, nil
 		}
 
-		accountOrm, err := account.ToORM(ctx)
-		if err != nil {
-			db.Logger.For(ctx).ErrorM(errors.ErrFailedToConvertFromOrmType, errors.ErrFailedToConvertToOrmType.Error())
-			return false, err
-		}
-
-		// since we never truly delete the account from our backend we set the record to inactive
-		// while also ensuring from the context of the authentication handler service the account is locked
-		// define saga
-		dstTx := saga.NewSaga("archive business account")
-		// define coordinator store
-		store := saga.New()
-
-		// first operation is to perform a distributed transaction and lock the account if possible
-		err = dstTx.AddStep(&saga.Step{
-			Name:           "distributed unlock operation",
-			Func:           db.DistributedTxLockAccount(ctx, accountOrm.AuthnId, childSpan),
-			CompensateFunc: db.DistributedTxUnlockAccount(ctx, accountOrm.AuthnId, childSpan),
-		})
-
-		if err != nil {
-			db.Logger.Error(errors.ErrFailedToConfigureSaga, errors.ErrFailedToConfigureSaga.Error())
-			return nil, errors.ErrFailedToConfigureSaga
-		}
-
-		// second operation is to update the state of the account and save to database
-		err = dstTx.AddStep(&saga.Step{
-			Name:           "update business account and save to db operation",
-			Func:           db.SetBusinessAccountStatusAndSave(ctx, accountOrm, false), // deactivate account
-			CompensateFunc: db.SetBusinessAccountStatusAndSave(ctx, accountOrm, true),  // activate account
+		// deactivate account activity status
+		deactivateAccountOpStep := saga.Step{
+			Name:           "deactivate_business_account",
+			Func:           db.SetBusinessAccountStatusAndSave(ctx, account, false),
+			CompensateFunc: db.SetBusinessAccountStatusAndSave(ctx, account, true),
 			Options:        nil,
-		})
-
-		if err != nil {
-			db.Logger.Error(errors.ErrFailedToConfigureSaga, errors.ErrFailedToConfigureSaga.Error())
-			return nil, errors.ErrFailedToConfigureSaga
 		}
 
-		coordinator := saga.NewCoordinator(ctx, ctx, dstTx, store)
-		if result := coordinator.Play(); result != nil && (len(result.CompensateErrors) > 0 || result.ExecutionError != nil) {
-			// log the saga operation errors
-			db.Logger.Error(errors.ErrSagaFailedToExecuteSuccessfully, errors.ErrSagaFailedToExecuteSuccessfully.Error(),
-				zap.Errors("compensate error", result.CompensateErrors), zap.Error(result.ExecutionError))
-
-			// construct error
-			errMsg := fmt.Sprintf("compensate errors : %s , execution errors %s", zap.Errors("compensate error",
-				result.CompensateErrors).String+zap.Error(result.ExecutionError).String)
-			err := errors.NewError(errMsg)
-			return false, err
+		if err := db.Saga.RunSaga(ctx, "deactivate_business_account", deactivateAccountOpStep); err != nil {
+			db.Logger.For(ctx).Error(err, err.Error())
+			return nil, err
 		}
 
 		return true, nil
@@ -271,7 +182,7 @@ func (db *Db) DeleteBusinessAccount(ctx context.Context, id uint32) (bool, error
 func (db *Db) GetBusinessAccounts(ctx context.Context, ids []uint32) ([]*proto.BusinessAccount, error) {
 	// define initial log entry
 	db.Logger.For(ctx).Info("get business accounts")
-	ctx, span := db.startRootSpan(ctx, GET_MANY)
+	ctx, span := db.startRootSpan(ctx, "get_business_accounts_db_op")
 	defer span.Finish()
 
 	tx := func(ctx context.Context, tx *gorm.DB) (interface{}, error) {
@@ -301,17 +212,46 @@ func (db *Db) GetBusinessAccounts(ctx context.Context, ids []uint32) ([]*proto.B
 	return res.([]*proto.BusinessAccount), nil
 }
 
-// GetBusinessAccount gets a singular business account
-func (db *Db) GetBusinessAccount(ctx context.Context, id uint32) (*proto.BusinessAccount, error) {
+func (db *Db) GetPaginatedBusinessAccounts(ctx context.Context, limit int64)([]*proto.BusinessAccount, error){
 	// define initial log entry
-	db.Logger.For(ctx).Info("get business account")
-	ctx, span := db.startRootSpan(ctx, GET_ONE)
+	db.Logger.For(ctx).Info("get business accounts")
+	ctx, span := db.startRootSpan(ctx, "get_paginated_business_accounts_db_op")
 	defer span.Finish()
 
 	tx := func(ctx context.Context, tx *gorm.DB) (interface{}, error) {
 		// start child span
 		db.Logger.For(ctx).Info("starting db transactions")
-		childSpan := db.TracingEngine.CreateChildSpan(ctx, "get business account - operation")
+		childSpan := db.TracingEngine.CreateChildSpan(ctx, "get_paginated_business_account_db_tx")
+		defer childSpan.Finish()
+
+		var result = make([]*proto.BusinessAccount, limit)
+		if err := db.PreloadTx(tx).Limit(limit).Find(&result).Error; err != nil {
+			db.Logger.For(ctx).Error(errors.ErrUnableToObtainBusinessAccounts, err.Error())
+			return nil, err
+		}
+
+		return result, nil
+	}
+
+	res, err := db.PerformComplexTransaction(ctx, tx)
+	if err != nil {
+		return nil, err
+	}
+
+	return res.([]*proto.BusinessAccount), nil
+}
+
+// GetBusinessAccount gets a singular business account
+func (db *Db) GetBusinessAccount(ctx context.Context, id uint32) (*proto.BusinessAccount, error) {
+	// define initial log entry
+	db.Logger.For(ctx).Info(fmt.Sprintf("get business account - id : %d", id))
+	ctx, span := db.startRootSpan(ctx, "get_business_account_db_op")
+	defer span.Finish()
+
+	tx := func(ctx context.Context, tx *gorm.DB) (interface{}, error) {
+		// start child span
+		db.Logger.For(ctx).Info("starting db transactions")
+		childSpan := db.TracingEngine.CreateChildSpan(ctx, "get_business_account_db_tx")
 		defer childSpan.Finish()
 
 		account := db.GetBusinessById(ctx, id)
@@ -320,6 +260,7 @@ func (db *Db) GetBusinessAccount(ctx context.Context, id uint32) (*proto.Busines
 			return nil, errors.ErrAccountDoesNotExist
 		}
 
+		db.Logger.For(ctx).Info("successfully obtained business account", zap.String("id", string(id)), zap.String("name", account.CompanyName))
 		return account, nil
 	}
 
@@ -334,21 +275,21 @@ func (db *Db) GetBusinessAccount(ctx context.Context, id uint32) (*proto.Busines
 // GetBusinessById gets a business account by id from the backend database
 func (db *Db) GetBusinessById(ctx context.Context, id uint32) *proto.BusinessAccount {
 	// define initial log entry
-	db.Logger.For(ctx).Info("get business account by id")
-
-	ctx, span := db.startRootSpan(ctx, GET_ONE)
+	db.Logger.For(ctx).Info(fmt.Sprintf("get business account by id - id : %d", id))
+	ctx, span := db.startRootSpan(ctx, "get_business_account_by_id_op")
 	defer span.Finish()
 
 	tx := func(ctx context.Context, tx *gorm.DB) (interface{}, error) {
 		// start child span
 		db.Logger.For(ctx).Info("starting db transactions")
-		childSpan := db.TracingEngine.CreateChildSpan(ctx, "get business account by id - operation")
+		childSpan := db.TracingEngine.CreateChildSpan(ctx, "get_business_account_by_id_tx")
 		defer childSpan.Finish()
 
 		var businessAccountOrm proto.BusinessAccountORM
-
 		// attempt to see if the record already exists
-		recordNotFound := tx.Where(&proto.BusinessAccountORM{Id: id}).First(&businessAccountOrm).RecordNotFound()
+		recordNotFound := db.PreloadTx(tx).
+							 Where(&proto.BusinessAccountORM{Id: id}).
+							 First(&businessAccountOrm).RecordNotFound()
 		if recordNotFound {
 			db.Logger.For(ctx).Error(errors.ErrAccountDoesNotExist, "account does not exist")
 			return nil, errors.ErrAccountDoesNotExist
@@ -378,19 +319,21 @@ func (db *Db) GetBusinessByEmail(ctx context.Context, email string) *proto.Busin
 	// define initial log entry
 	db.Logger.For(ctx).Info("get business account by email")
 
-	ctx, span := db.startRootSpan(ctx, GET_ONE)
+	ctx, span := db.startRootSpan(ctx, "get_business_account_by_email_op")
 	defer span.Finish()
 
 	tx := func(ctx context.Context, tx *gorm.DB) (interface{}, error) {
 		// start child span
 		db.Logger.For(ctx).Info("starting db transactions")
-		childSpan := db.TracingEngine.CreateChildSpan(ctx, "get business account by email - operation")
+		childSpan := db.TracingEngine.CreateChildSpan(ctx, "get_business_account_by_email_tx")
 		defer childSpan.Finish()
 
 		var businessAccountOrm proto.BusinessAccountORM
 
 		// attempt to see if the record already exists
-		recordNotFound := tx.Where(&proto.BusinessAccountORM{Email: email}).First(&businessAccountOrm).RecordNotFound()
+		recordNotFound := db.PreloadTx(tx).
+							 Where(&proto.BusinessAccountORM{Email: email}).
+							 First(&businessAccountOrm).RecordNotFound()
 		if recordNotFound {
 			db.Logger.For(ctx).Error(errors.ErrAccountDoesNotExist, "account does not exist")
 			return nil, errors.ErrAccountDoesNotExist
@@ -415,20 +358,16 @@ func (db *Db) GetBusinessByEmail(ctx context.Context, email string) *proto.Busin
 	return res.(*proto.BusinessAccount)
 }
 
-func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.BusinessAccount) (*proto.BusinessAccount, error) {
+// CreateBusinessAccount creates a business account and saves it to the database
+func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.BusinessAccount, authnid uint32) (*proto.BusinessAccount, error) {
 	db.Logger.For(ctx).Info("creating business account")
-	ctx, span := db.startRootSpan(ctx, CREATE_ONE)
+	ctx, span := db.startRootSpan(ctx, "create_business_account_op")
 	defer span.Finish()
 
-	// check if user record exists and if so check active status
-	// if not active, communicate with auth handler service and then activate and save the record locally
-	// if active return with an error message
-	// else create the record through the below call
 	tx := func(ctx context.Context, tx *gorm.DB) (interface{}, error) {
 		// start child span
 		db.Logger.For(ctx).Info("starting transaction")
-
-		span := db.TracingEngine.CreateChildSpan(ctx, "create record operation")
+		span := db.TracingEngine.CreateChildSpan(ctx, "create_business_account_tx")
 		defer span.Finish()
 
 		// validate account object
@@ -440,41 +379,12 @@ func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.Business
 		var businessAccount proto.BusinessAccountORM
 		// attempt to see if the record already exists
 		// no 2 records in our backend database can have the same email or company name
-		recordNotFound := tx.Where(&proto.BusinessAccountORM{Email: account.Email, CompanyName: account.CompanyName}).First(&businessAccount).
+		recordNotFound := db.PreloadTx(tx).Where(&proto.BusinessAccountORM{Email: account.Email,
+				CompanyName: account.CompanyName}).First(&businessAccount).
 			RecordNotFound()
-		// if the record exists and the user is not active,
-		// we reactivate the account by updating the account from the perspectice of the authentication handler service after which we update the
-		// status of the operation in our backend db. Note this entire operation must be implemented in a saga
-		if !recordNotFound && !businessAccount.IsActive {
-			// call the authentication handler service but first ensure we trace the request
-			childSpan := opentracing.StartSpan("authentication handler service - unlock operation", opentracing.ChildOf(span.Context()))
-			defer childSpan.Finish()
 
-			lockAccount := saga.Step{
-				Name:           "distributed unlock operation",
-				Func:           db.DistributedTxUnlockAccount(ctx, businessAccount.Id, childSpan),
-				CompensateFunc: db.DistributedTxLockAccount(ctx, businessAccount.Id, childSpan),
-			}
-
-			activateAccount := saga.Step{
-				Name:           "update business account and save to db operation",
-				Func:           db.SetBusinessAccountStatusAndSave(ctx, businessAccount, true),  // activate account
-				CompensateFunc: db.SetBusinessAccountStatusAndSave(ctx, businessAccount, false), // deactivate account
-			}
-
-			if err := db.Saga.RunSaga(ctx, "unlock business account", lockAccount, activateAccount); err != nil {
-				db.Logger.ErrorM(err, err.Error())
-				return nil, err
-			}
-
-			db.Logger.Info("account successfully created",
-				zap.String("id", string(businessAccount.Id)),
-				zap.String("business account name", businessAccount.CompanyName),
-				zap.String("email", businessAccount.Email))
-
-			return &businessAccount, nil
-		} else if !recordNotFound && businessAccount.IsActive {
-			// account already exists and is active
+		if !recordNotFound{
+			// account already exists
 			db.Logger.ErrorM(errors.ErrAccountAlreadyExist, errors.ErrAccountAlreadyExist.Error())
 			return nil, errors.ErrAccountAlreadyExist
 		}
@@ -487,37 +397,16 @@ func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.Business
 			return nil, err
 		}
 
-		// run first saga to properly configure the business account
-		configureAccount := saga.Step{
-			Name: "setup business and activate account",
-			Func: func(ctx context.Context) error {
-				businessAccount.IsActive = true
-				if businessAccount.Password, err = db.ValidateAndHashPassword(businessAccount.Password); err != nil {
-					db.Logger.For(ctx).Error(errors.ErrFailedToHashPassword, err.Error())
-					return err
-				}
-				return nil
-			},
-			// activate account
-			CompensateFunc: func(ctx context.Context) error {
-				businessAccount.IsActive = false
-				return errors.ErrCannotConfigureAccount
-			}, // deactivate account
-			Options: nil,
-		}
-
-		if err = db.Saga.RunSaga(ctx, "configure account", configureAccount); err != nil {
-			db.Logger.ErrorM(errors.ErrSagaFailedToExecuteSuccessfully, err.Error())
+		// hash password
+		if businessAccount.Password, err = db.ValidateAndHashPassword(businessAccount.Password); err != nil {
+			db.Logger.For(ctx).Error(errors.ErrFailedToHashPassword, err.Error())
 			return nil, err
 		}
 
-		authnId, err := db.DistributedTxCreateAccount(ctx, businessAccount.Email, businessAccount.Password, span)
-		if err != nil {
-			db.Logger.ErrorM(err, err.Error())
-			return nil, err
-		}
+		// activate account and assign authn id relation
+		businessAccount.IsActive = true
+		businessAccount.AuthnId = authnid
 
-		businessAccount.AuthnId = *authnId
 		// save the account record in the db
 		if err := tx.Create(&businessAccount).Error; err != nil {
 			db.Logger.For(ctx).Error(errors.ErrFailedToCreateAccount, err.Error())
@@ -542,17 +431,30 @@ func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.Business
 	return createdAccount, nil
 }
 
-// SetBusinessAccountStatusAndSave updates the active status of a business account in the backend database
-func (db *Db) SetBusinessAccountStatusAndSave(ctx context.Context, businessAccount proto.BusinessAccountORM,
-	accountActive bool) error {
+func (db *Db) PreloadTx(tx *gorm.DB) *gorm.DB {
+	return tx.Preload("Media.SubscribedTopics").
+		Preload(clause.Associations)
+}
 
-	db.Logger.For(ctx).Info(fmt.Sprintf("updating business account active status to %v", accountActive))
+// SetBusinessAccountStatusAndSave updates the active status of a business account in the backend database
+func (db *Db) SetBusinessAccountStatusAndSave(ctx context.Context, businessAccount *proto.BusinessAccount,
+	activateAccount bool) error {
+
+	db.Logger.For(ctx).Info(fmt.Sprintf("updating business account active status to %v", activateAccount))
 	span := db.TracingEngine.CreateChildSpan(ctx, "update business account active status operation")
 	defer span.Finish()
 
 	tx := func(ctx context.Context, tx *gorm.DB) error {
-		businessAccount.IsActive = accountActive
-		err := tx.Save(&businessAccount).Error
+		// convert to orm type
+		account, err := businessAccount.ToORM(ctx)
+		if err != nil {
+			db.Logger.For(ctx).Error(errors.ErrFailedToConvertToOrmType, err.Error())
+			return err
+		}
+
+		// set account active status
+		account.IsActive = activateAccount
+		err = tx.Save(&account).Error
 		if err != nil {
 			db.Logger.For(ctx).Error(errors.ErrFailedToUpdateAccountActiveStatus, err.Error())
 			return err
@@ -561,12 +463,17 @@ func (db *Db) SetBusinessAccountStatusAndSave(ctx context.Context, businessAccou
 		return nil
 	}
 
-	return db.PerformTransaction(ctx, tx)
+	f := func() error {
+		return db.PerformTransaction(ctx, tx)
+	}
+
+	// should perform this as a retryable operation in case of errors
+	return  db.PerformRetryableOperation(f)
 }
 
 // DistributedTxUnlockAccount unlocks an account in a distributed transaction
 func (db *Db) DistributedTxUnlockAccount(ctx context.Context, id uint32, childSpan opentracing.Span) error {
-	return func() error {
+	f :=  func() error {
 		subSpan, ctx := opentracing.StartSpanFromContext(ctx, "unlock account", opentracing.ChildOf(childSpan.Context()))
 		defer subSpan.Finish()
 
@@ -593,12 +500,26 @@ func (db *Db) DistributedTxUnlockAccount(ctx context.Context, id uint32, childSp
 			return errors.ErrDistributedTransactionError
 		}
 		return nil
-	}()
+	}
+
+	return db.PerformRetryableOperation(f)
+}
+
+func (db *Db) PerformRetryableOperation(f func() error) error {
+	return retry.Do(func() error {
+		return f()
+	},
+		retry.MaxTries(db.MaxRetriesPerOperation),
+		// TODO: emit metrics
+		// retry.AfterRetryLimit()
+		retry.Timeout(db.RetryTimeOut),
+		retry.Sleep(db.OperationSleepInterval),
+	)
 }
 
 // DistributedTxLockAccount locks an account in a distributed transaction
 func (db *Db) DistributedTxLockAccount(ctx context.Context, id uint32, childSpan opentracing.Span) error {
-	return func() error {
+	f := func() error {
 		subSpan, ctx := opentracing.StartSpanFromContext(ctx, "lock account", opentracing.ChildOf(childSpan.Context()))
 		defer subSpan.Finish()
 
@@ -614,12 +535,14 @@ func (db *Db) DistributedTxLockAccount(ctx context.Context, id uint32, childSpan
 		}
 
 		return nil
-	}()
+	}
+
+	return db.PerformRetryableOperation(f)
 }
 
 // DistributedTxUpdateAccountEmail updates the account record's email entry in a distributed transaction
 func (db *Db) DistributedTxUpdateAccountEmail(ctx context.Context, id uint32, email string, childSpan opentracing.Span) error {
-	return func() error {
+	f := func() error {
 		subSpan, ctx := opentracing.StartSpanFromContext(ctx, "lock account", opentracing.ChildOf(childSpan.Context()))
 		defer subSpan.Finish()
 
@@ -649,7 +572,9 @@ func (db *Db) DistributedTxUpdateAccountEmail(ctx context.Context, id uint32, em
 		}
 
 		return nil
-	}()
+	}
+
+	return db.PerformRetryableOperation(f)
 }
 
 // DistributedTxCreateAccount creates the account record in a distributed transaction

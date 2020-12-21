@@ -98,10 +98,9 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateBusinessAcount   func(childComplexity int, input proto.CreateBusinessAccountRequest) int
-		DeleteBusinessAccount  func(childComplexity int, id proto.DeleteBusinessAccountRequest) int
-		DeleteBusinessAccounts func(childComplexity int, ids proto.DeleteBusinessAccountsRequest) int
-		UpdateBusinessAccount  func(childComplexity int, input proto.UpdateBusinessAccountRequest) int
+		CreateBusinessAcount  func(childComplexity int, input proto.CreateBusinessAccountRequest) int
+		DeleteBusinessAccount func(childComplexity int, id proto.DeleteBusinessAccountRequest) int
+		UpdateBusinessAccount func(childComplexity int, input proto.UpdateBusinessAccountRequest) int
 	}
 
 	PaymentProcessingMethods struct {
@@ -147,7 +146,6 @@ type MutationResolver interface {
 	CreateBusinessAcount(ctx context.Context, input proto.CreateBusinessAccountRequest) (*proto.BusinessAccount, error)
 	UpdateBusinessAccount(ctx context.Context, input proto.UpdateBusinessAccountRequest) (*proto.BusinessAccount, error)
 	DeleteBusinessAccount(ctx context.Context, id proto.DeleteBusinessAccountRequest) (bool, error)
-	DeleteBusinessAccounts(ctx context.Context, ids proto.DeleteBusinessAccountsRequest) ([]*bool, error)
 }
 type QueryResolver interface {
 	GetBusinessAccount(ctx context.Context, input proto.GetBusinessAccountRequest) ([]*proto.BusinessAccount, error)
@@ -441,18 +439,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteBusinessAccount(childComplexity, args["id"].(proto.DeleteBusinessAccountRequest)), true
 
-	case "Mutation.deleteBusinessAccounts":
-		if e.complexity.Mutation.DeleteBusinessAccounts == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_deleteBusinessAccounts_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.DeleteBusinessAccounts(childComplexity, args["ids"].(proto.DeleteBusinessAccountsRequest)), true
-
 	case "Mutation.UpdateBusinessAccount":
 		if e.complexity.Mutation.UpdateBusinessAccount == nil {
 			break
@@ -741,6 +727,7 @@ input IPhoneNumber {
 `, BuiltIn: false},
 	{Name: "schema/mutation.graphql", Input: `input CreateBusinessAccountRequest {
 	businessAccount: IBusinessAccount
+	authnId: Int
 }
 
 input UpdateBusinessAccountRequest {
@@ -760,7 +747,6 @@ type Mutation {
 	CreateBusinessAcount(input: CreateBusinessAccountRequest!): BusinessAccount!
 	UpdateBusinessAccount(input: UpdateBusinessAccountRequest!): BusinessAccount!
 	deleteBusinessAccount(id: DeleteBusinessAccountRequest!): Boolean!
-	deleteBusinessAccounts(ids: DeleteBusinessAccountsRequest!): [Boolean]!
 }
 `, BuiltIn: false},
 	{Name: "schema/query.graphql", Input: `input GetBusinessAccountRequest {
@@ -961,21 +947,6 @@ func (ec *executionContext) field_Mutation_deleteBusinessAccount_args(ctx contex
 		}
 	}
 	args["id"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_deleteBusinessAccounts_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 proto.DeleteBusinessAccountsRequest
-	if tmp, ok := rawArgs["ids"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ids"))
-		arg0, err = ec.unmarshalNDeleteBusinessAccountsRequest2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐDeleteBusinessAccountsRequest(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["ids"] = arg0
 	return args, nil
 }
 
@@ -2306,48 +2277,6 @@ func (ec *executionContext) _Mutation_deleteBusinessAccount(ctx context.Context,
 	res := resTmp.(bool)
 	fc.Result = res
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mutation_deleteBusinessAccounts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_deleteBusinessAccounts_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteBusinessAccounts(rctx, args["ids"].(proto.DeleteBusinessAccountsRequest))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]*bool)
-	fc.Result = res
-	return ec.marshalNBoolean2ᚕᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _PaymentProcessingMethods_paymentOptions(ctx context.Context, field graphql.CollectedField, obj *proto.PaymentProcessingMethods) (ret graphql.Marshaler) {
@@ -4118,6 +4047,14 @@ func (ec *executionContext) unmarshalInputCreateBusinessAccountRequest(ctx conte
 			if err != nil {
 				return it, err
 			}
+		case "authnId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("authnId"))
+			it.AuthnID, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -4144,8 +4081,8 @@ func (ec *executionContext) unmarshalInputDeleteBusinessAccountRequest(ctx conte
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputDeleteBusinessAccountsRequest(ctx context.Context, obj interface{}) (proto.DeleteBusinessAccountsRequest, error) {
-	var it proto.DeleteBusinessAccountsRequest
+func (ec *executionContext) unmarshalInputDeleteBusinessAccountsRequest(ctx context.Context, obj interface{}) (proto1.DeleteBusinessAccountsRequest, error) {
+	var it proto1.DeleteBusinessAccountsRequest
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -4973,11 +4910,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "deleteBusinessAccounts":
-			out.Values[i] = ec._Mutation_deleteBusinessAccounts(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -5414,36 +5346,6 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNBoolean2ᚕᚖbool(ctx context.Context, v interface{}) ([]*bool, error) {
-	var vSlice []interface{}
-	if v != nil {
-		if tmp1, ok := v.([]interface{}); ok {
-			vSlice = tmp1
-		} else {
-			vSlice = []interface{}{v}
-		}
-	}
-	var err error
-	res := make([]*bool, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOBoolean2ᚖbool(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalNBoolean2ᚕᚖbool(ctx context.Context, sel ast.SelectionSet, v []*bool) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalOBoolean2ᚖbool(ctx, sel, v[i])
-	}
-
-	return ret
-}
-
 func (ec *executionContext) marshalNBusinessAccount2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐBusinessAccount(ctx context.Context, sel ast.SelectionSet, v proto.BusinessAccount) graphql.Marshaler {
 	return ec._BusinessAccount(ctx, sel, &v)
 }
@@ -5502,11 +5404,6 @@ func (ec *executionContext) unmarshalNCreateBusinessAccountRequest2githubᚗcom�
 
 func (ec *executionContext) unmarshalNDeleteBusinessAccountRequest2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐDeleteBusinessAccountRequest(ctx context.Context, v interface{}) (proto.DeleteBusinessAccountRequest, error) {
 	res, err := ec.unmarshalInputDeleteBusinessAccountRequest(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalNDeleteBusinessAccountsRequest2githubᚗcomᚋBlackspaceIncᚋBlackspacePlatformᚋsrcᚋservicesᚋshopper_serviceᚋpkgᚋgrpcᚋprotoᚐDeleteBusinessAccountsRequest(ctx context.Context, v interface{}) (proto.DeleteBusinessAccountsRequest, error) {
-	res, err := ec.unmarshalInputDeleteBusinessAccountsRequest(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 

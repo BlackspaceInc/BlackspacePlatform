@@ -12,6 +12,7 @@ import (
 	"gopkg.in/gormigrate.v1"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/errors"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/grpc/proto"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/saga"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/utils"
 	retry"github.com/giantswarm/retry-go"
@@ -30,6 +31,10 @@ type Db struct {
 	MetricsEngine                            *core_metrics.CoreMetricsEngine
 	AuthenticationHandlerServiceBaseEndpoint string
 	Saga    *saga.SagaCoordinator
+	MaxConnectionAttempts int
+	MaxRetriesPerOperation int
+	RetryTimeOut time.Duration
+	OperationSleepInterval time.Duration
 }
 
 // Tx is a type serving as a function decorator for common database transactions
@@ -46,21 +51,18 @@ const (
 	DB_CONNECTION_ATTEMPT = "DB_CONNECTION_ATTEMPT"
 )
 
-var maxConnectionRetryAttempts = 5
-
 // New creates a database connection and returns the connection object
 func New(ctx context.Context, connectionString string, tracingEngine *core_tracing.TracingEngine, metricsEngine *core_metrics.CoreMetricsEngine,
 	logger core_logging.ILog, svcEndpoint string) (*Db,
 	error) {
+	// generate a span for the database connection
+	ctx, span := utils.StartRootOperationSpan(ctx, DB_CONNECTION_ATTEMPT, tracingEngine, logger)
+	defer span.Finish()
 
 	if connectionString == utils.EMPTY || tracingEngine == nil || metricsEngine == nil || logger == nil {
 		// crash the process
 		os.Exit(1)
 	}
-
-	// generate a span for the database connection
-	ctx, span := utils.StartRootOperationSpan(ctx, DB_CONNECTION_ATTEMPT, tracingEngine, logger)
-	defer span.Finish()
 
 	logger.Info("Attempting database connection operation")
 	conn, err := ConnectToDb(connectionString, logger)
@@ -75,7 +77,7 @@ func New(ctx context.Context, connectionString string, tracingEngine *core_traci
 	logger.Info("Successfully configured database connection object")
 
 	logger.Info("Attempting database schema migration")
-	err = MigrateSchemas(conn, logger)
+	err = MigrateSchemas(conn, logger, &proto.BusinessAccountORM{}, &proto.MediaORM{}, &proto.TopicsORM{})
 	if err != nil {
 		logger.FatalM(err, errors.ErrFailedToPerformDatabaseMigrations.Error())
 	}
@@ -92,6 +94,10 @@ func New(ctx context.Context, connectionString string, tracingEngine *core_traci
 		MetricsEngine:                            metricsEngine,
 		AuthenticationHandlerServiceBaseEndpoint: svcEndpoint,
 		Saga: saga.NewSagaCoordinator(logger),
+		MaxConnectionAttempts: 5,
+		MaxRetriesPerOperation: 3,
+		RetryTimeOut: 1 * time.Millisecond,
+		OperationSleepInterval: 1 * time.Second,
 	}, nil
 }
 
@@ -103,12 +109,10 @@ func ConnectToDb(connectionString string, logger core_logging.ILog) (*gorm.DB, e
 			connection <- conn
 			return err
 		},
-		retry.MaxTries(maxConnectionRetryAttempts),
+		retry.MaxTries(5),
 		// TODO: emit metrics
 		// retry.AfterRetryLimit()
-		// TODO move this to config/env var
 		retry.Timeout(time.Millisecond*200),
-		// TODO move this config/env var
 		retry.Sleep(1 * time.Second),
 	)
 

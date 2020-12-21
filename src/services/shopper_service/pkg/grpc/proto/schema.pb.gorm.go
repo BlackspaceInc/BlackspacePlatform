@@ -20,7 +20,6 @@ It has these top-level messages:
 	CreateBusinessAccountRequest
 	UpdateBusinessAccountRequest
 	DeleteBusinessAccountRequest
-	DeleteBusinessAccountsRequest
 	GetBusinessAccountRequest
 	GetBusinessAccountsRequest
 	ResponseStatus

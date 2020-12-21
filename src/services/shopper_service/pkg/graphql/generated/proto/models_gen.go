@@ -6,6 +6,10 @@ import (
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/grpc/proto"
 )
 
+type DeleteBusinessAccountsRequest struct {
+	ID []*int `json:"id"`
+}
+
 type IAddress struct {
 	Address       *string       `json:"Address"`
 	ApartmentUnit *string       `json:"ApartmentUnit"`

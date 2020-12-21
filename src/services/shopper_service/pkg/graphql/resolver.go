@@ -1,6 +1,10 @@
 package graphql
 
 import (
+	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
+	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
+	core_tracing "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-tracing"
+
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/database"
 )
 
@@ -10,4 +14,7 @@ import (
 
 type Resolver struct {
 	Db *database.Db
+	Logger core_logging.ILog
+	Tracer *core_tracing.TracingEngine
+	Metrics *core_metrics.CoreMetricsEngine
 }
