@@ -47,18 +47,15 @@ jobs:
       - name: Build Docker Container
         working-directory: ./src/services/authentication_handler_service
         run: make build-container
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: ./src/services/authentication_handler_service
-          file: ./Dockerfile
-          platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
-          push: true
-          tags: |
-            authentication_handler_service/dev:latest
-            authentication_handler_service/1.0.0:latest
+      - name: docker login
+          env:
+            DOCKER_USER: ${{secrets.DOCKER_USER}}
+            DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+          run: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      - name: Build the Docker image
+        working-directory: ./src/services/authentication_handler_service
+        run: docker build . --file Dockerfile --tag authentication_handler_service/dev:$(date +%s)
+      - name: Docker Push
+        working-directory: ./src/services/authentication_handler_service
+        run: docker push authentication_handler_service/dev
