@@ -44,7 +44,7 @@ test-container:
 	@docker rm -f authentication_handler_service || true
 	@docker run -dp 9898:9898 --name=authentication_handler_service $(DOCKER_IMAGE_NAME):$(VERSION)
 	@docker ps
-	curl localhost:9898/version | grep version
+	sudo curl -L GET --url http://localhost:9898/healthz
 
 push-container:
 	docker tag $(DOCKER_IMAGE_NAME):$(VERSION) $(DOCKER_IMAGE_NAME):latest
