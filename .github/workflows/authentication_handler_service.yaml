@@ -24,29 +24,39 @@ jobs:
       - name: Validate Helm chart
         uses: stefanprodan/kube-tools@v1
         with:
+          working-directory: ./src/services/authentication_handler_service
           command: |
             ls -al 
             helmv3 template ./charts/authentication_handler_service | kubeval --strict
       - name: Validate kustomization
         uses: stefanprodan/kube-tools@v1
         with:
+          working-directory: ./src/services/authentication_handler_service 
           command: |
             kustomize build ./kustomize | kubeval --strict
             kustomize build ./kustomize | conftest test -p .github/policy -
       - name: Build code base
+        working-directory: ./src/services/authentication_handler_service 
         run: make build
       - name: Build charts
+        working-directory: ./src/services/authentication_handler_service 
         run: make build-charts
       - name: Integration & Unit Test Cases
+        working-directory: ./src/services/authentication_handler_service 
         run: make test-suite
       - name: Build Docker Container
+        working-directory: ./src/services/authentication_handler_service 
         run: make build-container
       - name: Test Container
+        working-directory: ./src/services/authentication_handler_service 
         run: make test-container
       - name: Push Container
+        working-directory: ./src/services/authentication_handler_service 
         run: make push-container
       - name: Build Base Container
+        working-directory: ./src/services/authentication_handler_service 
         run: make build-base
       - name: Push Base Container
+        working-directory: ./src/services/authentication_handler_service 
         run: make push-base
 
