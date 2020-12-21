@@ -16,9 +16,8 @@ run:
 	--ui-logo=https://raw.githubusercontent.com/github.com/blackspaceInc/BlackspacePlatform/authentication_handler_service/gh-pages/cuddle_clap.gif $(EXTRA_RUN_ARGS)
 
 test:
+	sleep 10s
 	go test -v -race ./...
-
-test-suite: start-e2e-dependencies test stop-e2e-dependencies
 
 build:
 	GIT_COMMIT=$$(git rev-list -1 HEAD) && CGO_ENABLED=0 go build  -ldflags "-s -w -X github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version.REVISION=$(GIT_COMMIT)" -a -o ./bin/authentication_handler_service ./cmd/authentication_handler_service/*
@@ -146,9 +145,9 @@ start-e2e-dependencies:
 	# starts the necessary services in order to permit e2e testing
 	@echo starts the required support container services to allow e2e testing
 	docker-compose -f docker-compose.jaeger.yml -f docker-compose-authentication_service.yml up --remove-orphans -d
-	docker ps -a --no-trunc
-	docker network ls
 
 stop-e2e-dependencies:
 	@echo stopping the container services used for testing
 	docker-compose -f docker-compose.jaeger.yml -f docker-compose-authentication_service.yml down
+
+test-suite: start-e2e-dependencies test stop-e2e-dependencies
