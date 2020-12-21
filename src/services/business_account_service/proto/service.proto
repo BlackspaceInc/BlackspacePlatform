@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+import "proto/schema.proto";
+import "github.com/infobloxopen/protoc-gen-gorm/options/gorm.proto";
+import "github.com/mwitkow/go-proto-validators/validator.proto";
+import "github.com/protobuf/src/google/protobuf/timestamp.proto";
+
+option go_package = "proto";
+
+// Business account API.
+//
+// Manages the business account service.
+service BusinessAccountService {
+	// Creates a business account
+	rpc CreateBusinessAccount(CreateBusinessAccountRequest) returns (BusinessAccount) {}
+	// Updates a business account
+	rpc UpdateBusinessAccount(UpdateBusinessAccountRequest) returns (BusinessAccount) {}
+	// Deletes a given business account
+	rpc DeleteBusinessAccount(DeleteBusinessAccountRequest) returns (ResponseStatus) {}
+	// Gets a business account
+	rpc GetBusinessAccount(GetBusinessAccountRequest) returns (BusinessAccount) {}
+	// Gets multiple business accounts
+	rpc GetBusinessAccounts(GetBusinessAccountsRequest) returns (BusinessAccount) {}
+}
+
+// Request message for create business account method
+message CreateBusinessAccountRequest {
+	// the business account to create
+	BusinessAccount businessAccount = 1;
+	// authentication service account id
+	uint32 authnId = 2;
+}
+
+// Request message for the update business account method
+message UpdateBusinessAccountRequest {
+	// the business account to update
+	BusinessAccount updatedBusinessAccount = 1;
+	// id of business account to update
+	uint32 id = 2;
+}
+
+// Request message for the delete business account method
+message DeleteBusinessAccountRequest {
+	// the account id
+	uint32 id = 1;
+}
+
+// Request message for the get business account method
+message GetBusinessAccountRequest {
+	// the account id
+	uint32 id = 1;
+}
+
+// Request message for the get business acccounts method
+message GetBusinessAccountsRequest {
+	// the number of business accounts to obtain
+	int64 limit = 1;
+}
+
+message ResponseStatus {
+	bool success = 1;
+}
