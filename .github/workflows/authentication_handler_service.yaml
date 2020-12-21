@@ -29,6 +29,7 @@ jobs:
             helmv3 template ./src/services/authentication_handler_service/charts/authentication_handler_service | kubeval --strict
       - name: Validate kustomization
         uses: stefanprodan/kube-tools@v1
+        continue-on-error: true
         with:
           command: |
             kustomize build ./src/services/authentication_handler_service/kustomize | kubeval --strict
@@ -37,6 +38,7 @@ jobs:
         working-directory: ./src/services/authentication_handler_service 
         run: make build
       - name: Build charts
+        continue-on-error: true
         working-directory: ./src/services/authentication_handler_service 
         run: make build-charts
       - name: Integration & Unit Test Cases
