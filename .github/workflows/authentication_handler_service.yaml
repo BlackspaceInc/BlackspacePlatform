@@ -25,6 +25,7 @@ jobs:
         uses: stefanprodan/kube-tools@v1
         with:
           command: |
+            ls -al 
             helmv3 template ./charts/authentication_handler_service | kubeval --strict
       - name: Validate kustomization
         uses: stefanprodan/kube-tools@v1
