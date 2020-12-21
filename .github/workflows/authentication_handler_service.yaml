@@ -52,12 +52,13 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Push Container
-        working-directory: ./src/services/authentication_handler_service
-        run: make push-container
-      - name: Build Base Container
-        working-directory: ./src/services/authentication_handler_service
-        run: make build-base
-      - name: Push Base Container
-        working-directory: ./src/services/authentication_handler_service
-        run: make push-base
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./src/services/authentication_handler_service
+          file: ./Dockerfile
+          platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
+          push: true
+          tags: |
+            authentication_handler_service/dev:latest
+            authentication_handler_service/1.0.0:latest
