@@ -135,6 +135,10 @@ func configureDbConnection(conn *gorm.DB) *gorm.DB {
 // MigrateSchemas creates or updates a given set of models based on a schema
 // if it does not exist or migrates the model schemas to the latest version
 func MigrateSchemas(db *gorm.DB, logger core_logging.ILog, models ...interface{}) error {
+	// we first add the schemas to the automigrator
+	db.AutoMigrate(models...)
+
+	// perform manual migrations
 	migration := gormigrate.New(db, gormigrate.DefaultOptions, []*gormigrate.Migration{
 		{
 			ID: "20200416",

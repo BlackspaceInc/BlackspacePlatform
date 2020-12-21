@@ -1,19 +1,19 @@
-# Podinfo
+# Business Account Service
 
-Podinfo is a tiny web application made with Go 
-that showcases best practices of running microservices in Kubernetes.
+Business Account Service is a microservices made with Go
+that enforces best practices of running microservices in Kubernetes.
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm repo add podinfo https://github.com/BlackspaceInc/BlackspacePlatform/podinfo
+$ helm repo add business_account_service https://github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service
 
-$ helm upgrade -i my-release podinfo/podinfo 
+$ helm upgrade -i my-release business_account_service/business_account_service
 ```
 
-The command deploys podinfo on the Kubernetes cluster in the default namespace.
+The command deploys business_account_service on the Kubernetes cluster in the default namespace.
 The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 ## Uninstalling the Chart
@@ -28,7 +28,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the podinfo chart and their default values.
+The following tables lists the configurable parameters of the business_account_service chart and their default values.
 
 Parameter | Default | Description
 --- | --- | ---
@@ -86,21 +86,21 @@ Parameter | Default | Description
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install my-release podinfo/podinfo \
+$ helm install my-release business_account_service/business_account_service \
   --set=serviceMonitor.enabled=true,serviceMonitor.interval=5s
 ```
 
 To add custom annotations you need to escape the annotation key string:
 
 ```console
-$ helm upgrade -i my-release podinfo/podinfo \
+$ helm upgrade -i my-release business_account_service/business_account_service \
 --set podAnnotations."appmesh\.k8s\.aws\/preview"=enabled
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install my-release podinfo/podinfo -f values.yaml
+$ helm install my-release business_account_service/business_account_service -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

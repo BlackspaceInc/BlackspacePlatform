@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: shopper_service
+  name: business_account_service
 spec:
   minReadySeconds: 3
   revisionHistoryLimit: 5
@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: podinfod
-        image: ghcr.io/stefanprodan/shopper_service:5.1.1
+        image: ghcr.io/stefanprodan/business_account_service:5.1.1
         imagePullPolicy: IfNotPresent
         ports:
         - name: http
@@ -36,11 +36,11 @@ spec:
           containerPort: 9999
           protocol: TCP
         command:
-        - ./shopper_service
+        - ./business_account_service
         - --port=9898
         - --port-metrics=9797
         - --grpc-port=9999
-        - --grpc-service-name=shopper_service
+        - --grpc-service-name=business_account_service
         - --level=info
         - --random-delay=false
         - --random-error=false

@@ -2,9 +2,9 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ template "podinfo.fullname" . }}
+  name: {{ template "business_account_service.fullname" . }}
   labels:
-    {{- include "podinfo.labels" . | nindent 4 }}
+    {{- include "business_account_service.labels" . | nindent 4 }}
 spec:
   endpoints:
     - path: /metrics
@@ -12,5 +12,5 @@ spec:
       interval: {{ .Values.serviceMonitor.interval }}
   selector:
     matchLabels:
-      app: {{ template "podinfo.fullname" . }}
+      app: {{ template "business_account_service.fullname" . }}
 {{- end }}

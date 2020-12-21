@@ -2,8 +2,8 @@
 
 set -e
 
-# wait for shopper_service
-kubectl rollout status deployment/podinfo --timeout=3m
+# wait for business_account_service
+kubectl rollout status deployment/business_account_service --timeout=3m
 
-# test shopper_service
-helm test podinfo
+# test business_account_service
+helm test business_account_service

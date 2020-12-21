@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "podinfo.fullname" . }}
+  name: {{ template "business_account_service.fullname" . }}
   labels:
-    {{- include "podinfo.labels" . | nindent 4 }}
+    {{- include "business_account_service.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.hpa.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -14,11 +14,11 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      {{- include "podinfo.selectorLabels" . | nindent 6 }}
+      {{- include "business_account_service.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "podinfo.selectorLabels" . | nindent 8 }}
+        {{- include "business_account_service.selectorLabels" . | nindent 8 }}
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "{{ .Values.service.httpPort }}"
@@ -28,7 +28,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 30
       {{- if .Values.serviceAccount.enabled }}
-      serviceAccountName: {{ template "podinfo.serviceAccountName" . }}
+      serviceAccountName: {{ template "business_account_service.serviceAccountName" . }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -67,7 +67,7 @@ spec:
             {{- if .Values.cache }}
             - --cache-server={{ .Values.cache }}
             {{- else if .Values.redis.enabled }}
-            - --cache-server={{ template "podinfo.fullname" . }}:6379
+            - --cache-server={{ template "business_account_service.fullname" . }}:6379
             {{- end }}
             - --level={{ .Values.logLevel }}
             - --random-delay={{ .Values.faults.delay }}
@@ -169,5 +169,5 @@ spec:
       {{- if .Values.tls.enabled }}
       - name: tls
         secret:
-          secretName: {{ template "podinfo.tlsSecretName" . }}
+          secretName: {{ template "business_account_service.tlsSecretName" . }}
       {{- end }}

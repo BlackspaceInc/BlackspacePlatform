@@ -16,7 +16,7 @@ kubectl apply -f ./secure/common
 kubectl apply -f ./secure/backend
 kubectl apply -f ./secure/frontend
 
-# # wait for the shopper_service frontend to come up
+# # wait for the business_account_service frontend to come up
 kubectl rollout status --namespace secure deployment/frontend --timeout=1m
 
 # curl the endpoints (responds with info due to header regexp on route handler)

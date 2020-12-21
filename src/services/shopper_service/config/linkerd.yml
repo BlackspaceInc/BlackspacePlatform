@@ -6,9 +6,9 @@ storage:
   kind: io.l5d.inMemory
   namespaces:
     default: |
-      /host/podinfo           => /$/inet/podinfo/9898;
+      /host/business_account_service           => /$/inet/business_account_service/9898;
       /grpc               => /host;
-      /svc                => /host/podinfo;
+      /svc                => /host/business_account_service;
 interfaces:
   - kind: io.l5d.thriftNameInterpreter
     ip: 0.0.0.0

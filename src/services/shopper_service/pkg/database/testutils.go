@@ -1,58 +1,29 @@
 package database
 
 import (
-	"crypto/rand"
+	"context"
 	"database/sql"
 	"fmt"
-	"io"
-	"os"
 
+	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
+	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
+	core_tracing "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-tracing"
 	"github.com/jinzhu/gorm"
-	"go.uber.org/zap"
 )
 
 // TODO - change this later should be using local database from container
 var connSettings = "postgresql://doadmin:oqshd3sto72yyhgq@test-do-user-6612421-0.a.db." +
 	"ondigitalocean.com:25060/test-db?sslmode=require"
 
-// init initializes a connection to the database initially and performs package level
-// cleanup handler initialization
-func SetupTests() *Db {
-	testDbInstance := Setup()
-	if testDbInstance == nil {
-		os.Exit(1)
-	}
-
-	return testDbInstance
-}
-
 // Setup sets up database connection prior to testing
-func Setup() *Db {
-	// database connection string
+func Setup(ctx context.Context, connectionString string, tracingEngine *core_tracing.TracingEngine, metricsEngine *core_metrics.CoreMetricsEngine,
+	logger core_logging.ILog, svcEndpoint string) *Db {
 	// initialize connection to the database
-	db := Initialize(connSettings)
-	// spin up/migrate tables for testing
-	_ = MigrateSchemas(db, db.Logger)
-	return db
-}
-
-// Initialize creates a singular connection to the backend database instance
-func Initialize(connSettings string) *database.Db {
-	var err error
-	// configure logging
-	logger := zap.L()
-	defer logger.Sync()
-	stdLog := zap.RedirectStdLog(logger)
-	defer stdLog()
-
-	// connect to database
-	dbInstance, err := database.New(connSettings, logger)
+	db, err := New(ctx, connectionString, tracingEngine, metricsEngine, logger, svcEndpoint)
 	if err != nil {
-		logger.Info("Error connecting to database", zap.Error(err))
-		os.Exit(1)
+		return nil
 	}
-
-	return dbInstance
+	return db
 }
 
 // DeleteCreatedEntities sets up GORM `onCreate` hook and return a function that can be deferred to
