@@ -4,7 +4,7 @@
 
 TAG?=latest
 NAME:=authentication_handler_service
-DOCKER_REPOSITORY:=github.com/blackspaceInc/BlackspacePlatform
+DOCKER_REPOSITORY:=blackspaceinc
 DOCKER_IMAGE_NAME:=$(DOCKER_REPOSITORY)/$(NAME)
 GIT_COMMIT:=$(shell git describe --dirty --always)
 VERSION:=$(shell grep 'VERSION' pkg/version/version.go | awk '{ print $$4 }' | tr -d '"')
@@ -44,8 +44,7 @@ test-container:
 	@docker rm -f authentication_handler_service || true
 	@docker run -dp 9898:9898 --name=authentication_handler_service $(DOCKER_IMAGE_NAME):$(VERSION)
 	@docker ps
-	@TOKEN=$$(curl -sd 'test' localhost:9898/token | jq -r .token) && \
-	curl -sH "Authorization: Bearer $${TOKEN}" localhost:9898/token/validate | grep test
+	curl localhost:9898/version | grep version
 
 push-container:
 	docker tag $(DOCKER_IMAGE_NAME):$(VERSION) $(DOCKER_IMAGE_NAME):latest
@@ -144,7 +143,7 @@ stop:
 start-e2e-dependencies:
 	# starts the necessary services in order to permit e2e testing
 	@echo starts the required support container services to allow e2e testing
-	docker-compose -f docker-compose.jaeger.yml -f docker-compose-authentication_service.yml up --remove-orphans -d
+	docker-compose -f docker-compose.jaeger.yml -f docker-compose-authentication_service.yml up --remove-orphans
 
 stop-e2e-dependencies:
 	@echo stopping the container services used for testing

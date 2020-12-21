@@ -2,7 +2,7 @@ on: push
 name: Authentication Handler Service
 jobs:
   checks:
-    name: run
+    name: Authentication Service CI Workflow
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -14,8 +14,7 @@ jobs:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-
-      - uses: actions/checkout@master
-      - name: Checkout
+      - name: Checkout Development Branch
         uses: actions/checkout@v2
       - name: Setup Go
         uses: actions/setup-go@v2
@@ -25,9 +24,9 @@ jobs:
         uses: stefanprodan/kube-tools@v1
         with:
           command: |
-            ls -al 
+            ls -al
             helmv3 template ./src/services/authentication_handler_service/charts/authentication_handler_service | kubeval --strict
-      - name: Validate kustomization
+      - name: Validate Kustomization
         uses: stefanprodan/kube-tools@v1
         continue-on-error: true
         with:
@@ -35,28 +34,28 @@ jobs:
             kustomize build ./src/services/authentication_handler_service/kustomize | kubeval --strict
             kustomize build ./src/services/authentication_handler_service/kustomize | conftest test -p .github/policy -
       - name: Build code base
-        working-directory: ./src/services/authentication_handler_service 
-        run: make build
-      - name: Build charts
-        continue-on-error: true
-        working-directory: ./src/services/authentication_handler_service 
-        run: make build-charts
-      - name: Integration & Unit Test Cases
         working-directory: ./src/services/authentication_handler_service
-        continue-on-error: true 
+        run: make build
+      - name: Build Helm Charts
+        continue-on-error: true
+        working-directory: ./src/services/authentication_handler_service
+        run: make build-charts
+      - name: Run Integration & Unit Test Cases
+        working-directory: ./src/services/authentication_handler_service
+        continue-on-error: true
         run: make test-suite
       - name: Build Docker Container
-        working-directory: ./src/services/authentication_handler_service 
+        working-directory: ./src/services/authentication_handler_service
         run: make build-container
       - name: Test Container
-        working-directory: ./src/services/authentication_handler_service 
+        working-directory: ./src/services/authentication_handler_service
         run: make test-container
       - name: Push Container
-        working-directory: ./src/services/authentication_handler_service 
+        working-directory: ./src/services/authentication_handler_service
         run: make push-container
       - name: Build Base Container
-        working-directory: ./src/services/authentication_handler_service 
+        working-directory: ./src/services/authentication_handler_service
         run: make build-base
       - name: Push Base Container
-        working-directory: ./src/services/authentication_handler_service 
+        working-directory: ./src/services/authentication_handler_service
         run: make push-base
