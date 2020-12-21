@@ -48,11 +48,11 @@ jobs:
         working-directory: ./src/services/authentication_handler_service
         run: make build-container
       - name: docker login
-          env:
-            DOCKER_USER: ${{secrets.DOCKER_USER}}
-            DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-          run: |
-            docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        env:
+          DOCKER_USER: ${{secrets.DOCKER_USER}}
+          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
       - name: Build the Docker image
         working-directory: ./src/services/authentication_handler_service
         run: docker build . --file Dockerfile --tag authentication_handler_service/dev:$(date +%s)
