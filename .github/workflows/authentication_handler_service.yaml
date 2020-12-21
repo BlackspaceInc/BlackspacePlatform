@@ -8,15 +8,15 @@ jobs:
       run:
         working-directory: ./src/services/authentication_handler_service
     steps:
-      - uses: actions/checkout@master
-      - name: Checkout
-        uses: actions/checkout@v2
       - name: Restore Go cache
         uses: actions/cache@v1
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: ${{ runner.os }}-go-
+      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
@@ -30,10 +30,9 @@ jobs:
       - name: Validate kustomization
         uses: stefanprodan/kube-tools@v1
         with:
-          working-directory: ./src/services/authentication_handler_service 
           command: |
-            kustomize build ./kustomize | kubeval --strict
-            kustomize build ./kustomize | conftest test -p .github/policy -
+            kustomize build ./src/services/authentication_handler_service/kustomize | kubeval --strict
+            kustomize build ./src/services/authentication_handler_service/kustomize | conftest test -p .github/policy -
       - name: Build code base
         working-directory: ./src/services/authentication_handler_service 
         run: make build
