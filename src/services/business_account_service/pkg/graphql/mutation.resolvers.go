@@ -14,15 +14,6 @@ import (
 	opentracing "github.com/opentracing/opentracing-go"
 )
 
-/*
-TODO
-	1) emit metrics
-		- latency, failures, success
-	2) Resolver retain a reference to metrics object, tracing object, and logging object
-	3) Handle password changes
-	4) send out emails on account creation, ... etc
-*/
-
 func (r *mutationResolver) CreateBusinessAcount(ctx context.Context, input proto.CreateBusinessAccountRequest) (*proto.BusinessAccount, error) {
 	r.Db.Logger.For(ctx).Info(fmt.Sprintf("create business accounts api op"))
 	sp, ctx := opentracing.StartSpanFromContext(ctx, "create_business_account_api_op")

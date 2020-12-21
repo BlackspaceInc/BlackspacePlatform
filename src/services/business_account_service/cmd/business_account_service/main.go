@@ -65,7 +65,7 @@ func main() {
 	fs.String("service_name", "business_account_service", "microservice name")
 
 	// authentication service configurations
-	fs.String("authentication_handler_service_base", "http://authentication-handler-service",
+	fs.String("authentication_handler_service_base", "http://authentication_handler_service",
 		"authentication handler service endpoint base address")
 	fs.Int("authentication_handler_service_port", 9898,
 		"authentication handler service endpoint port")
@@ -76,11 +76,11 @@ func main() {
 	fs.String("jaeger-endpoint", "http://jaeger-collector:14268/api/traces", "jaeger collector endpoint")
 
 	// database connection configurations
-	fs.String("db_host", "localhost", "database host string")
+	fs.String("db_host", "business_account_service_db", "database host string")
 	fs.Int("db_port", 5432, "database port")
-	fs.String("db_user", "blackspaceInc", "database user string")
-	fs.String("db_password", "blackspaceInc", "database password string")
-	fs.String("db_name", "business_account_service_db", "database name")
+	fs.String("db_user", "business_account_service", "database user string")
+	fs.String("db_password", "business_account_service", "database password string")
+	fs.String("db_name", "business_account_service", "database name")
 
 	versionFlag := fs.BoolP("version", "v", false, "get version number")
 
@@ -148,6 +148,8 @@ func main() {
 	authSvcEndpoint := fmt.Sprintf("%s:%d%s", authSvcBase, authSvcPort, authSvcSubAddress)
 	// configure db connection
 	connectionString := configureConnectionString()
+	logger.Info(fmt.Sprintf("Database connection string : %s ",connectionString))
+
 	db, err := database.New(ctx, connectionString, tracerEngine, coreMetrics, logger, authSvcEndpoint)
 
 	// start stress tests if any

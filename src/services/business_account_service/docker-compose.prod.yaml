@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  #service for the blackspace platform
+  # business_account_service for the blackspace platform
   business_account_service:
     build:
       context: .
@@ -12,3 +12,5 @@ services:
       - "9999:9999"
       - "9797:9797"
     restart: always
+    networks:
+      - net

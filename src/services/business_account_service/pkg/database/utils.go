@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"io"
 	"net/http"
 
 	"github.com/giantswarm/retry-go"
