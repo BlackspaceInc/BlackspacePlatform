@@ -47,9 +47,6 @@ jobs:
       - name: Build Docker Container
         working-directory: ./src/services/authentication_handler_service
         run: make build-container
-      - name: Test Container
-        working-directory: ./src/services/authentication_handler_service
-        run: make test-container
       - name: Push Container
         working-directory: ./src/services/authentication_handler_service
         run: make push-container
