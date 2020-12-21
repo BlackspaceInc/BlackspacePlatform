@@ -32,5 +32,20 @@ jobs:
           command: |
             kustomize build ./kustomize | kubeval --strict
             kustomize build ./kustomize | conftest test -p .github/policy -
+      - name: Build code base
+        run: make build
+      - name: Build charts
+        run: make build-charts
       - name: Integration & Unit Test Cases
         run: make test-suite
+      - name: Build Docker Container
+        run: make build-container
+      - name: Test Container
+        run: make test-container
+      - name: Push Container
+        run: make push-container
+      - name: Build Base Container
+        run: make build-base
+      - name: Push Base Container
+        run: make push-base
+
