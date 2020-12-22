@@ -1,4 +1,4 @@
-package graphql
+package graphql_api
 
 import (
 	"errors"

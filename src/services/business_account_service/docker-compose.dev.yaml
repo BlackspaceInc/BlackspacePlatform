@@ -14,6 +14,36 @@ services:
       - net
     volumes:
       - '.:/go/src/github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service'
+    depends_on:
+      - business_account_service_db
+
+  business_account_service_db:
+    container_name: business_account_service_db
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=${USER}
+      - POSTGRES_PASSWORD=${PASSWORD}
+      - POSTGRES_DB=${DATABASE}
+    ports:
+      - "${POSTGRES_BUSINESS_ACCOUNT_SVC_EXTERNAL_PORT}:${POSTGRES_BUSINESS_ACCOUNT_SVC_INTERNAL_PORT}"
+    volumes:
+      - postgres:/data/postgres
+    networks:
+      - net
+
+  pgadmin-compose:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "${PGADMIN_PORT_EXTERNAL}:${PGADMIN_PORT_INTERNAL}"
+    networks:
+      - net
+    depends_on:
+      - business_account_service_db
+
 networks:
   net:
     driver: bridge

@@ -12,7 +12,7 @@ import (
 	"gopkg.in/gormigrate.v1"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/grpc/proto"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/saga"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/utils"
 	retry "github.com/giantswarm/retry-go"
@@ -132,7 +132,7 @@ func configureDbConnection(conn *gorm.DB) *gorm.DB {
 	return conn
 }
 
-// MigrateSchemas creates or updates a given set of models based on a schema
+// MigrateSchemas creates or updates a given set of model based on a schema
 // if it does not exist or migrates the model schemas to the latest version
 func MigrateSchemas(db *gorm.DB, logger core_logging.ILog, models ...interface{}) error {
 	// we first add the schemas to the automigrator

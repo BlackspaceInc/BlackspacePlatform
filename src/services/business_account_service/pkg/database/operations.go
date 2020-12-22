@@ -10,7 +10,7 @@ import (
 	saga "github.com/itimofeev/go-saga"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/grpc/proto"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
 )
 
 type dbOperationType string

@@ -1,11 +1,11 @@
 input CreateBusinessAccountRequest {
-	businessAccount: IBusinessAccount
+	businessAccount: BusinessAccountInput
 	authnId: Int
 }
 
 input UpdateBusinessAccountRequest {
 	id: Int
-	businessAccount: IBusinessAccount
+	businessAccount: BusinessAccountInput
 }
 
 input DeleteBusinessAccountRequest {
@@ -17,7 +17,7 @@ input DeleteBusinessAccountsRequest{
 }
 
 type Mutation {
-	CreateBusinessAcount(input: CreateBusinessAccountRequest!): BusinessAccount!
+	CreateBusinessAccount(input: CreateBusinessAccountRequest!): BusinessAccount!
 	UpdateBusinessAccount(input: UpdateBusinessAccountRequest!): BusinessAccount!
 	deleteBusinessAccount(id: DeleteBusinessAccountRequest!): Boolean!
 }

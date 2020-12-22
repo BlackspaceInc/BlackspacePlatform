@@ -6,7 +6,6 @@ Package proto is a generated protocol buffer package.
 
 It is generated from these files:
 	proto/schema.proto
-	proto/service.proto
 
 It has these top-level messages:
 	BusinessAccount
@@ -17,12 +16,6 @@ It has these top-level messages:
 	PaymentProcessingMethods
 	BusinessType
 	PhoneNumber
-	CreateBusinessAccountRequest
-	UpdateBusinessAccountRequest
-	DeleteBusinessAccountRequest
-	GetBusinessAccountRequest
-	GetBusinessAccountsRequest
-	ResponseStatus
 */
 package proto
 

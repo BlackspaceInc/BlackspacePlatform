@@ -78,6 +78,16 @@ download_proto_dependencies:
 	@echo "downloading protoc-gen tool"
 	go install github.com/danielvladco/go-proto-gql/protoc-gen-gql && go install github.com/danielvladco/go-proto-gql/protoc-gen-gogql && go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
 
+generate_graphql: download_proto_dependencies
+	protoc -I. \
+		-I$(GOPATH)/src \
+		-I=$(GOPATH)/src/github.com/infobloxopen/protoc-gen-gorm \
+		-I=$(GOPATH)/src/github.com/infobloxopen/atlas-app-toolkit \
+		-I=$(GOPATH)/src/github.com/lyft/protoc-gen-validate/validate/validate.proto \
+		-I=$(GOPATH)/src/github.com/infobloxopen/protoc-gen-gorm/options \
+		-I=$(GOPATH)/src/github.com/protobuf/src/google/protobuf/timestamp.proto \
+		--gogoopsee_out=plugins=grpc+graphql,Mopsee/protobuf/opsee.proto=github.com/opsee/protobuf/opseeproto,Mgoogle/protobuf/descriptor.proto=github.com/gogo/protobuf/protoc-gen-gogo/descriptor:./pkg/graphql_api/ --proto_path=$(GOPATH)/src:. ./proto/*.proto
+
 generate_grpc_definitions: download_proto_dependencies
 	@echo "setting up grpc service schema definition via protobuf"
 	protoc -I. \
@@ -88,15 +98,14 @@ generate_grpc_definitions: download_proto_dependencies
 			-I=$(GOPATH)/src/github.com/infobloxopen/protoc-gen-gorm/options \
 			-I=$(GOPATH)/src/github.com/protobuf/src/google/protobuf/timestamp.proto \
 			--proto_path=${GOPATH}/src/github.com/gogo/protobuf/protobuf \
-			--govalidators_out=./pkg/grpc/ \
-			--go_out=./pkg/grpc --go-grpc_out=./pkg/grpc/ --gorm_out="engine=postgres:./pkg/grpc/" ./proto/*.proto
+			--govalidators_out=./pkg/graphql_api/ \
+			--go_out=./pkg/graphql_api --gorm_out="engine=postgres:./pkg/graphql_api/" ./proto/schema.proto
 
 generate_graphql_schema_from_proto_definitions: generate_grpc_definitions
-	proto2graphql --input ./proto/schema.proto --output ./pkg/graphql/schema/schema.graphql
+	proto2graphql --input ./proto/schema.proto --output ./pkg/graphql_api/schema/schema.graphql
 
-generate_graphql_api: generate_graphql_schema_from_proto_definitions
-	# go:generate go run github.com/99designs/gqlgen
-	cd pkg/graphql && go run github.com/99designs/gqlgen schema/*.graphql
+graphql: generate_graphql_schema_from_proto_definitions
+	go run github.com/99designs/gqlgen
 
 down:
 	docker-compose down
@@ -128,6 +137,25 @@ deploy-production:
 
 deploy: deploy-dev deploy-staging
 	@echo "deploying"
+
+start_build:
+	# starts the necessary services in order to permit e2e testing
+	@echo starts the required support container services to allow e2e testing
+	docker-compose -f docker-compose.jaeger.yaml \
+				   -f docker-compose.dev.yaml build
+
+start_service_and_dep:
+	# starts the necessary services in order to permit e2e testing
+	@echo starts the required support container services to allow e2e testing
+	docker-compose -f docker-compose.jaeger.yaml \
+				   -f docker-compose.dev.yaml up --remove-orphans
+
+stop_service_and_dep:
+	# starts the necessary services in order to permit e2e testing
+	@echo starts the required support container services to allow e2e testing
+	docker-compose -f docker-compose.jaeger.yaml \
+				   -f docker-compose.postgres.yaml \
+				   -f docker-compose.dev.yaml down
 
 start:
 	# starts the necessary services in order to permit e2e testing

@@ -1,4 +1,4 @@
-package graphql
+package graphql_api
 
 import (
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"

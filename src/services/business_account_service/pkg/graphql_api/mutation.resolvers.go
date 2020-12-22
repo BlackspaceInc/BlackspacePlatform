@@ -1,4 +1,4 @@
-package graphql
+package graphql_api
 
 // This file will be automatically regenerated based on the schema, any resolver implementations
 // will be copied through when generating and any unknown code will be moved to the end.
@@ -8,13 +8,14 @@ import (
 	"fmt"
 
 	svcErrors "github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql/generated"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/grpc/proto"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/generated"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/models"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
 	"github.com/itimofeev/go-saga"
 	opentracing "github.com/opentracing/opentracing-go"
 )
 
-func (r *mutationResolver) CreateBusinessAcount(ctx context.Context, input proto.CreateBusinessAccountRequest) (*proto.BusinessAccount, error) {
+func (r *mutationResolver) CreateBusinessAccount(ctx context.Context, input models.CreateBusinessAccountRequest) (*proto.BusinessAccount, error) {
 	r.Db.Logger.For(ctx).Info(fmt.Sprintf("create business accounts api op"))
 	sp, ctx := opentracing.StartSpanFromContext(ctx, "create_business_account_api_op")
 	defer sp.Finish()
@@ -57,7 +58,7 @@ func (r *mutationResolver) CreateBusinessAcount(ctx context.Context, input proto
 	// now we attempt to create the account from the current context of this service since for this api to be invoked the api
 	// gateway must have already created an entry in the authentication handler service referencing this account record
 	// perform this operation as a retryable one
-	account, err := r.Db.CreateBusinessAccount(ctx, account, input.AuthnId)
+	account, err := r.Db.CreateBusinessAccount(ctx, account, uint32(*input.AuthnID))
 	if err != nil {
 		r.Db.Logger.For(ctx).Error(err, err.Error())
 		return nil, err
@@ -66,23 +67,22 @@ func (r *mutationResolver) CreateBusinessAcount(ctx context.Context, input proto
 	return account, nil
 }
 
-func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input proto.UpdateBusinessAccountRequest) (*proto.BusinessAccount, error) {
+func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input models.UpdateBusinessAccountRequest) (*proto.BusinessAccount, error) {
 	r.Db.Logger.For(ctx).Info(fmt.Sprintf("update business account api op"))
 	sp, ctx := opentracing.StartSpanFromContext(ctx, "update_business_account_api_op")
 	defer sp.Finish()
 
 	// validate the input
 	if &input == nil ||
-		input.UpdatedBusinessAccount == nil ||
-		input.UpdatedBusinessAccount.Validate() != nil ||
-		input.Id == 0 ||
-		input.Validate() != nil {
+		input.BusinessAccount == nil ||
+		input.BusinessAccount.Validate() != nil ||
+		input.ID == nil {
 		r.Db.Logger.For(ctx).Error(svcErrors.ErrInvalidInputArguments, svcErrors.ErrInvalidInputArguments.Error())
 		return nil, svcErrors.ErrInvalidInputArguments
 	}
 
-	var newBusinessAccount = input.UpdatedBusinessAccount
-	var businessAccountId = input.Id
+	var newBusinessAccount = input.BusinessAccount
+	var businessAccountId = uint32(*input.ID)
 
 	// attempt obtain the business account stored in the backend db first
 	oldBusinessAccount := r.Db.GetBusinessById(ctx, businessAccountId)
@@ -98,7 +98,10 @@ func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input prot
 	// define a saga step tailored to saving the new business account record in our backend db
 	updateAndSaveAccountStep := saga.Step{
 		Name: "update_business_account",
-		Func: r.Db.UpdateBusinessAccount(ctx, businessAccountId, newBusinessAccount),
+		Func: func(ctx context.Context) error {
+			_, err := r.Db.UpdateBusinessAccount(ctx, businessAccountId, newBusinessAccount)
+			return err
+		},
 		CompensateFunc: func(ctx context.Context) error { // no compensating function just return an error if this operation fails
 			return svcErrors.ErrFailedToSaveUpdatedAccountRecord
 		},
@@ -111,21 +114,21 @@ func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input prot
 		var authnId = oldBusinessAccount.AuthnId
 		var newEmail = newBusinessAccount.Email
 
-		compensatingFunc := func(ctx context.Context, id uint32, account *proto.BusinessAccount) error {
-			acc, err := r.Db.UpdateBusinessAccount(ctx, businessAccountId, oldBusinessAccount) // reset business account to original state
-			if err != nil {
-				return err
-			}
-
-			updatedAccount <- acc
-			return nil
-		}
-
 		// update the email account from the context of the authentication handler service
 		updateEmailInDtxStep := saga.Step{
 			Name:           "update_business_account_email_distributed_tx",
-			Func:           r.Db.DistributedTxUpdateAccountEmail(ctx, authnId, newEmail, sp),
-			CompensateFunc: compensatingFunc(ctx, authnId, oldBusinessAccount),
+			Func:           func(ctx context.Context) error {
+				return r.Db.DistributedTxUpdateAccountEmail(ctx, authnId, newEmail, sp)
+			},
+			CompensateFunc: func(ctx context.Context) error {
+				acc, err := r.Db.UpdateBusinessAccount(ctx, businessAccountId, oldBusinessAccount) // reset business account to original state
+				if err != nil {
+					return err
+				}
+
+				updatedAccount <- acc
+				return nil
+			} ,
 		}
 
 		transactionalSteps = append(transactionalSteps, updateEmailInDtxStep)
@@ -140,19 +143,19 @@ func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input prot
 	return <-updatedAccount, nil
 }
 
-func (r *mutationResolver) DeleteBusinessAccount(ctx context.Context, id proto.DeleteBusinessAccountRequest) (bool, error) {
+func (r *mutationResolver) DeleteBusinessAccount(ctx context.Context, id models.DeleteBusinessAccountRequest) (bool, error) {
 	r.Db.Logger.For(ctx).Info(fmt.Sprintf("delete business account api op"))
 	sp, ctx := opentracing.StartSpanFromContext(ctx, "delete_business_account_api_op")
 	defer sp.Finish()
 
 	// validate the input
-	if id.Id == 0 || id.Validate() != nil {
+	if id.ID == nil {
 		r.Db.Logger.For(ctx).Error(svcErrors.ErrInvalidInputArguments, svcErrors.ErrInvalidInputArguments.Error())
 		return false, svcErrors.ErrInvalidInputArguments
 	}
 
-	accountId := id.Id
-	account := r.Db.GetBusinessById(ctx, id.Id)
+	accountId := uint32(*id.ID)
+	account := r.Db.GetBusinessById(ctx, uint32(*id.ID))
 	if account == nil {
 		r.Db.Logger.For(ctx).Error(svcErrors.ErrAccountDoesNotExist, svcErrors.ErrAccountDoesNotExist.Error())
 		return false, svcErrors.ErrAccountDoesNotExist
@@ -178,7 +181,10 @@ func (r *mutationResolver) DeleteBusinessAccount(ctx context.Context, id proto.D
 	// second operation is to update the state of the account and save to database
 	archiveAccountStep = saga.Step{
 		Name:           "archive business account operation",
-		Func:           r.Db.ArchiveBusinessAccount(ctx, accountId),              // archive business account
+		Func:           func(ctx context.Context) error {
+			_, err := r.Db.ArchiveBusinessAccount(ctx, accountId)
+			return err
+		},              // archive business account
 		CompensateFunc: r.Db.SetBusinessAccountStatusAndSave(ctx, account, true), // activate account
 		Options:        nil,
 	}

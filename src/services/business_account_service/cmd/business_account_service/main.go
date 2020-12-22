@@ -78,9 +78,9 @@ func main() {
 	// database connection configurations
 	fs.String("db_host", "business_account_service_db", "database host string")
 	fs.Int("db_port", 5432, "database port")
-	fs.String("db_user", "business_account_service", "database user string")
-	fs.String("db_password", "business_account_service", "database password string")
-	fs.String("db_name", "business_account_service", "database name")
+	fs.String("db_user", "postgres", "database user string")
+	fs.String("db_password", "postgres", "database password string")
+	fs.String("db_name", "postgres", "database name")
 
 	versionFlag := fs.BoolP("version", "v", false, "get version number")
 
@@ -123,7 +123,7 @@ func main() {
 	}
 
 	// configure tracing
-	serviceName := viper.GetString("service-name")
+	serviceName := viper.GetString("service_name")
 	collectorEndpoint := viper.GetString("jaeger-endpoint")
 	// initialize a tracing object globally
 	tracerEngine, closer := core_tracing.NewTracer(serviceName, collectorEndpoint, prometheus.New())
@@ -148,7 +148,7 @@ func main() {
 	authSvcEndpoint := fmt.Sprintf("%s:%d%s", authSvcBase, authSvcPort, authSvcSubAddress)
 	// configure db connection
 	connectionString := configureConnectionString()
-	logger.Info(fmt.Sprintf("Database connection string : %s ",connectionString))
+	logger.Info(fmt.Sprintf("Database connection string : %s ", connectionString))
 
 	db, err := database.New(ctx, connectionString, tracerEngine, coreMetrics, logger, authSvcEndpoint)
 

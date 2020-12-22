@@ -5,9 +5,10 @@ services:
     image: postgres:latest
     restart: always
     environment:
-      - POSTGRES_USER=${USER}
-      - POSTGRES_PASSWORD=${PASSWORD}
-      - POSTGRES_DB=${DATABASE}
+      - POSTGRES_USER=${USER:-postgres}
+      - POSTGRES_PASSWORD=${PASSWORD:-postgres}
+      - POSTGRES_DB=${DATABASE:-postgres}
+      - PGDATA=/data/postgres
     ports:
       - "${POSTGRES_BUSINESS_ACCOUNT_SVC_EXTERNAL_PORT}:${POSTGRES_BUSINESS_ACCOUNT_SVC_INTERNAL_PORT}"
     volumes:
@@ -25,4 +26,4 @@ services:
     networks:
       - net
     depends_on:
-      - postgres
+      - business_account_service_db

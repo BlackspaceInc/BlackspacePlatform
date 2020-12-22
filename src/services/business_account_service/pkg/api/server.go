@@ -26,11 +26,12 @@ import (
 	"golang.org/x/net/http2/h2c"
 
 	gql "github.com/99designs/gqlgen/graphql/handler"
+
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/database"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/fscache"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql/generated"
+	graphql "github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/generated"
 )
 
 // @title Podinfo API
@@ -96,7 +97,10 @@ type Server struct {
 func NewServer(config *Config, logger core_logging.ILog, tracer *core_tracing.TracingEngine, metrics *core_metrics.CoreMetricsEngine,
 	db *database.Db) (*Server, error) {
 	gqlServer := gql.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graphql.Resolver{
-		db,
+		Db:      db,
+		Logger:  logger,
+		Tracer:  tracer,
+		Metrics: metrics,
 	}}))
 
 	srv := &Server{
@@ -114,13 +118,12 @@ func NewServer(config *Config, logger core_logging.ILog, tracer *core_tracing.Tr
 
 func (s *Server) registerHandlers() {
 	s.router.Handle("/metrics", promhttp.Handler())
+
 	s.router.PathPrefix("/debug/pprof/").Handler(http.DefaultServeMux)
 	s.router.HandleFunc("/", s.indexHandler).HeadersRegexp("User-Agent", "^Mozilla.*").Methods("GET")
 	s.router.HandleFunc("/", s.infoHandler).Methods("GET")
 	s.router.HandleFunc("/version", s.versionHandler).Methods("GET")
-	s.router.HandleFunc("/echo", s.echoHandler).Methods("POST")
 	s.router.HandleFunc("/env", s.envHandler).Methods("GET", "POST")
-	s.router.HandleFunc("/headers", s.echoHeadersHandler).Methods("GET", "POST")
 	s.router.HandleFunc("/delay/{wait:[0-9]+}", s.delayHandler).Methods("GET").Name("delay")
 	s.router.HandleFunc("/healthz", s.healthzHandler).Methods("GET")
 	s.router.HandleFunc("/readyz", s.readyzHandler).Methods("GET")
@@ -128,19 +131,11 @@ func (s *Server) registerHandlers() {
 	s.router.HandleFunc("/readyz/disable", s.disableReadyHandler).Methods("POST")
 	s.router.HandleFunc("/panic", s.panicHandler).Methods("GET")
 	s.router.HandleFunc("/status/{code:[0-9]+}", s.statusHandler).Methods("GET", "POST", "PUT").Name("status")
-	s.router.HandleFunc("/store", s.storeWriteHandler).Methods("POST", "PUT")
-	s.router.HandleFunc("/store/{hash}", s.storeReadHandler).Methods("GET").Name("store")
 	s.router.HandleFunc("/cache/{key}", s.cacheWriteHandler).Methods("POST", "PUT")
 	s.router.HandleFunc("/cache/{key}", s.cacheDeleteHandler).Methods("DELETE")
 	s.router.HandleFunc("/cache/{key}", s.cacheReadHandler).Methods("GET").Name("cache")
 	s.router.HandleFunc("/configs", s.configReadHandler).Methods("GET")
-	s.router.HandleFunc("/token", s.tokenGenerateHandler).Methods("POST")
-	s.router.HandleFunc("/token/validate", s.tokenValidateHandler).Methods("GET")
 	s.router.HandleFunc("/api/info", s.infoHandler).Methods("GET")
-	s.router.HandleFunc("/api/echo", s.echoHandler).Methods("POST")
-	s.router.HandleFunc("/ws/echo", s.echoWsHandler)
-	s.router.HandleFunc("/chunked", s.chunkedHandler)
-	s.router.HandleFunc("/chunked/{wait:[0-9]+}", s.chunkedHandler)
 	s.router.PathPrefix("/swagger/").Handler(httpSwagger.Handler(
 		httpSwagger.URL("/swagger/doc.json"),
 	))
