@@ -150,7 +150,7 @@ func (s *Server) registerHandlers() {
 		w.Write([]byte(doc))
 	})
 
-	s.router.Handle("/gql", playground.Handler("GraphQL playground", "/query"))
+	s.router.Handle("/graphql", playground.Handler("GraphQL playground", "/query"))
 	s.router.Handle("/query", s.gqlServer)
 }
 

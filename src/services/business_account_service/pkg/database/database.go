@@ -11,11 +11,12 @@ import (
 	"github.com/jinzhu/gorm"
 	"gopkg.in/gormigrate.v1"
 
+	_ "github.com/giantswarm/retry-go"
+
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/saga"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/utils"
-	retry "github.com/giantswarm/retry-go"
 )
 
 // IDatabase provides an interface which any database tied to this service should implement
@@ -103,10 +104,10 @@ func New(ctx context.Context, connectionString string, tracingEngine *core_traci
 
 // ConnectToDb attempts to connect to the database using retries
 func ConnectToDb(connectionString string, logger core_logging.ILog) (*gorm.DB, error) {
-	var connection = make(chan *gorm.DB)
+	/*
+	var connection *Db
 	err := retry.Do(func() error {
-		conn, err := gorm.Open(postgres, connectionString)
-		connection <- conn
+		connection, err := gorm.Open(postgres, connectionString)
 		return err
 	},
 		retry.MaxTries(5),
@@ -122,6 +123,8 @@ func ConnectToDb(connectionString string, logger core_logging.ILog) (*gorm.DB, e
 	}
 
 	return <-connection, nil
+	*/
+	return gorm.Open(postgres, connectionString)
 }
 
 // configureDbConnection configures the database connection object

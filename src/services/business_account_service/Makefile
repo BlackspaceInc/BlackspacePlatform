@@ -138,17 +138,11 @@ deploy-production:
 deploy: deploy-dev deploy-staging
 	@echo "deploying"
 
-start_build:
+build_and_start:
 	# starts the necessary services in order to permit e2e testing
 	@echo starts the required support container services to allow e2e testing
 	docker-compose -f docker-compose.jaeger.yaml \
-				   -f docker-compose.dev.yaml build
-
-start_service_and_dep:
-	# starts the necessary services in order to permit e2e testing
-	@echo starts the required support container services to allow e2e testing
-	docker-compose -f docker-compose.jaeger.yaml \
-				   -f docker-compose.dev.yaml up --remove-orphans
+				   -f docker-compose.dev.yaml up --force-recreate --build --remove-orphans --always-recreate-deps --renew-anon-volumes
 
 stop_service_and_dep:
 	# starts the necessary services in order to permit e2e testing
@@ -163,7 +157,7 @@ start:
 	docker-compose -f docker-compose.jaeger.yaml \
 				   -f docker-compose.postgres.yaml \
 				   -f docker-compose.authentication_handler_service.yaml \
-				   -f docker-compose.dev.yaml up --remove-orphans
+				   -f docker-compose.dev.yaml up --force-recreate --build --remove-orphans --always-recreate-deps --renew-anon-volumes
 
 stop:
 	@echo stopping the container services used for testing

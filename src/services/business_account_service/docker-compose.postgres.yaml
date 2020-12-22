@@ -2,7 +2,7 @@ version: '3.6'
 services:
   business_account_service_db:
     container_name: business_account_service_db
-    image: postgres:latest
+    image: postgres
     restart: always
     environment:
       - POSTGRES_USER=${USER:-postgres}

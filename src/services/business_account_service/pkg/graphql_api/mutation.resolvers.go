@@ -182,8 +182,7 @@ func (r *mutationResolver) DeleteBusinessAccount(ctx context.Context, id models.
 	archiveAccountStep = saga.Step{
 		Name:           "archive business account operation",
 		Func:           func(ctx context.Context) error {
-			_, err := r.Db.ArchiveBusinessAccount(ctx, accountId)
-			return err
+			return r.Db.ArchiveBusinessAccount(ctx, accountId)
 		},              // archive business account
 		CompensateFunc: r.Db.SetBusinessAccountStatusAndSave(ctx, account, true), // activate account
 		Options:        nil,

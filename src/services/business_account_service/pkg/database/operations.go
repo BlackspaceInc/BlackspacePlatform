@@ -52,6 +52,11 @@ func (db *Db) UpdateBusinessAccount(ctx context.Context, id uint32, account *pro
 		childSpan := db.TracingEngine.CreateChildSpan(ctx, "update_business_accounts_db_tx")
 		defer childSpan.Finish()
 
+		if id == 0 {
+			db.Logger.ErrorM(errors.ErrInvalidInputArguments, errors.ErrInvalidInputArguments.Error())
+			return nil, errors.ErrInvalidInputArguments
+		}
+
 		// attempt to see if account exists
 		result := db.GetBusinessById(ctx, id)
 		if result == nil {
@@ -61,7 +66,7 @@ func (db *Db) UpdateBusinessAccount(ctx context.Context, id uint32, account *pro
 
 		// TODO compare the passwords and if they differ update the field through /password auth handler service call
 		// As of now we do not allow users the ability to update their passwords through this call
-		if !db.ComparePasswords(result.Password, []byte(account.Password)) {
+		if result.Password != account.Password {
 			db.Logger.ErrorM(errors.ErrCannotUpdatePassword, errors.ErrCannotUpdatePassword.Error())
 			return nil, errors.ErrCannotUpdatePassword
 		}
@@ -110,12 +115,14 @@ func (db *Db) ArchiveBusinessAccounts(ctx context.Context, ids []uint32) ([]bool
 
 		var deleteStatus = make([]bool, len(ids))
 		for _, id := range ids {
-			success, err := db.ArchiveBusinessAccount(ctx, id)
-			if !success {
+			var status bool = true
+			err := db.ArchiveBusinessAccount(ctx, id)
+			if err != nil {
 				db.Logger.For(ctx).Error(err, fmt.Sprintf("%s - for id %d ", errors.ErrFailedToDeleteBusinessAccount.Error(), id))
+				status = false
 			}
 
-			deleteStatus = append(deleteStatus, success)
+			deleteStatus = append(deleteStatus, status)
 		}
 
 		return deleteStatus, nil
@@ -130,45 +137,54 @@ func (db *Db) ArchiveBusinessAccounts(ctx context.Context, ids []uint32) ([]bool
 }
 
 // DeleteBusinessAccount archives a business account by id
-func (db *Db) ArchiveBusinessAccount(ctx context.Context, id uint32) (bool, error) {
+func (db *Db) ArchiveBusinessAccount(ctx context.Context, id uint32) (error) {
 	db.Logger.For(ctx).Info("delete business account")
 	ctx, span := db.startRootSpan(ctx, "archive_business_account_db_op")
 	defer span.Finish()
 
-	tx := func(ctx context.Context, tx *gorm.DB) (interface{}, error) {
+	tx := func(ctx context.Context, tx *gorm.DB) (error) {
 		db.Logger.For(ctx).Info("starting db transactions")
 		childSpan := db.TracingEngine.CreateChildSpan(ctx, "archive_business_account_db_tx")
 		defer childSpan.Finish()
+
+		if id == 0 {
+			db.Logger.ErrorM(errors.ErrInvalidInputArguments, errors.ErrInvalidInputArguments.Error())
+			return errors.ErrInvalidInputArguments
+		}
 
 		// check if business actually exists
 		account := db.GetBusinessById(ctx, id)
 		if account == nil {
 			db.Logger.For(ctx).ErrorM(errors.ErrAccountDoesNotExist, errors.ErrAccountDoesNotExist.Error())
-			return false, nil
+			return errors.ErrAccountDoesNotExist
 		}
 
 		// deactivate account activity status
 		deactivateAccountOpStep := saga.Step{
 			Name:           "deactivate_business_account",
-			Func:           db.SetBusinessAccountStatusAndSave(ctx, account, false),
-			CompensateFunc: db.SetBusinessAccountStatusAndSave(ctx, account, true),
+			Func:           func(ctx context.Context) error {
+				return db.SetBusinessAccountStatusAndSave(ctx, account, false)
+			},
+			CompensateFunc: func(ctx context.Context) error {
+				return db.SetBusinessAccountStatusAndSave(ctx, account, true)
+			},
 			Options:        nil,
 		}
 
 		if err := db.Saga.RunSaga(ctx, "deactivate_business_account", deactivateAccountOpStep); err != nil {
 			db.Logger.For(ctx).Error(err, err.Error())
-			return nil, err
+			return err
 		}
 
-		return true, nil
+		return nil
 	}
 
-	res, err := db.PerformComplexTransaction(ctx, tx)
+	err := db.PerformTransaction(ctx, tx)
 	if err != nil {
-		return false, err
+		return err
 	}
 
-	return res.(bool), nil
+	return nil
 }
 
 // GetBusinessAccount gets a set of business accounts by ids
@@ -253,7 +269,8 @@ func (db *Db) GetBusinessAccount(ctx context.Context, id uint32) (*proto.Busines
 			return nil, errors.ErrAccountDoesNotExist
 		}
 
-		db.Logger.For(ctx).Info("successfully obtained business account", zap.String("id", string(id)), zap.String("name", account.CompanyName))
+		db.Logger.For(ctx).Info("successfully obtained business account", zap.Any("id", fmt.Sprintf("%d", id)), zap.String("name",
+			account.CompanyName))
 		return account, nil
 	}
 
@@ -295,7 +312,7 @@ func (db *Db) GetBusinessById(ctx context.Context, id uint32) *proto.BusinessAcc
 			return nil, err
 		}
 
-		db.Logger.For(ctx).Info("successfully obtained business account", zap.String("id", string(id)))
+		db.Logger.For(ctx).Info("successfully obtained business account", zap.String("id", fmt.Sprintf("%d", id)))
 		return &account, nil
 	}
 
@@ -367,6 +384,12 @@ func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.Business
 		if err := account.Validate(); err != nil {
 			db.Logger.Error(errors.ErrInvalidAccount, err.Error())
 			return nil, err
+		}
+
+		// ensure authn id is valid
+		if authnid ==  0 || account.Email == "" || account.Password == "" || account.CompanyName == ""{
+			db.Logger.Error(errors.ErrInvalidInputArguments, fmt.Sprintf("authn id cannot be %d", authnid))
+			return nil, errors.ErrInvalidInputArguments
 		}
 
 		var businessAccount proto.BusinessAccountORM
