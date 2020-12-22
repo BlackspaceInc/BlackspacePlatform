@@ -64,6 +64,7 @@ func (db *Db) PerformRetryableOperation(f func() error) error {
 }
 
 func (db *Db) PreloadTx(tx *gorm.DB) *gorm.DB {
-	return tx.Preload("Media.SubscribedTopics").
-		Preload(clause.Associations)
+	return tx.Preload("Media").
+		      Preload("SubscribedTopics").
+		      Preload(clause.Associations)
 }

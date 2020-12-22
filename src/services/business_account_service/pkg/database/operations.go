@@ -222,13 +222,25 @@ func (db *Db) GetPaginatedBusinessAccounts(ctx context.Context, limit int64) ([]
 		childSpan := db.TracingEngine.CreateChildSpan(ctx, "get_paginated_business_account_db_tx")
 		defer childSpan.Finish()
 
-		var result = make([]*proto.BusinessAccount, limit)
-		if err := db.PreloadTx(tx).Limit(limit).Find(&result).Error; err != nil {
+		var obtainedAccounts = make([]*proto.BusinessAccount, limit)
+		var result []*proto.BusinessAccountORM
+		if err := db.Engine.Limit(limit).Find(&result).Error; err != nil {
 			db.Logger.For(ctx).Error(errors.ErrUnableToObtainBusinessAccounts, err.Error())
 			return nil, err
 		}
 
-		return result, nil
+		for _, account := range result {
+			obj, err := account.ToPB(ctx)
+			if err != nil {
+				db.Logger.For(ctx).Error(errors.ErrFailedToConvertFromOrmType, err.Error())
+				return nil, err
+			}
+
+			obtainedAccounts = append(obtainedAccounts, &obj)
+		}
+
+
+		return obtainedAccounts, nil
 	}
 
 	res, err := db.PerformComplexTransaction(ctx, tx)
