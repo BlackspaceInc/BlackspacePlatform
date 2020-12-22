@@ -110,6 +110,14 @@ func GenerateRandomId(min, max int) int {
 //  ExpectNoErrorOccured ensures no errors occured during the operation
 func ExpectNoErrorOccured(t *testing.T, err error, result *proto.BusinessAccount) {
 	assert.Empty(t, err)
-	assert.Equal(t, result.IsActive, true, "record should be activated")
 	assert.NotNil(t, result)
+}
+
+// ExpectValidAccountObtained ensures we have a valid obtained account
+func ExpectValidAccountObtained(t *testing.T, err error, obtainedAccount *proto.BusinessAccount, result *proto.BusinessAccount) {
+	assert.Empty(t, err)
+	assert.True(t, obtainedAccount != nil)
+	assert.Equal(t, obtainedAccount.CompanyName, result.CompanyName)
+	assert.Equal(t, obtainedAccount.Email, result.Email)
+	assert.Equal(t, obtainedAccount.Password, result.Password)
 }

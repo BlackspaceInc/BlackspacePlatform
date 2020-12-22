@@ -15,17 +15,6 @@ import (
 
 type dbOperationType string
 
-const (
-	CREATE_ONE  dbOperationType = "CREATE_ONE"
-	UPDATE_ONE  dbOperationType = "UPDATE_ONE"
-	DELETE_ONE  dbOperationType = "DELETE_ONE"
-	GET_ONE     dbOperationType = "GET_ONE"
-	CREATE_MANY dbOperationType = "CREATE_MANY"
-	UPDATE_MANY dbOperationType = "UPDATE_MANY"
-	DELETE_MANY dbOperationType = "DELETE_MANY"
-	GET_MANY    dbOperationType = "GET_MANY"
-)
-
 type IDbOperations interface {
 	// CreateBusinessAccount creates a business account
 	CreateBusinessAccount(ctx context.Context, account *proto.BusinessAccount) (*proto.BusinessAccount, error)
@@ -452,7 +441,7 @@ func (db *Db) SetBusinessAccountStatusAndSave(ctx context.Context, businessAccou
 	activateAccount bool) error {
 
 	db.Logger.For(ctx).Info(fmt.Sprintf("updating business account active status to %v", activateAccount))
-	span := db.TracingEngine.CreateChildSpan(ctx, "update business account active status operation")
+	ctx, span := db.startRootSpan(ctx, "set_business_account_active_status")
 	defer span.Finish()
 
 	tx := func(ctx context.Context, tx *gorm.DB) error {
