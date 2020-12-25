@@ -15,7 +15,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (r *queryResolver) GetBusinessAccount(ctx context.Context, input models.GetBusinessAccountRequest) ([]*proto.BusinessAccount, error) {
+func (r *queryResolver) GetBusinessAccount(ctx context.Context, input models.GetBusinessAccountRequest) (*proto.BusinessAccount, error) {
 	r.Db.Logger.For(ctx).Info(fmt.Sprintf("get business account api op"))
 	sp, ctx := opentracing.StartSpanFromContext(ctx, "get_business_account_api_op")
 	defer sp.Finish()
@@ -26,20 +26,16 @@ func (r *queryResolver) GetBusinessAccount(ctx context.Context, input models.Get
 		return nil, svcErrors.ErrInvalidInputArguments
 	}
 
-	var accounts = make([]*proto.BusinessAccount, 1)
-
 	account, err := r.Db.GetBusinessAccount(ctx, uint32(*input.ID))
 	if err != nil {
 		r.Db.Logger.For(ctx).ErrorM(err, err.Error())
 		return nil, err
 	}
 
-	accounts = append(accounts, account)
-
-	r.Db.Logger.For(ctx).Info(fmt.Sprintf("successfully obtain business account - id ; %d", input.ID), zap.String("company name",
+	r.Db.Logger.For(ctx).Info(fmt.Sprintf("successfully obtain business account - id: %s", fmt.Sprint(*input.ID)), zap.String("company name",
 		account.CompanyName))
 
-	return accounts, nil
+	return account, nil
 }
 
 func (r *queryResolver) GetBusinessAccounts(ctx context.Context, limit models.GetBusinessAccountsRequest) ([]*proto.BusinessAccount, error) {

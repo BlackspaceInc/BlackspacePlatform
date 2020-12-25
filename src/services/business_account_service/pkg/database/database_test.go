@@ -17,7 +17,7 @@ import (
 var (
 	db        *database.Db
 	host = "localhost"
-	port = 5432
+	port = 5433
 	user = "postgres"
 	password = "postgres"
 	dbname = "postgres"

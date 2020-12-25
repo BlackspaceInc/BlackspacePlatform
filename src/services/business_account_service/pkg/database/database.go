@@ -88,6 +88,7 @@ func New(ctx context.Context, connectionString string, tracingEngine *core_traci
 	if endpoint == "" {
 		endpoint = "http://authentication-handler-service:9898/v1/account"
 	}
+
 	return &Db{
 		Engine:                                   conn,
 		Logger:                                   logger,

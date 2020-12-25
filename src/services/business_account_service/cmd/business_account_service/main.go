@@ -31,7 +31,7 @@ import (
 func main() {
 	// flags definition
 	fs := pflag.NewFlagSet("default", pflag.ContinueOnError)
-	fs.Int("port", 9898, "HTTP port")
+	fs.Int("port", 9897, "HTTP port")
 	fs.Int("secure-port", 0, "HTTPS port")
 	fs.Int("port-metrics", 0, "metrics port")
 	fs.Int("grpc-port", 0, "gRPC port")
@@ -200,7 +200,7 @@ func main() {
 	}
 
 	// log version and port
-	logger.Info("Starting business_account_service",
+	logger.InfoM("Starting business_account_service",
 		zap.String("version", viper.GetString("version")),
 		zap.String("revision", viper.GetString("revision")),
 		zap.String("port", srvCfg.Port),

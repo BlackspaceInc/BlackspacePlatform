@@ -7,6 +7,6 @@ input GetBusinessAccountsRequest{
 }
 
 type Query {
-	getBusinessAccount(input: GetBusinessAccountRequest!): [BusinessAccount!]!
+	getBusinessAccount(input: GetBusinessAccountRequest!): BusinessAccount!
 	getBusinessAccounts(limit: GetBusinessAccountsRequest!): [BusinessAccount!]!
 }

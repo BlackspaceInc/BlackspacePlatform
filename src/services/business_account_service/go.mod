@@ -9,7 +9,6 @@ require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e
 	github.com/danielvladco/go-proto-gql v0.8.0 // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/fatih/color v1.10.0
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/giantswarm/retry-go v0.0.0-20151203102909-d78cea247d5e
@@ -18,7 +17,8 @@ require (
 	github.com/gomodule/redigo v1.8.3
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.4.2
-	github.com/graphql-go/graphql v0.7.9 // indirect
+	github.com/graph-gophers/graphql-go v0.0.0-20190108123631-d5b7dc6be53b
+	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/infobloxopen/atlas-app-toolkit v0.22.1
 	github.com/infobloxopen/protoc-gen-gorm v0.20.0
 	github.com/itimofeev/go-saga v0.1.0
@@ -26,6 +26,7 @@ require (
 	github.com/juju/errgo v0.0.0-20140925100237-08cceb5d0b53 // indirect
 	github.com/keratin/authn-go v1.1.0
 	github.com/lib/pq v1.9.0
+	github.com/mitchellh/mapstructure v1.3.0 // indirect
 	github.com/mwitkow/go-proto-validators v0.3.2
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pelletier/go-toml v1.7.0 // indirect

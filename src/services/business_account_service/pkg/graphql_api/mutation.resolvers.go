@@ -13,10 +13,11 @@ import (
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
 	"github.com/itimofeev/go-saga"
 	opentracing "github.com/opentracing/opentracing-go"
+	"go.uber.org/zap"
 )
 
 func (r *mutationResolver) CreateBusinessAccount(ctx context.Context, input models.CreateBusinessAccountRequest) (*proto.BusinessAccount, error) {
-	r.Db.Logger.For(ctx).Info(fmt.Sprintf("create business accounts api op"))
+	r.Db.Logger.For(ctx).InfoM(fmt.Sprintf("create business accounts api op"), zap.Any("business", input.BusinessAccount), zap.Any("authnId", input.AuthnID))
 	sp, ctx := opentracing.StartSpanFromContext(ctx, "create_business_account_api_op")
 	defer sp.Finish()
 
@@ -30,35 +31,53 @@ func (r *mutationResolver) CreateBusinessAccount(ctx context.Context, input mode
 	if account != nil {
 		// attempt to see if account is inactive
 		if !account.IsActive {
+			sagaSteps := make([]*saga.Step, 0)
 			// we reactivate the account via a saga
-			distributedUnlockOpStep := saga.Step{
-				Name:           "unlock_business_account_distributed_tx",
-				Func:           r.Db.DistributedTxUnlockAccount(ctx, account.AuthnId, sp),
-				CompensateFunc: r.Db.DistributedTxLockAccount(ctx, account.AuthnId, sp),
-				Options:        nil,
+			distributedUnlockOpStep := &saga.Step{
+				Name: "unlock_business_account_distributed_tx",
+				// initial operation to unlock account
+				Func: func(ctx context.Context) error {
+					return r.Db.DistributedTxUnlockAccount(ctx, account.AuthnId, sp)
+				},
+				// compensating function to lock account
+				CompensateFunc: func(ctx context.Context) error {
+					return r.Db.DistributedTxLockAccount(ctx, account.AuthnId, sp)
+				},
 			}
+
+			sagaSteps = append(sagaSteps, distributedUnlockOpStep)
 
 			// activate account activity status
-			reactivateAccountOpStep := saga.Step{
-				Name:           "reactivate_business_account",
-				Func:           r.Db.SetBusinessAccountStatusAndSave(ctx, account, true),
-				CompensateFunc: r.Db.SetBusinessAccountStatusAndSave(ctx, account, false),
-				Options:        nil,
+			reactivateAccountOpStep := &saga.Step{
+				Name: "reactivate_business_account",
+				// initial operation to activate account
+				Func: func(ctx context.Context) error {
+					return r.Db.SetBusinessAccountStatusAndSave(ctx, account, true)
+				},
+				// compensating operation to deactivate account
+				CompensateFunc: func(ctx context.Context) error {
+					return r.Db.SetBusinessAccountStatusAndSave(ctx, account, false)
+				},
 			}
 
-			if err := r.Db.Saga.RunSaga(ctx, "unlock_business_account", distributedUnlockOpStep, reactivateAccountOpStep); err != nil {
+			sagaSteps = append(sagaSteps, reactivateAccountOpStep)
+
+			if err := r.Db.Saga.RunSaga(ctx, "unlock_business_account", sagaSteps...); err != nil {
 				r.Db.Logger.For(ctx).Error(err, err.Error())
 				return nil, err
 			}
 
 			return account, nil
+		} else {
+			r.Db.Logger.For(ctx).Error(svcErrors.ErrAccountAlreadyExist, svcErrors.ErrAccountAlreadyExist.Error())
+			return nil, svcErrors.ErrAccountAlreadyExist
 		}
 	}
 
 	// now we attempt to create the account from the current context of this service since for this api to be invoked the api
 	// gateway must have already created an entry in the authentication handler service referencing this account record
 	// perform this operation as a retryable one
-	account, err := r.Db.CreateBusinessAccount(ctx, account, uint32(*input.AuthnID))
+	account, err := r.Db.CreateBusinessAccount(ctx, input.BusinessAccount, uint32(*input.AuthnID))
 	if err != nil {
 		r.Db.Logger.For(ctx).Error(err, err.Error())
 		return nil, err
@@ -91,22 +110,24 @@ func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input mode
 		return nil, svcErrors.ErrAccountDoesNotExist
 	}
 
-	var transactionalSteps = make([]saga.Step, 3)
+	var transactionalSteps = make([]*saga.Step, 0)
 	var updatedAccount = make(chan *proto.BusinessAccount)
 	// TODO: handle password updates via authentication handler service in the future - Need to implement this too
 	// TODO: send out an email to the account owner that the email or password has been changed
 	// define a saga step tailored to saving the new business account record in our backend db
 	updateAndSaveAccountStep := saga.Step{
 		Name: "update_business_account",
+		// initial operation to update business account
 		Func: func(ctx context.Context) error {
 			_, err := r.Db.UpdateBusinessAccount(ctx, businessAccountId, newBusinessAccount)
 			return err
-		},
+		}(ctx),
+		// no compensating operation for the update. Just return an error if the initial call failed
 		CompensateFunc: func(ctx context.Context) error { // no compensating function just return an error if this operation fails
 			return svcErrors.ErrFailedToSaveUpdatedAccountRecord
-		},
+		}(ctx),
 	}
-	transactionalSteps = append(transactionalSteps, updateAndSaveAccountStep)
+	transactionalSteps = append(transactionalSteps, &updateAndSaveAccountStep)
 
 	// check if the email is updated
 	if oldBusinessAccount.Email != newBusinessAccount.Email {
@@ -116,22 +137,26 @@ func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input mode
 
 		// update the email account from the context of the authentication handler service
 		updateEmailInDtxStep := saga.Step{
-			Name:           "update_business_account_email_distributed_tx",
-			Func:           func(ctx context.Context) error {
+			Name: "update_business_account_email_distributed_tx",
+			// update account initial operation via distributed transaction
+			Func: func(ctx context.Context) error {
 				return r.Db.DistributedTxUpdateAccountEmail(ctx, authnId, newEmail, sp)
-			},
-			CompensateFunc: func(ctx context.Context) error {
-				acc, err := r.Db.UpdateBusinessAccount(ctx, businessAccountId, oldBusinessAccount) // reset business account to original state
-				if err != nil {
-					return err
-				}
+			}(ctx),
+			// compensating function to reset the account to its inital state if the distributed update call failed
+			CompensateFunc: func(ctx context.Context, output chan<- *proto.BusinessAccount) SagaRefType {
+				return func(ctx context.Context) error {
+					acc, err := r.Db.UpdateBusinessAccount(ctx, businessAccountId, oldBusinessAccount) // reset business account to original state
+					if err != nil {
+						return err
+					}
 
-				updatedAccount <- acc
-				return nil
-			} ,
+					output <- acc
+					return nil
+				}
+			}(ctx, updatedAccount),
 		}
 
-		transactionalSteps = append(transactionalSteps, updateEmailInDtxStep)
+		transactionalSteps = append(transactionalSteps, &updateEmailInDtxStep)
 	}
 
 	// run the saga
@@ -173,24 +198,34 @@ func (r *mutationResolver) DeleteBusinessAccount(ctx context.Context, id models.
 
 	// first operation is to perform a distributed transaction and lock the account if possible
 	dtxLockOpStep = saga.Step{
-		Name:           "distributed lock operation",
-		Func:           r.Db.DistributedTxLockAccount(ctx, account.AuthnId, sp),
-		CompensateFunc: r.Db.DistributedTxUnlockAccount(ctx, account.AuthnId, sp),
+		Name: "distributed lock operation",
+		// Perform lock operation as a distributed transaction
+		Func: func(ctx context.Context) error {
+			return r.Db.DistributedTxLockAccount(ctx, account.AuthnId, sp)
+		}(ctx),
+		// Perform compensating distributed unlock operation if the initial event failed
+		CompensateFunc: func(ctx context.Context) error {
+			return r.Db.DistributedTxUnlockAccount(ctx, account.AuthnId, sp)
+		}(ctx),
 	}
 
 	// second operation is to update the state of the account and save to database
 	archiveAccountStep = saga.Step{
-		Name:           "archive business account operation",
-		Func:           func(ctx context.Context) error {
+		Name: "archive business account operation",
+		// Archive the business account (perform account deactivation)
+		Func: func(ctx context.Context) error {
 			return r.Db.ArchiveBusinessAccount(ctx, accountId)
-		},              // archive business account
-		CompensateFunc: r.Db.SetBusinessAccountStatusAndSave(ctx, account, true), // activate account
-		Options:        nil,
+		}(ctx),
+		// Perform business account activation
+		CompensateFunc: func(ctx context.Context) error {
+			return r.Db.SetBusinessAccountStatusAndSave(ctx, account, true)
+		}(ctx), // activate account
+		Options: nil,
 	}
 	transactionalSteps = append(transactionalSteps, dtxLockOpStep, archiveAccountStep)
 
 	// run the saga
-	if err := r.Db.Saga.RunSaga(ctx, "archive_business_account", dtxLockOpStep, archiveAccountStep); err != nil {
+	if err := r.Db.Saga.RunSaga(ctx, "archive_business_account", &dtxLockOpStep, &archiveAccountStep); err != nil {
 		r.Db.Logger.For(ctx).Error(err, err.Error())
 		return false, err
 	}

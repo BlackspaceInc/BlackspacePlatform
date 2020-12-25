@@ -2,15 +2,29 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"time"
 
+	gql "github.com/99designs/gqlgen/graphql/handler"
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
 	core_tracing "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-tracing"
 	"github.com/gorilla/mux"
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-lib/metrics/prometheus"
+
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/database"
+	graphql "github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/generated"
+)
+
+var (
+	host = "localhost"
+	port = 5433
+	user = "postgres"
+	password = "postgres"
+	dbname = "postgres"
 )
 
 func NewMockServer() *Server {
@@ -41,6 +55,18 @@ func NewMockServer() *Server {
 	// initiate logging client
 	logger := InitializeLoggingEngine(ctx)
 
+	connectionString := fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+
+	db := database.Setup(ctx, connectionString, tracerEngine, serviceMetrics, logger, "")
+
+	gqlServer := gql.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graphql.Resolver{
+		Db:      db,
+		Logger:  logger,
+		Tracer:  tracerEngine,
+		Metrics: serviceMetrics,
+	}}))
 
 	srv := &Server{
 		router:        mux.NewRouter(),
@@ -48,6 +74,7 @@ func NewMockServer() *Server {
 		tracingEngine:  tracerEngine,
 		metricsEngine: serviceMetrics,
 		logger:        logger,
+		gqlServer: gqlServer,
 	}
 
 	return srv

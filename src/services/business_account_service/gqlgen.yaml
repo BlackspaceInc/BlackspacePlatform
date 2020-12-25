@@ -12,9 +12,6 @@ federation:
   filename: pkg/graphql_api/generated/federation.go
   package: generated
 
-autobind:
-  - "/github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/graphql_api/proto"
-
 # Where should any generated model go?
 model:
   filename: pkg/graphql_api/models/models_gen.go
@@ -36,17 +33,26 @@ omit_slice_element_pointers: false
 # Optional, set to speed up generation time by not performing a final validation pass
 skip_validation: true
 
+autobind:
+  - "/github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/graphql_api/proto"
+
 # This section declares type mapping between the GraphQL and go type systems
 #
 # The first line in each type will be used as defaults for resolver arguments and
 # modelgen, the others will be allowed when binding to fields. Configure them to
 # your liking
 models:
+  DateOfBirth:
+    model: github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto.DateOfBirth
+  Topics:
+    model: github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto.Topics
   BusinessAccountInput:
     model: github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto.BusinessAccount
   BusinessAccount:
     model: github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto.BusinessAccount
   AddressInput:
+    model: github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto.Address
+  Address:
     model: github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto.Address
   BusinessTypeInput:
     model: github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto.BusinessType
@@ -54,12 +60,20 @@ models:
     model: github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto.Topics
   MediaInput:
     model: github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto.Media
+  Media:
+    model: github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto.Media
   DateOfBirthInput:
     model: github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto.DateOfBirth
   PhoneNumberInput:
     model: github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto.PhoneNumber
+  PhoneNumber:
+    model: github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto.PhoneNumber
   PaymentProcessingMethodsInput:
     model: github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto.PaymentProcessingMethods
+  PaymentProcessingMethods:
+    model: github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto.PaymentProcessingMethods
+  BusinessType:
+    model: github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto.BusinessType
   ID:
     model:
       - github.com/99designs/gqlgen/graphql.ID

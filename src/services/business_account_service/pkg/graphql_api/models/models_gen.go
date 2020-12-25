@@ -10,29 +10,9 @@ import (
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
 )
 
-type Address struct {
-	Address       *string      `json:"Address"`
-	ApartmentUnit *string      `json:"ApartmentUnit"`
-	ZipCode       *string      `json:"ZipCode"`
-	City          *string      `json:"City"`
-	State         *string      `json:"State"`
-	Birthdate     *DateOfBirth `json:"birthdate"`
-}
-
-type BusinessType struct {
-	Category    *BusinessCategory    `json:"category"`
-	SubCategory *BusinessSubCategory `json:"subCategory"`
-}
-
 type CreateBusinessAccountRequest struct {
 	BusinessAccount *proto.BusinessAccount `json:"businessAccount"`
 	AuthnID         *int                   `json:"authnId"`
-}
-
-type DateOfBirth struct {
-	Month *string `json:"Month"`
-	Day   *string `json:"Day"`
-	Year  *string `json:"Year"`
 }
 
 type DeleteBusinessAccountRequest struct {
@@ -49,40 +29,6 @@ type GetBusinessAccountRequest struct {
 
 type GetBusinessAccountsRequest struct {
 	Limit *int `json:"limit"`
-}
-
-type Media struct {
-	ID        *int    `json:"id"`
-	Website   *string `json:"website"`
-	Instagram *string `json:"instagram"`
-	Facebook  *string `json:"facebook"`
-	LinkedIn  *string `json:"linkedIn"`
-	Pinterest *string `json:"pinterest"`
-}
-
-type PaymentProcessingMethods struct {
-	PaymentOptions []*PaymentOptions `json:"paymentOptions"`
-	Medium         []*PaymentMedium  `json:"medium"`
-}
-
-type PhoneNumber struct {
-	Number *string    `json:"number"`
-	Type   *PhoneType `json:"type"`
-}
-
-type Topics struct {
-	ID              *int  `json:"id"`
-	Technology      *bool `json:"Technology"`
-	Health          *bool `json:"Health"`
-	Food            *bool `json:"Food"`
-	Science         *bool `json:"Science"`
-	Music           *bool `json:"Music"`
-	Travel          *bool `json:"Travel"`
-	Business        *bool `json:"Business"`
-	Cooking         *bool `json:"Cooking"`
-	FashionAndStyle *bool `json:"FashionAndStyle"`
-	Design          *bool `json:"Design"`
-	Art             *bool `json:"Art"`
 }
 
 type UpdateBusinessAccountRequest struct {

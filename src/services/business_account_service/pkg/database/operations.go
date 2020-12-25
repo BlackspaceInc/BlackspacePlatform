@@ -160,7 +160,7 @@ func (db *Db) ArchiveBusinessAccount(ctx context.Context, id uint32) (error) {
 			Options:        nil,
 		}
 
-		if err := db.Saga.RunSaga(ctx, "deactivate_business_account", deactivateAccountOpStep); err != nil {
+		if err := db.Saga.RunSaga(ctx, "deactivate_business_account", &deactivateAccountOpStep); err != nil {
 			db.Logger.For(ctx).Error(err, err.Error())
 			return err
 		}
@@ -190,6 +190,7 @@ func (db *Db) GetBusinessAccounts(ctx context.Context, ids []uint32) ([]*proto.B
 		defer childSpan.Finish()
 
 		var accounts = make([]*proto.BusinessAccount, len(ids)+1)
+
 		for _, id := range ids {
 			account := db.GetBusinessById(ctx, id)
 			if account == nil {
@@ -198,6 +199,7 @@ func (db *Db) GetBusinessAccounts(ctx context.Context, ids []uint32) ([]*proto.B
 				accounts = append(accounts, account)
 			}
 		}
+
 
 		return accounts, nil
 	}
@@ -222,11 +224,15 @@ func (db *Db) GetPaginatedBusinessAccounts(ctx context.Context, limit int64) ([]
 		childSpan := db.TracingEngine.CreateChildSpan(ctx, "get_paginated_business_account_db_tx")
 		defer childSpan.Finish()
 
-		var obtainedAccounts = make([]*proto.BusinessAccount, limit)
+		var obtainedAccounts = make([]*proto.BusinessAccount, 0)
 		var result []*proto.BusinessAccountORM
 		if err := db.Engine.Limit(limit).Find(&result).Error; err != nil {
 			db.Logger.For(ctx).Error(errors.ErrUnableToObtainBusinessAccounts, err.Error())
 			return nil, err
+		}
+
+		if len(result) == 0 {
+			return []*proto.BusinessAccount{}, nil
 		}
 
 		for _, account := range result {
@@ -371,7 +377,7 @@ func (db *Db) GetBusinessByEmail(ctx context.Context, email string) *proto.Busin
 
 // CreateBusinessAccount creates a business account and saves it to the database
 func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.BusinessAccount, authnid uint32) (*proto.BusinessAccount, error) {
-	db.Logger.For(ctx).Info("creating business account")
+	db.Logger.For(ctx).InfoM("creating business account")
 	ctx, span := db.startRootSpan(ctx, "create_business_account_op")
 	defer span.Finish()
 

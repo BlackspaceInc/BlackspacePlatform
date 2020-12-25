@@ -21,14 +21,14 @@ func NewSagaCoordinator(logger core_logging.ILog) *SagaCoordinator {
 }
 
 // RunSaga creates a new saga instance and runs the required steps
-func (s *SagaCoordinator) RunSaga(ctx context.Context, operationName string, steps ...saga.Step) error {
+func (s *SagaCoordinator) RunSaga(ctx context.Context, operationName string, steps ...*saga.Step) error {
 	// define saga
 	tx := saga.NewSaga(operationName)
 	store := saga.New()
 
 	for _, step := range steps {
 		// first operation is to perform a distributed transaction and unlock the account if possible
-		if err := tx.AddStep(&step); err != nil {
+		if err := tx.AddStep(step); err != nil {
 			s.Logger.Error(errors.ErrFailedToConfigureSaga, errors.ErrFailedToConfigureSaga.Error())
 			return errors.ErrFailedToConfigureSaga
 		}

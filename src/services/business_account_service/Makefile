@@ -3,24 +3,24 @@
 # The release version is controlled from pkg/version
 
 TAG?=latest
-NAME:=podinfo
-DOCKER_REPOSITORY:=github.com/BlackspaceInc/BlackspacePlatform
+NAME:=business_account_service
+DOCKER_REPOSITORY:=blackspaceInc
 DOCKER_IMAGE_NAME:=$(DOCKER_REPOSITORY)/$(NAME)
 GIT_COMMIT:=$(shell git describe --dirty --always)
 VERSION:=$(shell grep 'VERSION' pkg/version/version.go | awk '{ print $$4 }' | tr -d '"')
 EXTRA_RUN_ARGS?=
 
 run:
-	go run -ldflags "-s -w -X github.com/stefanprodan/podinfo/pkg/version.REVISION=$(GIT_COMMIT)" cmd/podinfo/* \
+	go run -ldflags "-s -w -X github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version.REVISION=$(GIT_COMMIT)" cmd/$(NAME)//* \
 	--level=debug --grpc-port=9999 --backend-url=https://httpbin.org/status/401 --backend-url=https://httpbin.org/status/500 \
-	--ui-logo=https://raw.githubusercontent.com/stefanprodan/podinfo/gh-pages/cuddle_clap.gif $(EXTRA_RUN_ARGS)
+	--ui-logo=https://raw.githubusercontent.com/stefanprodan/$(NAME)//gh-pages/cuddle_clap.gif $(EXTRA_RUN_ARGS)
 
 test:
 	go test -v -race ./...
 
 build:
-	GIT_COMMIT=$$(git rev-list -1 HEAD) && CGO_ENABLED=0 go build  -ldflags "-s -w -X github.com/stefanprodan/podinfo/pkg/version.REVISION=$(GIT_COMMIT)" -a -o ./bin/podinfo ./cmd/podinfo/*
-	GIT_COMMIT=$$(git rev-list -1 HEAD) && CGO_ENABLED=0 go build  -ldflags "-s -w -X github.com/stefanprodan/podinfo/pkg/version.REVISION=$(GIT_COMMIT)" -a -o ./bin/podcli ./cmd/podcli/*
+	GIT_COMMIT=$$(git rev-list -1 HEAD) && CGO_ENABLED=0 go build  -ldflags "-s -w -X github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version.REVISION=$(GIT_COMMIT)" -a -o ./bin/$(NAME)/ ./cmd/$(NAME)//*
+	GIT_COMMIT=$$(git rev-list -1 HEAD) && CGO_ENABLED=0 go build  -ldflags "-s -w -X github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version.REVISION=$(GIT_COMMIT)" -a -o ./bin/$(NAME)_cli/ ./cmd/$(NAME)_cli//*
 
 fmt:
 	gofmt -l -s -w ./
@@ -34,14 +34,14 @@ build-container:
 	docker build -t $(DOCKER_IMAGE_NAME):$(VERSION) .
 
 build-base:
-	docker build -f Dockerfile.base -t $(DOCKER_REPOSITORY)/podinfo-base:latest .
+	docker build -f Dockerfile.base -t $(DOCKER_REPOSITORY)/$(NAME)-base:latest .
 
 push-base: build-base
-	docker push $(DOCKER_REPOSITORY)/podinfo-base:latest
+	docker push $(DOCKER_REPOSITORY)/$(NAME)-base:latest
 
 test-container:
-	@docker rm -f podinfo || true
-	@docker run -dp 9898:9898 --name=podinfo $(DOCKER_IMAGE_NAME):$(VERSION)
+	@docker rm -f $(NAME) || true
+	@docker run -dp 9898:9898 --name=$(NAME) $(DOCKER_IMAGE_NAME):$(VERSION)
 	@docker ps
 	@TOKEN=$$(curl -sd 'test' localhost:9898/token | jq -r .token) && \
 	curl -sH "Authorization: Bearer $${TOKEN}" localhost:9898/token/validate | grep test
@@ -59,15 +59,15 @@ version-set:
 	@next="$(TAG)" && \
 	current="$(VERSION)" && \
 	sed -i '' "s/$$current/$$next/g" pkg/version/version.go && \
-	sed -i '' "s/tag: $$current/tag: $$next/g" charts/podinfo/values.yaml && \
-	sed -i '' "s/tag: $$current/tag: $$next/g" charts/podinfo/values-prod.yaml && \
-	sed -i '' "s/appVersion: $$current/appVersion: $$next/g" charts/podinfo/Chart.yaml && \
-	sed -i '' "s/version: $$current/version: $$next/g" charts/podinfo/Chart.yaml && \
-	sed -i '' "s/podinfo:$$current/podinfo:$$next/g" kustomize/deployment.yaml && \
-	sed -i '' "s/podinfo:$$current/podinfo:$$next/g" deploy/webapp/frontend/deployment.yaml && \
-	sed -i '' "s/podinfo:$$current/podinfo:$$next/g" deploy/webapp/backend/deployment.yaml && \
-	sed -i '' "s/podinfo:$$current/podinfo:$$next/g" deploy/bases/frontend/deployment.yaml && \
-	sed -i '' "s/podinfo:$$current/podinfo:$$next/g" deploy/bases/backend/deployment.yaml && \
+	sed -i '' "s/tag: $$current/tag: $$next/g" charts/$(NAME)/values.yaml && \
+	sed -i '' "s/tag: $$current/tag: $$next/g" charts/$(NAME)//values-prod.yaml && \
+	sed -i '' "s/appVersion: $$current/appVersion: $$next/g" charts/$(NAME)//Chart.yaml && \
+	sed -i '' "s/version: $$current/version: $$next/g" charts/$(NAME)//Chart.yaml && \
+	sed -i '' "s/$(NAME)/:$$current/$(NAME)/:$$next/g" kustomize/deployment.yaml && \
+	sed -i '' "s/$(NAME)/:$$current/$(NAME)/:$$next/g" deploy/webapp/frontend/deployment.yaml && \
+	sed -i '' "s/$(NAME)/:$$current/$(NAME)/:$$next/g" deploy/webapp/backend/deployment.yaml && \
+	sed -i '' "s/$(NAME)/:$$current/$(NAME)/:$$next/g" deploy/bases/frontend/deployment.yaml && \
+	sed -i '' "s/$(NAME)/:$$current/$(NAME)/:$$next/g" deploy/bases/backend/deployment.yaml && \
 	echo "Version $$next set in code, deployment, chart and kustomize"
 
 release:
@@ -107,14 +107,6 @@ generate_graphql_schema_from_proto_definitions: generate_grpc_definitions
 graphql: generate_graphql_schema_from_proto_definitions
 	go run github.com/99designs/gqlgen
 
-down:
-	docker-compose down
-	./scripts/clean.sh
-
-up:
-	docker-compose -f docker-compose.dev.yml -f docker-compose.monitoring.dev.yml config
-	docker-compose -f docker-compose.dev.yml -f docker-compose.monitoring.dev.yml up --remove-orphans
-
 kube:
 	kompose convert -f docker-compose.prod.yml -o ./deployments/kubemanifests.yml
 	kubectl apply -f kubemanifests.yml
@@ -138,30 +130,29 @@ deploy-production:
 deploy: deploy-dev deploy-staging
 	@echo "deploying"
 
-build_and_start:
+build_and_start_services_locally:
 	# starts the necessary services in order to permit e2e testing
 	@echo starts the required support container services to allow e2e testing
-	docker-compose -f docker-compose.jaeger.yaml \
-				   -f docker-compose.dev.yaml up --force-recreate --build --remove-orphans --always-recreate-deps --renew-anon-volumes
+	docker-compose -f compose/docker-compose.jaeger.yaml \
+				   -f compose/docker-compose.postgres.yaml \
+				   -f compose/docker-compose.authentication_handler_service.yaml \
+				   -f compose/docker-compose.dev.yaml up --force-recreate --build --remove-orphans --always-recreate-deps --renew-anon-volumes
 
-stop_service_and_dep:
+start_services_locally:
 	# starts the necessary services in order to permit e2e testing
 	@echo starts the required support container services to allow e2e testing
-	docker-compose -f docker-compose.jaeger.yaml \
-				   -f docker-compose.postgres.yaml \
-				   -f docker-compose.dev.yaml down
+	docker-compose -f compose/docker-compose.jaeger.yaml \
+				   -f compose/docker-compose.postgres.yaml \
+				   -f compose/docker-compose.authentication_handler_service.yaml \
+				   -f compose/docker-compose.dev.yaml up --remove-orphans
 
-start:
-	# starts the necessary services in order to permit e2e testing
-	@echo starts the required support container services to allow e2e testing
-	docker-compose -f docker-compose.jaeger.yaml \
-				   -f docker-compose.postgres.yaml \
-				   -f docker-compose.authentication_handler_service.yaml \
-				   -f docker-compose.dev.yaml up --force-recreate --build --remove-orphans --always-recreate-deps --renew-anon-volumes
-
-stop:
+stop_services_locally:
 	@echo stopping the container services used for testing
-	docker-compose -f docker-compose.jaeger.yaml \
-				   -f docker-compose.postgres.yaml \
- 				   -f docker-compose.authentication_handler_service.yaml \
- 				   -f docker-compose.dev.yaml down
+	docker-compose -f compose/docker-compose.jaeger.yaml \
+				   -f compose/docker-compose.postgres.yaml \
+ 				   -f compose/docker-compose.authentication_handler_service.yaml \
+ 				   -f compose/docker-compose.dev.yaml down
+
+generate_docs:
+	npm install -g @2fd/graphdoc
+	graphdoc -e http://localhost:9897/query -o ./docs/schema
