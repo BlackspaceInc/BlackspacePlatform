@@ -74,6 +74,7 @@ func GetTokenFromCtx(ctx context.Context) (string, error) {
 }
 
 // InjectContextWithMockToken injects a token into the context. Useful for testing
-func InjectContextWithMockToken(ctx context.Context, token string) context.Context {
+func InjectContextWithMockToken(ctx context.Context, token string, serviceName string) context.Context {
+	ctxKey = &contextKey{serviceName}
 	return context.WithValue(ctx, ctxKey, token)
 }
