@@ -8,16 +8,16 @@ import (
 )
 
 func TestUpdateBusinessAccount(t *testing.T){
-	t.Run("TestName:UpdateBusinessAccount", UpdateBusinessAccount)
-	t.Run("TestName:UpdateBusinessAccountWithInvalidId", UpdateBusinessAccountWithInvalidId)
 	t.Run("TestName:UpdateBusinessAccountThatDoesntExist", UpdateBusinessAccountThatDoesntExist)
+	t.Run("TestName:UpdateBusinessAccountWithInvalidId", UpdateBusinessAccountWithInvalidId)
 	t.Run("TestName:UpdateBusinessAccountCannotChangePassword", UpdateBusinessAccountCannotChangePassword)
+	t.Run("TestName:UpdateBusinessAccount", UpdateBusinessAccount)
 }
 
 // UpdateBusinessAccount test that an account can be updated correctly
 func UpdateBusinessAccount(t *testing.T){
 	ctx := context.TODO()
-	var authnId uint32 = uint32(GenerateRandomId(20, 300))
+	var authnId uint32 = uint32(GenerateRandomId(5000, 10000))
 	account := GenerateRandomizedAccount()
 
 	password := account.Password
@@ -28,9 +28,11 @@ func UpdateBusinessAccount(t *testing.T){
 	var updatedCompanyName = "test_company"
 	result.CompanyName = updatedCompanyName
 	result.Password = password
+	id := result.Id
+	result.Id = 0
 
 	// update account
-	result, err = db.UpdateBusinessAccount(ctx, result.Id, result)
+	result, err = db.UpdateBusinessAccount(ctx, id, result)
 	ExpectNoErrorOccured(t, err, result)
 	assert.True(t, result.CompanyName == updatedCompanyName)
 }
@@ -38,7 +40,7 @@ func UpdateBusinessAccount(t *testing.T){
 // UpdateBusinessAccountWithInvalidId test that an account can be updated correctly
 func UpdateBusinessAccountWithInvalidId(t *testing.T){
 	ctx := context.TODO()
-	var authnId uint32 = uint32(GenerateRandomId(20, 100))
+	var authnId uint32 = uint32(GenerateRandomId(5000, 10000))
 	account := GenerateRandomizedAccount()
 	// create account first
 	result, err := db.CreateBusinessAccount(ctx, account, authnId)
@@ -56,7 +58,7 @@ func UpdateBusinessAccountWithInvalidId(t *testing.T){
 func UpdateBusinessAccountThatDoesntExist(t *testing.T){
 	ctx := context.TODO()
 	account := GenerateRandomizedAccount()
-	var randomAccountId uint32 = uint32(GenerateRandomId(20, 100))
+	var randomAccountId uint32 = uint32(GenerateRandomId(5000, 10000))
 
 	result, err := db.UpdateBusinessAccount(ctx, randomAccountId, account)
 	ExpectAccountDoesNotExistError(t,err, result)
@@ -66,7 +68,7 @@ func UpdateBusinessAccountThatDoesntExist(t *testing.T){
 // TODO: change this when we enable this feature
 func UpdateBusinessAccountCannotChangePassword(t *testing.T){
 	ctx := context.TODO()
-	var authnId uint32 = uint32(GenerateRandomId(20, 100))
+	var authnId uint32 = uint32(GenerateRandomId(5000, 10000))
 	account := GenerateRandomizedAccount()
 	// create account first
 	result, err := db.CreateBusinessAccount(ctx, account, authnId)

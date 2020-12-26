@@ -6,6 +6,7 @@ import (
 
 	"go.uber.org/zap"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	saga "github.com/itimofeev/go-saga"
 
@@ -68,7 +69,7 @@ func (db *Db) UpdateBusinessAccount(ctx context.Context, id uint32, account *pro
 		}
 
 		// save the account
-		if err := tx.Save(&businessAccountOrm).Error; err != nil {
+		if err := tx.Clauses(clause.OnConflict{DoNothing: true}).Updates(&businessAccountOrm).Error; err != nil {
 			db.Logger.Error(errors.ErrFailedToSaveUpdatedAccountRecord, err.Error())
 			return nil, err
 		}
@@ -405,7 +406,7 @@ func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.Business
 		recordNotFoundErr := db.PreloadTx(tx).Where(&proto.BusinessAccountORM{Email: account.Email,
 			CompanyName: account.CompanyName}).First(&businessAccount).Error
 
-		if recordNotFoundErr == nil{
+		if recordNotFoundErr == nil {
 			// account already exists
 			db.Logger.ErrorM(errors.ErrAccountAlreadyExist, errors.ErrAccountAlreadyExist.Error())
 			return nil, errors.ErrAccountAlreadyExist

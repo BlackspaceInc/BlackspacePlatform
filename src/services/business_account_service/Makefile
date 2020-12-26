@@ -15,9 +15,6 @@ run:
 	--level=debug --grpc-port=9999 --backend-url=https://httpbin.org/status/401 --backend-url=https://httpbin.org/status/500 \
 	--ui-logo=https://raw.githubusercontent.com/stefanprodan/$(NAME)//gh-pages/cuddle_clap.gif $(EXTRA_RUN_ARGS)
 
-test:
-	go test -v -race ./...
-
 build:
 	GIT_COMMIT=$$(git rev-list -1 HEAD) && CGO_ENABLED=0 go build  -ldflags "-s -w -X github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version.REVISION=$(GIT_COMMIT)" -a -o ./bin/$(NAME)/ ./cmd/$(NAME)//*
 	GIT_COMMIT=$$(git rev-list -1 HEAD) && CGO_ENABLED=0 go build  -ldflags "-s -w -X github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version.REVISION=$(GIT_COMMIT)" -a -o ./bin/$(NAME)_cli/ ./cmd/$(NAME)_cli//*
@@ -136,7 +133,7 @@ build_and_start_services_locally:
 	docker-compose -f compose/docker-compose.jaeger.yaml \
 				   -f compose/docker-compose.postgres.yaml \
 				   -f compose/docker-compose.authentication_handler_service.yaml \
-				   -f compose/docker-compose.dev.yaml up --force-recreate --build --remove-orphans --always-recreate-deps --renew-anon-volumes
+				   -f compose/docker-compose.dev.yaml up --force-recreate --build --remove-orphans --always-recreate-deps --renew-anon-volumes -d
 
 start_services_locally:
 	# starts the necessary services in order to permit e2e testing
@@ -144,7 +141,7 @@ start_services_locally:
 	docker-compose -f compose/docker-compose.jaeger.yaml \
 				   -f compose/docker-compose.postgres.yaml \
 				   -f compose/docker-compose.authentication_handler_service.yaml \
-				   -f compose/docker-compose.dev.yaml up --remove-orphans
+				   -f compose/docker-compose.dev.yaml up --remove-orphans -d
 
 stop_services_locally:
 	@echo stopping the container services used for testing
@@ -153,6 +150,17 @@ stop_services_locally:
  				   -f compose/docker-compose.authentication_handler_service.yaml \
  				   -f compose/docker-compose.dev.yaml down
 
-generate_docs:
-	npm install -g @2fd/graphdoc
-	graphdoc -e http://localhost:9897/query -o ./docs/schema
+test:
+	go test -v -race -cover -coverprofile=prof.out ./...
+
+
+integration_and_unit_tests: build_and_start_services_locally
+	sh -c "echo waiting 25s to let dependencies start... && sleep 25"
+	make test
+	make stop_services_locally
+
+coverage: build_and_start_services_locally
+	sh -c "echo waiting 25s to let dependencies start... && sleep 25"
+	make test
+	go tool cover -html=prof.out
+	make stop_services_locally

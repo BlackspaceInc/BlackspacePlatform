@@ -15,7 +15,7 @@ func TestSetBusinessAccountActiveStatus(t *testing.T){
 // SetAccountActive test that an account can be set as active
 func SetAccountActive(t *testing.T){
 	ctx := context.TODO()
-	var authnId uint32 = uint32(GenerateRandomId(20, 100))
+	var authnId uint32 = uint32(GenerateRandomId(5000, 10000))
 	account := GenerateRandomizedAccount()
 	// create account first
 	result, err := db.CreateBusinessAccount(ctx, account, authnId)
@@ -33,7 +33,7 @@ func SetAccountActive(t *testing.T){
 // SetAccountInactive test that an account can be set as active
 func SetAccountInactive(t *testing.T){
 	ctx := context.TODO()
-	var authnId uint32 = uint32(GenerateRandomId(20, 100))
+	var authnId uint32 = uint32(GenerateRandomId(5000, 10000))
 	account := GenerateRandomizedAccount()
 	// create account first
 	result, err := db.CreateBusinessAccount(ctx, account, authnId)
