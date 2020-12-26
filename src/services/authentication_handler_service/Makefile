@@ -4,7 +4,7 @@
 
 TAG?=latest
 NAME:=authentication_handler_service
-DOCKER_REPOSITORY:=github.com/blackspaceInc/BlackspacePlatform
+DOCKER_REPOSITORY:=blackspaceinc
 DOCKER_IMAGE_NAME:=$(DOCKER_REPOSITORY)/$(NAME)
 GIT_COMMIT:=$(shell git describe --dirty --always)
 VERSION:=$(shell grep 'VERSION' pkg/version/version.go | awk '{ print $$4 }' | tr -d '"')
@@ -16,9 +16,8 @@ run:
 	--ui-logo=https://raw.githubusercontent.com/github.com/blackspaceInc/BlackspacePlatform/authentication_handler_service/gh-pages/cuddle_clap.gif $(EXTRA_RUN_ARGS)
 
 test:
+	sleep 10s
 	go test -v -race ./...
-
-test-suite: start-e2e-dependencies test stop-e2e-dependencies
 
 build:
 	GIT_COMMIT=$$(git rev-list -1 HEAD) && CGO_ENABLED=0 go build  -ldflags "-s -w -X github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version.REVISION=$(GIT_COMMIT)" -a -o ./bin/authentication_handler_service ./cmd/authentication_handler_service/*
@@ -45,8 +44,7 @@ test-container:
 	@docker rm -f authentication_handler_service || true
 	@docker run -dp 9898:9898 --name=authentication_handler_service $(DOCKER_IMAGE_NAME):$(VERSION)
 	@docker ps
-	@TOKEN=$$(curl -sd 'test' localhost:9898/token | jq -r .token) && \
-	curl -sH "Authorization: Bearer $${TOKEN}" localhost:9898/token/validate | grep test
+	sudo curl -L GET --url http://localhost:9898/healthz
 
 push-container:
 	docker tag $(DOCKER_IMAGE_NAME):$(VERSION) $(DOCKER_IMAGE_NAME):latest
@@ -150,3 +148,5 @@ start-e2e-dependencies:
 stop-e2e-dependencies:
 	@echo stopping the container services used for testing
 	docker-compose -f docker-compose.jaeger.yml -f docker-compose-authentication_service.yml down
+
+test-suite: start-e2e-dependencies test stop-e2e-dependencies

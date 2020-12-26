@@ -56,7 +56,7 @@ services:
       - redis
       - postgres
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8405"]
+      test: ["CMD", "curl", "-f", "http://localhost:8404"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -74,9 +74,8 @@ services:
       - "9898:9898"
     restart: unless-stopped
     environment:
-      - JAEGER_ENDPOINT=http://localhost:14268/api/traces
-      - JAEGER_AGENT_HOST=localhost
-      - JAEGER_AGENT_PORT=6831
+      - AUTHN_INTERNAL_PORT=3001
+      - AUTHN_PORT=8404
     networks:
       - monitor-net
       - web
