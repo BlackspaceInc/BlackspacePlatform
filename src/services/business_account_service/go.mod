@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/99designs/gqlgen v0.13.0
-	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201226004715-e099e675c7e7
+	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201226035420-cad303b89bc9
 	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk v0.0.0-20201221083514-0656fe0af326
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
@@ -47,7 +47,6 @@ require (
 	google.golang.org/genproto v0.0.0-20201214200347-8c77b98c765d
 	google.golang.org/grpc v1.34.0
 	google.golang.org/protobuf v1.25.0
-	gopkg.in/gormigrate.v1 v1.6.0
 	gopkg.in/ini.v1 v1.52.0 // indirect
 	gorm.io/driver/postgres v1.0.6
 	gorm.io/gorm v1.20.8

@@ -8,17 +8,12 @@ import (
 	"github.com/99designs/gqlgen/client"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/handler"
+	middleware "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-middleware"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/generated"
 )
-
-type contextKey struct {
-	name string
-}
-
-var mockCtxKey = &contextKey{"business_account_service"}
 
 func TestE2ECreateAccount(t *testing.T) {
 	t.Run("TestName:E2E_CreateAccount", CreateAccount)
