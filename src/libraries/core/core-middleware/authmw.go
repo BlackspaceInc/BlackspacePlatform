@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"strings"
 
@@ -56,4 +57,23 @@ func (mw *AuthnMW) AuthenticationMiddleware(next http.Handler) http.Handler {
 // REQUIRES Middleware to have run.
 func IsAuthenticated(ctx context.Context) bool {
 	return ctx.Value(ctxKey) != nil
+}
+
+// GetTokenFromCtx extracts the token from the context
+func GetTokenFromCtx(ctx context.Context) (string, error) {
+	if IsAuthenticated(ctx){
+		token, ok := ctx.Value(ctxKey).(string)
+		if !ok {
+			return "", errors.New("token cannot be converted to string")
+		}
+
+		return token, nil
+	}
+
+	return "", errors.New("token not found in context")
+}
+
+// InjectContextWithMockToken injects a token into the context. Useful for testing
+func InjectContextWithMockToken(ctx context.Context, token string) context.Context {
+	return context.WithValue(ctx, ctxKey, token)
 }
