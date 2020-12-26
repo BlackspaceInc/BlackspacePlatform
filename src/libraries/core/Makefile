@@ -29,4 +29,6 @@ run-tests:
 	go test github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/logreduction
 	go test github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/sanitization
 	@echo "----- running core-auth-sdk tests"
-	cd core-auth-sdk && make test
+	cd core-auth-sdk && make test && cd ..
+	@echo "----- running core-database tests"
+	cd core-database && make test && cd ..
