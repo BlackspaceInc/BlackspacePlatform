@@ -30,5 +30,3 @@ run-tests:
 	go test github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/sanitization
 	@echo "----- running core-auth-sdk tests"
 	go test github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk
-	@echo "----- running core-database tests"
-	cd core-database && make test

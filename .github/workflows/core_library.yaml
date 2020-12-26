@@ -13,3 +13,10 @@ jobs:
           GO111MODULE: "on"
         with:
           args: make run-tests
+      - name: run database tests
+        working-directory: ./src/libraries/core-database
+        run: |
+          docker-compose -f compose/docker-compose.postgres.yaml up --build --force-recreate --no-deps -d
+          sh -c "echo waiting 10s to let database start... && sleep 10"
+          go test -v -race -cover -coverprofile=prof.out ./...
+          docker-compose -f compose/docker-compose.postgres.yaml down
