@@ -8,13 +8,14 @@ import (
 	"fmt"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-middleware"
+	"github.com/itimofeev/go-saga"
+	opentracing "github.com/opentracing/opentracing-go"
+	"go.uber.org/zap"
+
 	svcErrors "github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/generated"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/models"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
-	"github.com/itimofeev/go-saga"
-	opentracing "github.com/opentracing/opentracing-go"
-	"go.uber.org/zap"
 )
 
 func (r *mutationResolver) CreateBusinessAccount(ctx context.Context, input models.CreateBusinessAccountRequest) (*proto.BusinessAccount, error) {
@@ -104,6 +105,12 @@ func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input mode
 		return nil, err
 	}
 
+	jwtToken, err := middleware.GetTokenFromCtx(ctx)
+	if err != nil {
+		r.Db.Logger.ErrorM(svcErrors.ErrUnauthorizedRequest, svcErrors.ErrUnauthorizedRequest.Error())
+		return nil, svcErrors.ErrUnauthorizedRequest
+	}
+
 	r.Db.Logger.For(ctx).Info(fmt.Sprintf("update business account api op"))
 	sp, ctx := opentracing.StartSpanFromContext(ctx, "update_business_account_api_op")
 	defer sp.Finish()
@@ -128,21 +135,29 @@ func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input mode
 	}
 
 	var transactionalSteps = make([]*saga.Step, 0)
-	var updatedAccount = make(chan *proto.BusinessAccount)
+	var updatedAccount = make(chan *proto.BusinessAccount, 1)
 	// TODO: handle password updates via authentication handler service in the future - Need to implement this too
 	// TODO: send out an email to the account owner that the email or password has been changed
+	if !r.Db.ComparePasswords(oldBusinessAccount.Password, []byte(newBusinessAccount.Password)) {
+		r.Db.Logger.For(ctx).ErrorM(svcErrors.ErrCannotUpdatePassword, svcErrors.ErrCannotUpdatePassword.Error())
+		return nil, svcErrors.ErrCannotUpdatePassword
+	}
+
 	// define a saga step tailored to saving the new business account record in our backend db
 	updateAndSaveAccountStep := saga.Step{
 		Name: "update_business_account",
 		// initial operation to update business account
-		Func: func(ctx context.Context) error {
-			_, err := r.Db.UpdateBusinessAccount(ctx, businessAccountId, newBusinessAccount)
-			return err
-		}(ctx),
-		// no compensating operation for the update. Just return an error if the initial call failed
-		CompensateFunc: func(ctx context.Context) error { // no compensating function just return an error if this operation fails
+		Func:  func(ctx context.Context, output chan<- *proto.BusinessAccount) SagaRefType {
+			return func(ctx context.Context) error {
+				acc, err := r.Db.UpdateBusinessAccount(ctx, businessAccountId, newBusinessAccount)
+				output <- acc
+				return err
+			}
+		}(ctx, updatedAccount),
+			// no compensating operation for the update. Just return an error if the initial call failed
+			CompensateFunc: func(ctx context.Context) error { // no compensating function just return an error if this operation fails
 			return svcErrors.ErrFailedToSaveUpdatedAccountRecord
-		}(ctx),
+		},
 	}
 	transactionalSteps = append(transactionalSteps, &updateAndSaveAccountStep)
 
@@ -157,8 +172,8 @@ func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input mode
 			Name: "update_business_account_email_distributed_tx",
 			// update account initial operation via distributed transaction
 			Func: func(ctx context.Context) error {
-				return r.Db.DistributedTxUpdateAccountEmail(ctx, authnId, newEmail, sp)
-			}(ctx),
+				return r.Db.DistributedTxUpdateAccountEmail(ctx, authnId, newEmail, sp, jwtToken)
+			},
 			// compensating function to reset the account to its inital state if the distributed update call failed
 			CompensateFunc: func(ctx context.Context, output chan<- *proto.BusinessAccount) SagaRefType {
 				return func(ctx context.Context) error {

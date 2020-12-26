@@ -109,11 +109,7 @@ docker run -dp 9898:9898 stefanprodan/podinfo
 
 ## TODO (this weekend)
 ### Business Account Service
-- update account creation logic
-- place auth middleware
-- refactor db logic and make functions shorter
-- add graphql impl (business logic)
-- write database unit tests
+- add support for other models in gqlgen.yml
 - write graphql unit tests
 - emit metrics
 - provide service level documentation

@@ -55,7 +55,7 @@ func (db *Db) UpdateBusinessAccount(ctx context.Context, id uint32, account *pro
 
 		// TODO compare the passwords and if they differ update the field through /password auth handler service call
 		// As of now we do not allow users the ability to update their passwords through this call
-		if result.Password != account.Password {
+		if !db.ComparePasswords(result.Password, []byte(account.Password)) {
 			db.Logger.ErrorM(errors.ErrCannotUpdatePassword, errors.ErrCannotUpdatePassword.Error())
 			return nil, errors.ErrCannotUpdatePassword
 		}

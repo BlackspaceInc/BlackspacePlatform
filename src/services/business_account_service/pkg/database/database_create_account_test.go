@@ -118,7 +118,7 @@ func ExpectCannotUpdatePasswordError(t *testing.T, err error, account *proto.Bus
 }
 
 func GenerateRandomizedAccount() *proto.BusinessAccount {
-	randStr := database.GenerateRandomString(15)
+	randStr := database.GenerateRandomString(150)
 	account := testBusinessAccount
 	account.Email = account.Email + randStr
 	account.CompanyName = account.CompanyName + randStr

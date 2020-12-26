@@ -17,14 +17,17 @@ func TestUpdateBusinessAccount(t *testing.T){
 // UpdateBusinessAccount test that an account can be updated correctly
 func UpdateBusinessAccount(t *testing.T){
 	ctx := context.TODO()
-	var authnId uint32 = uint32(GenerateRandomId(20, 100))
+	var authnId uint32 = uint32(GenerateRandomId(20, 300))
 	account := GenerateRandomizedAccount()
+
+	password := account.Password
 	// create account first
 	result, err := db.CreateBusinessAccount(ctx, account, authnId)
 	ExpectNoErrorOccured(t, err, result)
 
 	var updatedCompanyName = "test_company"
 	result.CompanyName = updatedCompanyName
+	result.Password = password
 
 	// update account
 	result, err = db.UpdateBusinessAccount(ctx, result.Id, result)

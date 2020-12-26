@@ -72,7 +72,7 @@ func (db *Db) DistributedTxLockAccount(ctx context.Context, id uint32, childSpan
 }
 
 // DistributedTxUpdateAccountEmail updates the account record's email entry in a distributed transaction
-func (db *Db) DistributedTxUpdateAccountEmail(ctx context.Context, id uint32, email string, childSpan opentracing.Span) error {
+func (db *Db) DistributedTxUpdateAccountEmail(ctx context.Context, id uint32, email string, childSpan opentracing.Span, token string) error {
 	f := func() error {
 		subSpan, ctx := opentracing.StartSpanFromContext(ctx, "update_account_dtx_op", opentracing.ChildOf(childSpan.Context()))
 		defer subSpan.Finish()
@@ -96,6 +96,7 @@ func (db *Db) DistributedTxUpdateAccountEmail(ctx context.Context, id uint32, em
 		}
 
 		httpReq := db.createRequestAndPropagateTraces(url, subSpan, body)
+		httpReq.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 
 		resp, err := db.performHttpRequest(httpClient, httpReq, ctx)
 		if err != nil || db.processResponseStatusCode(resp, ctx) {
