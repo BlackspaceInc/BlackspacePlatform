@@ -13,7 +13,7 @@ import (
 )
 
 // DistributedTxUnlockAccount unlocks an account in a distributed transaction
-func (db *Db) DistributedTxUnlockAccount(ctx context.Context, id uint32, childSpan opentracing.Span) error {
+func (db *Db) DistributedTxUnlockAccount(ctx context.Context, id uint32, childSpan opentracing.Span, token string) error {
 	f := func() error {
 		subSpan, ctx := opentracing.StartSpanFromContext(ctx, "unlock_account_dtx_op", opentracing.ChildOf(childSpan.Context()))
 		defer subSpan.Finish()
@@ -22,8 +22,7 @@ func (db *Db) DistributedTxUnlockAccount(ctx context.Context, id uint32, childSp
 		httpClient := &http.Client{}
 		url := db.AuthenticationHandlerServiceBaseEndpoint + "/unlock/" + fmt.Sprint(id)
 		httpReq, _ := http.NewRequest("POST", url, nil)
-
-		// TODO: extract token and place in request header
+		httpReq.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 
 		// Transmit the span's TraceContext as HTTP headers on our
 		// outbound request.
@@ -49,15 +48,16 @@ func (db *Db) DistributedTxUnlockAccount(ctx context.Context, id uint32, childSp
 }
 
 // DistributedTxLockAccount locks an account in a distributed transaction
-func (db *Db) DistributedTxLockAccount(ctx context.Context, id uint32, childSpan opentracing.Span) error {
+func (db *Db) DistributedTxLockAccount(ctx context.Context, id uint32, childSpan opentracing.Span, token string) error {
 	f := func() error {
 		subSpan, ctx := opentracing.StartSpanFromContext(ctx, "lock_account_dtx_op", opentracing.ChildOf(childSpan.Context()))
 		defer subSpan.Finish()
-		// TODO: extract token and place in request header
+
 		// perform call to the authentication handler service
 		httpClient := &http.Client{}
 		url := db.AuthenticationHandlerServiceBaseEndpoint + "/lock/" + fmt.Sprint(id)
 		httpReq := db.createRequestAndPropagateTraces(url, subSpan, nil)
+		httpReq.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 
 		resp, err := db.performHttpRequest(httpClient, httpReq, ctx)
 		if err != nil || db.processResponseStatusCode(resp, ctx) {

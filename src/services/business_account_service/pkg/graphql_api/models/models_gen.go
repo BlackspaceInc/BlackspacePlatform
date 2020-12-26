@@ -19,6 +19,10 @@ type DeleteBusinessAccountRequest struct {
 	ID *int `json:"id"`
 }
 
+type DeleteBusinessAccountResponse struct {
+	Result *bool `json:"result"`
+}
+
 type DeleteBusinessAccountsRequest struct {
 	ID []*int `json:"id"`
 }

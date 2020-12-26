@@ -7,19 +7,24 @@ import (
 	"context"
 	"fmt"
 
-	middleware "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-middleware"
-	"github.com/itimofeev/go-saga"
-	opentracing "github.com/opentracing/opentracing-go"
-	"go.uber.org/zap"
-
+	"github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-middleware"
 	svcErrors "github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/generated"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/models"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
+	"github.com/itimofeev/go-saga"
+	opentracing "github.com/opentracing/opentracing-go"
+	"go.uber.org/zap"
 )
 
 func (r *mutationResolver) CreateBusinessAccount(ctx context.Context, input models.CreateBusinessAccountRequest) (*proto.BusinessAccount, error) {
 	if err := r.IsRequestAuthorized(ctx); err != nil {
+		r.Db.Logger.ErrorM(svcErrors.ErrUnauthorizedRequest, svcErrors.ErrUnauthorizedRequest.Error())
+		return nil, svcErrors.ErrUnauthorizedRequest
+	}
+
+	jwtToken, err := middleware.GetTokenFromCtx(ctx)
+	if err != nil {
 		r.Db.Logger.ErrorM(svcErrors.ErrUnauthorizedRequest, svcErrors.ErrUnauthorizedRequest.Error())
 		return nil, svcErrors.ErrUnauthorizedRequest
 	}
@@ -44,11 +49,11 @@ func (r *mutationResolver) CreateBusinessAccount(ctx context.Context, input mode
 				Name: "unlock_business_account_distributed_tx",
 				// initial operation to unlock account
 				Func: func(ctx context.Context) error {
-					return r.Db.DistributedTxUnlockAccount(ctx, account.AuthnId, sp)
+					return r.Db.DistributedTxUnlockAccount(ctx, account.AuthnId, sp, jwtToken)
 				},
 				// compensating function to lock account
 				CompensateFunc: func(ctx context.Context) error {
-					return r.Db.DistributedTxLockAccount(ctx, account.AuthnId, sp)
+					return r.Db.DistributedTxLockAccount(ctx, account.AuthnId, sp, jwtToken)
 				},
 			}
 
@@ -74,7 +79,8 @@ func (r *mutationResolver) CreateBusinessAccount(ctx context.Context, input mode
 				return nil, err
 			}
 
-			return account, nil
+			savedAccount := r.Db.GetBusinessById(ctx, account.Id)
+			return savedAccount, nil
 		} else {
 			r.Db.Logger.For(ctx).Error(svcErrors.ErrAccountAlreadyExist, svcErrors.ErrAccountAlreadyExist.Error())
 			return nil, svcErrors.ErrAccountAlreadyExist
@@ -84,7 +90,7 @@ func (r *mutationResolver) CreateBusinessAccount(ctx context.Context, input mode
 	// now we attempt to create the account from the current context of this service since for this api to be invoked the api
 	// gateway must have already created an entry in the authentication handler service referencing this account record
 	// perform this operation as a retryable one
-	account, err := r.Db.CreateBusinessAccount(ctx, input.BusinessAccount, uint32(*input.AuthnID))
+	account, err = r.Db.CreateBusinessAccount(ctx, input.BusinessAccount, uint32(*input.AuthnID))
 	if err != nil {
 		r.Db.Logger.For(ctx).Error(err, err.Error())
 		return nil, err
@@ -179,9 +185,15 @@ func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input mode
 	return <-updatedAccount, nil
 }
 
-func (r *mutationResolver) DeleteBusinessAccount(ctx context.Context, id models.DeleteBusinessAccountRequest) (bool, error) {
+func (r *mutationResolver) DeleteBusinessAccount(ctx context.Context, id models.DeleteBusinessAccountRequest) (*models.DeleteBusinessAccountResponse, error) {
+	trueResp := true
 	if err := r.IsRequestAuthorized(ctx); err != nil {
-		return false, err
+		return nil, err
+	}
+
+	jwtToken, err := middleware.GetTokenFromCtx(ctx)
+	if err != nil {
+		return nil, err
 	}
 
 	r.Db.Logger.For(ctx).Info(fmt.Sprintf("delete business account api op"))
@@ -191,18 +203,18 @@ func (r *mutationResolver) DeleteBusinessAccount(ctx context.Context, id models.
 	// validate the input
 	if id.ID == nil {
 		r.Db.Logger.For(ctx).Error(svcErrors.ErrInvalidInputArguments, svcErrors.ErrInvalidInputArguments.Error())
-		return false, svcErrors.ErrInvalidInputArguments
+		return nil, svcErrors.ErrInvalidInputArguments
 	}
 
 	accountId := uint32(*id.ID)
 	account := r.Db.GetBusinessById(ctx, uint32(*id.ID))
 	if account == nil {
 		r.Db.Logger.For(ctx).Error(svcErrors.ErrAccountDoesNotExist, svcErrors.ErrAccountDoesNotExist.Error())
-		return false, svcErrors.ErrAccountDoesNotExist
+		return nil, svcErrors.ErrAccountDoesNotExist
 	}
 
 	var (
-		transactionalSteps                = make([]saga.Step, 3)
+		transactionalSteps                = make([]*saga.Step, 0)
 		dtxLockOpStep, archiveAccountStep saga.Step
 	)
 
@@ -216,13 +228,14 @@ func (r *mutationResolver) DeleteBusinessAccount(ctx context.Context, id models.
 		Name: "distributed lock operation",
 		// Perform lock operation as a distributed transaction
 		Func: func(ctx context.Context) error {
-			return r.Db.DistributedTxLockAccount(ctx, account.AuthnId, sp)
-		}(ctx),
+			return r.Db.DistributedTxLockAccount(ctx, account.AuthnId, sp, jwtToken)
+		},
 		// Perform compensating distributed unlock operation if the initial event failed
 		CompensateFunc: func(ctx context.Context) error {
-			return r.Db.DistributedTxUnlockAccount(ctx, account.AuthnId, sp)
-		}(ctx),
+			return r.Db.DistributedTxUnlockAccount(ctx, account.AuthnId, sp, jwtToken)
+		},
 	}
+	transactionalSteps = append(transactionalSteps, &dtxLockOpStep)
 
 	// second operation is to update the state of the account and save to database
 	archiveAccountStep = saga.Step{
@@ -230,30 +243,22 @@ func (r *mutationResolver) DeleteBusinessAccount(ctx context.Context, id models.
 		// Archive the business account (perform account deactivation)
 		Func: func(ctx context.Context) error {
 			return r.Db.ArchiveBusinessAccount(ctx, accountId)
-		}(ctx),
+		},
 		// Perform business account activation
 		CompensateFunc: func(ctx context.Context) error {
 			return r.Db.SetBusinessAccountStatusAndSave(ctx, account, true)
-		}(ctx), // activate account
+		}, // activate account
 		Options: nil,
 	}
-	transactionalSteps = append(transactionalSteps, dtxLockOpStep, archiveAccountStep)
+	transactionalSteps = append(transactionalSteps, &archiveAccountStep)
 
 	// run the saga
-	if err := r.Db.Saga.RunSaga(ctx, "archive_business_account", &dtxLockOpStep, &archiveAccountStep); err != nil {
+	if err := r.Db.Saga.RunSaga(ctx, "archive_business_account", transactionalSteps...); err != nil {
 		r.Db.Logger.For(ctx).Error(err, err.Error())
-		return false, err
+		return nil, err
 	}
 
-	return true, nil
-}
-
-func (r *mutationResolver) IsRequestAuthorized(ctx context.Context) (error) {
-	if !middleware.IsAuthenticated(ctx) {
-		r.Db.Logger.For(ctx).Info(fmt.Sprintf("unauthorized request"))
-		return svcErrors.ErrUnauthorizedRequest
-	}
-	return nil
+	return &models.DeleteBusinessAccountResponse{Result: &trueResp}, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

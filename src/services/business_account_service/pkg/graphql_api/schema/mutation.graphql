@@ -16,8 +16,12 @@ input DeleteBusinessAccountsRequest{
 	id: [Int]
 }
 
+type DeleteBusinessAccountResponse {
+	result: Boolean
+}
+
 type Mutation {
 	CreateBusinessAccount(input: CreateBusinessAccountRequest!): BusinessAccount!
 	UpdateBusinessAccount(input: UpdateBusinessAccountRequest!): BusinessAccount!
-	deleteBusinessAccount(id: DeleteBusinessAccountRequest!): Boolean!
+	DeleteBusinessAccount(id: DeleteBusinessAccountRequest!): DeleteBusinessAccountResponse!
 }

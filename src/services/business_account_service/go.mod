@@ -4,11 +4,12 @@ go 1.15
 
 require (
 	github.com/99designs/gqlgen v0.13.0
-	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201226035420-cad303b89bc9
+	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201226130327-cdb857634ed6
 	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk v0.0.0-20201221083514-0656fe0af326
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e
+	github.com/danielvladco/go-proto-gql v0.8.0 // indirect
 	github.com/fatih/color v1.10.0
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/giantswarm/retry-go v0.0.0-20151203102909-d78cea247d5e
