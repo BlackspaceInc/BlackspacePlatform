@@ -88,11 +88,10 @@ func InitializeDatabaseConnection() *database.Db {
 
 func TestMain(m *testing.M) {
 	db = InitializeDatabaseConnection()
-	defer db.Engine.Close()
 
 	// defer deleting all created entries
-	cleanupHandler := database.DeleteCreatedEntities(db.Engine)
-	defer cleanupHandler()
+	// cleanupHandler := database.DeleteCreatedEntities(db.Engine)
+	// defer cleanupHandler()
 
 	_ = m.Run()
 	return

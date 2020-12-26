@@ -23,6 +23,8 @@ func (db *Db) DistributedTxUnlockAccount(ctx context.Context, id uint32, childSp
 		url := db.AuthenticationHandlerServiceBaseEndpoint + "/unlock/" + fmt.Sprint(id)
 		httpReq, _ := http.NewRequest("POST", url, nil)
 
+		// TODO: extract token and place in request header
+
 		// Transmit the span's TraceContext as HTTP headers on our
 		// outbound request.
 		_ = opentracing.GlobalTracer().Inject(
@@ -51,7 +53,7 @@ func (db *Db) DistributedTxLockAccount(ctx context.Context, id uint32, childSpan
 	f := func() error {
 		subSpan, ctx := opentracing.StartSpanFromContext(ctx, "lock_account_dtx_op", opentracing.ChildOf(childSpan.Context()))
 		defer subSpan.Finish()
-
+		// TODO: extract token and place in request header
 		// perform call to the authentication handler service
 		httpClient := &http.Client{}
 		url := db.AuthenticationHandlerServiceBaseEndpoint + "/lock/" + fmt.Sprint(id)
@@ -75,6 +77,7 @@ func (db *Db) DistributedTxUpdateAccountEmail(ctx context.Context, id uint32, em
 		subSpan, ctx := opentracing.StartSpanFromContext(ctx, "update_account_dtx_op", opentracing.ChildOf(childSpan.Context()))
 		defer subSpan.Finish()
 
+		// TODO: extract token and place in request header
 		// perform call to the authentication handler service
 		httpClient := &http.Client{}
 		url := db.AuthenticationHandlerServiceBaseEndpoint + "/update/" + fmt.Sprint(id)
@@ -116,6 +119,7 @@ func (db *Db) DistributedTxCreateAccount(ctx context.Context, email, password st
 		httpClient := &http.Client{}
 		url := db.AuthenticationHandlerServiceBaseEndpoint + "/create"
 
+		// TODO: extract token and place in request header
 		type createAccountReq struct {
 			Email    string `json:"email"`
 			Password string `json:"password"`

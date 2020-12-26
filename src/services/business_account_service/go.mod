@@ -4,11 +4,11 @@ go 1.15
 
 require (
 	github.com/99designs/gqlgen v0.13.0
-	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201212160433-673b9a2d221b
+	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core v0.0.0-20201226004715-e099e675c7e7
+	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk v0.0.0-20201221083514-0656fe0af326
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e
-	github.com/danielvladco/go-proto-gql v0.8.0 // indirect
 	github.com/fatih/color v1.10.0
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/giantswarm/retry-go v0.0.0-20151203102909-d78cea247d5e
@@ -17,13 +17,11 @@ require (
 	github.com/gomodule/redigo v1.8.3
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.4.2
-	github.com/graph-gophers/graphql-go v0.0.0-20190108123631-d5b7dc6be53b
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/infobloxopen/atlas-app-toolkit v0.22.1
 	github.com/infobloxopen/protoc-gen-gorm v0.20.0
 	github.com/itimofeev/go-saga v0.1.0
 	github.com/jinzhu/gorm v1.9.16
-	github.com/juju/errgo v0.0.0-20140925100237-08cceb5d0b53 // indirect
 	github.com/keratin/authn-go v1.1.0
 	github.com/lib/pq v1.9.0
 	github.com/mitchellh/mapstructure v1.3.0 // indirect
@@ -32,7 +30,9 @@ require (
 	github.com/pelletier/go-toml v1.7.0 // indirect
 	github.com/prometheus/client_golang v1.9.0
 	github.com/smartystreets/assertions v1.0.1 // indirect
+	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/cobra v1.1.1
+	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.7.1
 	github.com/stefanprodan/podinfo v1.8.0
@@ -48,6 +48,7 @@ require (
 	google.golang.org/grpc v1.34.0
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/gormigrate.v1 v1.6.0
-	gopkg.in/square/go-jose.v2 v2.3.1 // indirect
+	gopkg.in/ini.v1 v1.52.0 // indirect
+	gorm.io/driver/postgres v1.0.6
 	gorm.io/gorm v1.20.8
 )

@@ -35,6 +35,7 @@ var (
 	ErrCannotUpdatePassword                     = errors.New("cannot update password field")
 	ErrCannotConfigureAccount                   = errors.New("cannot configure account")
 	ErrUnableToObtainBusinessAccounts           = errors.New("unable to obtain business accounts")
+	ErrUnauthorizedRequest                      = errors.New("unauthorized request")
 )
 
 func NewError(msg string) error {

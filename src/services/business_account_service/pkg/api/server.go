@@ -12,8 +12,10 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/graphql/playground"
+	core_auth_sdk "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk"
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
+	middleware "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-middleware"
 	core_tracing "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-tracing"
 	"github.com/gomodule/redigo/redis"
 	"github.com/gorilla/mux"
@@ -92,10 +94,11 @@ type Server struct {
 	handler       http.Handler
 	gqlServer     *gql.Server
 	db            *database.Db
+	authClient    *core_auth_sdk.Client
 }
 
 func NewServer(config *Config, logger core_logging.ILog, tracer *core_tracing.TracingEngine, metrics *core_metrics.CoreMetricsEngine,
-	db *database.Db) (*Server, error) {
+	db *database.Db, authClient *core_auth_sdk.Client) (*Server, error) {
 	gqlServer := gql.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graphql.Resolver{
 		Db:      db,
 		Logger:  logger,
@@ -111,6 +114,7 @@ func NewServer(config *Config, logger core_logging.ILog, tracer *core_tracing.Tr
 		db:            db,
 		tracingEngine: tracer,
 		metricsEngine: metrics,
+		authClient: authClient,
 	}
 
 	return srv, nil
@@ -160,6 +164,10 @@ func (s *Server) registerMiddlewares() {
 	httpLogger := NewLoggingMiddleware(s.logger)
 	s.router.Use(httpLogger.Handler)
 	s.router.Use(versionMiddleware)
+
+	authMw := middleware.NewAuthnMw(s.authClient, s.logger, "business_account_service")
+	s.router.Use(authMw.AuthenticationMiddleware)
+
 	if s.config.RandomDelay {
 		randomDelayer := NewRandomDelayMiddleware(s.config.RandomDelayMin, s.config.RandomDelayMax, s.config.RandomDelayUnit)
 		s.router.Use(randomDelayer.Handler)

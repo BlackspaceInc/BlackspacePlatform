@@ -6,12 +6,19 @@ import (
 	"testing"
 
 	"github.com/99designs/gqlgen/client"
+	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/generated"
 )
+
+type contextKey struct {
+	name string
+}
+
+var mockCtxKey = &contextKey{"business_account_service"}
 
 func TestE2ECreateAccount(t *testing.T) {
 	t.Run("TestName:E2E_CreateAccount", CreateAccount)
@@ -78,8 +85,15 @@ func CreateExistentInactiveAccount(t *testing.T){
 	err = graphql_api.LockAccountInAuthService(t, createdAccount.AuthnId, token)
 	assert.NoError(t, err)
 
+	mockAuthMw := func(ctx context.Context, next graphql.Resolver) (res interface{}, err error) {
+		nextCall, err := next(context.WithValue(ctx, mockCtxKey, token))
+		return nextCall, err
+	}
+
 	resolvers := graphql_api.Resolver{Db: db}
-	c := client.New(handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &resolvers})),
+	hdlr := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &resolvers}))
+	hdlr.AroundFields(mockAuthMw)
+	c := client.New(hdlr,
 		client.AddHeader("Authorization", fmt.Sprintf("Bearer %s", token)))
 
 	// generate query attempting to create the same business account
@@ -105,7 +119,10 @@ func CreateExistentInactiveAccount(t *testing.T){
 
 	q := fmt.Sprintf(query, account.AuthnId, account.CompanyName, account.Password, account.Email)
 
-	resp, err := c.RawPost(q)
+	resp, err := c.RawPost(q, func(req *client.Request){
+		req.HTTP.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	})
+
 	assert.NoError(t, err)
 	assert.NotEmpty(t, resp)
 }

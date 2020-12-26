@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 
 	saga "github.com/itimofeev/go-saga"
 
@@ -226,7 +226,7 @@ func (db *Db) GetPaginatedBusinessAccounts(ctx context.Context, limit int64) ([]
 
 		var obtainedAccounts = make([]*proto.BusinessAccount, 0)
 		var result []*proto.BusinessAccountORM
-		if err := db.Engine.Limit(limit).Find(&result).Error; err != nil {
+		if err := db.Engine.Limit(int(limit)).Find(&result).Error; err != nil {
 			db.Logger.For(ctx).Error(errors.ErrUnableToObtainBusinessAccounts, err.Error())
 			return nil, err
 		}
@@ -304,10 +304,10 @@ func (db *Db) GetBusinessById(ctx context.Context, id uint32) *proto.BusinessAcc
 
 		var businessAccountOrm proto.BusinessAccountORM
 		// attempt to see if the record already exists
-		recordNotFound := db.PreloadTx(tx).
+		recordNotFoundErr := db.PreloadTx(tx).
 			Where(&proto.BusinessAccountORM{Id: id}).
-			First(&businessAccountOrm).RecordNotFound()
-		if recordNotFound {
+			First(&businessAccountOrm).Error
+		if recordNotFoundErr != nil {
 			db.Logger.For(ctx).Error(errors.ErrAccountDoesNotExist, "account does not exist")
 			return nil, errors.ErrAccountDoesNotExist
 		}
@@ -348,10 +348,10 @@ func (db *Db) GetBusinessByEmail(ctx context.Context, email string) *proto.Busin
 		var businessAccountOrm proto.BusinessAccountORM
 
 		// attempt to see if the record already exists
-		recordNotFound := db.PreloadTx(tx).
+		recordNotFoundErr := db.PreloadTx(tx).
 			Where(&proto.BusinessAccountORM{Email: email}).
-			First(&businessAccountOrm).RecordNotFound()
-		if recordNotFound {
+			First(&businessAccountOrm).Error
+		if recordNotFoundErr != nil {
 			db.Logger.For(ctx).Error(errors.ErrAccountDoesNotExist, "account does not exist")
 			return nil, errors.ErrAccountDoesNotExist
 		}
@@ -402,11 +402,10 @@ func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.Business
 		var businessAccount proto.BusinessAccountORM
 		// attempt to see if the record already exists
 		// no 2 records in our backend database can have the same email or company name
-		recordNotFound := db.PreloadTx(tx).Where(&proto.BusinessAccountORM{Email: account.Email,
-			CompanyName: account.CompanyName}).First(&businessAccount).
-			RecordNotFound()
+		recordNotFoundErr := db.PreloadTx(tx).Where(&proto.BusinessAccountORM{Email: account.Email,
+			CompanyName: account.CompanyName}).First(&businessAccount).Error
 
-		if !recordNotFound {
+		if recordNotFoundErr == nil{
 			// account already exists
 			db.Logger.ErrorM(errors.ErrAccountAlreadyExist, errors.ErrAccountAlreadyExist.Error())
 			return nil, errors.ErrAccountAlreadyExist

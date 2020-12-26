@@ -3,7 +3,7 @@ package database
 import (
 	"context"
 
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // PerformTransaction takes as input an anonymous function witholding

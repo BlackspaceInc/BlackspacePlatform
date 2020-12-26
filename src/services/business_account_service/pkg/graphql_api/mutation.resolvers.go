@@ -7,16 +7,23 @@ import (
 	"context"
 	"fmt"
 
+	middleware "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-middleware"
+	"github.com/itimofeev/go-saga"
+	opentracing "github.com/opentracing/opentracing-go"
+	"go.uber.org/zap"
+
 	svcErrors "github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/generated"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/models"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
-	"github.com/itimofeev/go-saga"
-	opentracing "github.com/opentracing/opentracing-go"
-	"go.uber.org/zap"
 )
 
 func (r *mutationResolver) CreateBusinessAccount(ctx context.Context, input models.CreateBusinessAccountRequest) (*proto.BusinessAccount, error) {
+	if err := r.IsRequestAuthorized(ctx); err != nil {
+		r.Db.Logger.ErrorM(svcErrors.ErrUnauthorizedRequest, svcErrors.ErrUnauthorizedRequest.Error())
+		return nil, svcErrors.ErrUnauthorizedRequest
+	}
+
 	r.Db.Logger.For(ctx).InfoM(fmt.Sprintf("create business accounts api op"), zap.Any("business", input.BusinessAccount), zap.Any("authnId", input.AuthnID))
 	sp, ctx := opentracing.StartSpanFromContext(ctx, "create_business_account_api_op")
 	defer sp.Finish()
@@ -87,6 +94,10 @@ func (r *mutationResolver) CreateBusinessAccount(ctx context.Context, input mode
 }
 
 func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input models.UpdateBusinessAccountRequest) (*proto.BusinessAccount, error) {
+	if err := r.IsRequestAuthorized(ctx); err != nil {
+		return nil, err
+	}
+
 	r.Db.Logger.For(ctx).Info(fmt.Sprintf("update business account api op"))
 	sp, ctx := opentracing.StartSpanFromContext(ctx, "update_business_account_api_op")
 	defer sp.Finish()
@@ -169,6 +180,10 @@ func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input mode
 }
 
 func (r *mutationResolver) DeleteBusinessAccount(ctx context.Context, id models.DeleteBusinessAccountRequest) (bool, error) {
+	if err := r.IsRequestAuthorized(ctx); err != nil {
+		return false, err
+	}
+
 	r.Db.Logger.For(ctx).Info(fmt.Sprintf("delete business account api op"))
 	sp, ctx := opentracing.StartSpanFromContext(ctx, "delete_business_account_api_op")
 	defer sp.Finish()
@@ -231,6 +246,14 @@ func (r *mutationResolver) DeleteBusinessAccount(ctx context.Context, id models.
 	}
 
 	return true, nil
+}
+
+func (r *mutationResolver) IsRequestAuthorized(ctx context.Context) (error) {
+	if !middleware.IsAuthenticated(ctx) {
+		r.Db.Logger.For(ctx).Info(fmt.Sprintf("unauthorized request"))
+		return svcErrors.ErrUnauthorizedRequest
+	}
+	return nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

@@ -91,11 +91,6 @@ func TestMain(m *testing.M) {
 		host, port, user, password, dbname)
 
 	db = database.Setup(ctx,connectionString,tracerEngine, serviceMetrics, logger, "")
-	defer db.Engine.Close()
-
-	// defer deleting all created entries
-	cleanupHandler := database.DeleteCreatedEntities(db.Engine)
-	defer cleanupHandler()
 
 	_ = m.Run()
 	return

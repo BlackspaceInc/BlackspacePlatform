@@ -8,12 +8,11 @@ import (
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
 	core_tracing "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-tracing"
-	"github.com/jinzhu/gorm"
-	"gopkg.in/gormigrate.v1"
+	"github.com/giantswarm/retry-go"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 
-	_ "github.com/giantswarm/retry-go"
-
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
+	svcErrors "github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/saga"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/utils"
@@ -44,9 +43,6 @@ type Tx func(ctx context.Context, tx *gorm.DB) error
 // CmplxTx is a type serving as a function decorator for complex database transactions
 type CmplxTx func(ctx context.Context, tx *gorm.DB) (interface{}, error)
 
-// type of database
-var postgres = "postgres"
-
 // database operation types
 const (
 	DB_CONNECTION_ATTEMPT = "DB_CONNECTION_ATTEMPT"
@@ -68,7 +64,7 @@ func New(ctx context.Context, connectionString string, tracingEngine *core_traci
 	logger.Info("Attempting database connection operation")
 	conn, err := ConnectToDb(connectionString, logger)
 	if err != nil {
-		logger.FatalM(err, errors.ErrFailedToConnectToDatabase.Error())
+		logger.FatalM(err, svcErrors.ErrFailedToConnectToDatabase.Error())
 	}
 	logger.Info("Successfully connected to the database")
 
@@ -80,7 +76,7 @@ func New(ctx context.Context, connectionString string, tracingEngine *core_traci
 	logger.Info("Attempting database schema migration")
 	err = MigrateSchemas(conn, logger, &proto.BusinessAccountORM{}, &proto.MediaORM{}, &proto.TopicsORM{})
 	if err != nil {
-		logger.FatalM(err, errors.ErrFailedToPerformDatabaseMigrations.Error())
+		logger.FatalM(err, svcErrors.ErrFailedToPerformDatabaseMigrations.Error())
 	}
 	logger.Info("Successfully migrated database")
 
@@ -105,33 +101,33 @@ func New(ctx context.Context, connectionString string, tracingEngine *core_traci
 
 // ConnectToDb attempts to connect to the database using retries
 func ConnectToDb(connectionString string, logger core_logging.ILog) (*gorm.DB, error) {
-	/*
-	var connection *Db
-	err := retry.Do(func() error {
-		connection, err := gorm.Open(postgres, connectionString)
-		return err
-	},
+	var connection = make(chan *gorm.DB, 1)
+
+	err := retry.Do(
+		func(conn chan<- *gorm.DB) func() error {
+			return func() error {
+				newConn, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
+				conn <- newConn
+				return err
+			}
+		}(connection),
 		retry.MaxTries(5),
-		// TODO: emit metrics
-		// retry.AfterRetryLimit()
-		retry.Timeout(time.Millisecond*200),
+		retry.Timeout(time.Second*10),
 		retry.Sleep(1*time.Second),
 	)
 
 	if err != nil {
-		logger.Error(err, errors.ErrExceededMaxRetryAttempts.Error())
-		return nil, errors.ErrExceededMaxRetryAttempts
+		logger.Error(err, svcErrors.ErrExceededMaxRetryAttempts.Error())
+		return nil, svcErrors.ErrExceededMaxRetryAttempts
 	}
 
 	return <-connection, nil
-	*/
-	return gorm.Open(postgres, connectionString)
 }
 
 // configureDbConnection configures the database connection object
 func configureDbConnection(conn *gorm.DB) *gorm.DB {
-	conn.SingularTable(true)
-	conn.LogMode(false)
+	conn.FullSaveAssociations = true
+	conn.SkipDefaultTransaction = false
 	conn = conn.Set("gorm:auto_preload", true)
 	return conn
 }
@@ -139,26 +135,9 @@ func configureDbConnection(conn *gorm.DB) *gorm.DB {
 // MigrateSchemas creates or updates a given set of model based on a schema
 // if it does not exist or migrates the model schemas to the latest version
 func MigrateSchemas(db *gorm.DB, logger core_logging.ILog, models ...interface{}) error {
-	// we first add the schemas to the automigrator
-	db.AutoMigrate(models...)
-
-	// perform manual migrations
-	migration := gormigrate.New(db, gormigrate.DefaultOptions, []*gormigrate.Migration{
-		{
-			ID: "20200416",
-			Migrate: func(tx *gorm.DB) error {
-				return tx.AutoMigrate(models...).Error
-			},
-			Rollback: func(tx *gorm.DB) error {
-				return tx.DropTable(models...).Error
-			},
-		},
-	})
-
-	err := migration.Migrate()
-	if err != nil {
+	if err := db.AutoMigrate(models...); err != nil {
 		// TODO: emit metric
-		logger.ErrorM(err, errors.ErrFailedToPerformDatabaseMigrations.Error())
+		logger.ErrorM(err, svcErrors.ErrFailedToPerformDatabaseMigrations.Error())
 		return err
 	}
 

@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	core_auth_sdk "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk"
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
 	core_tracing "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-tracing"
@@ -82,6 +83,20 @@ func main() {
 	fs.String("db_password", "postgres", "database password string")
 	fs.String("db_name", "postgres", "database name")
 
+	// authn client connection
+	fs.String("authn_username", "blackspaceinc", "username of authentication client")
+	fs.String("authn_password", "blackspaceinc", "password of authentication client")
+	fs.String("authn_issuer_base_url", "http://localhost", "authentication service issuer")
+	fs.String("authn_origin", "http://localhost", "origin of auth requests")
+	fs.String("authn_domains", "localhost", "authentication service domains")
+	fs.String("authn_private_base_url", "http://authentication_service",
+		"authentication service private url. should be local host if these are not running on docker containers. "+
+			"However if running in docker container with a configured docker network, the url should be equal to the service name")
+	fs.String("authn_public_base_url", "http://localhost", "authentication service public endpoint")
+	fs.String("authn_internal_port", "3000", "authentication service port")
+	fs.String("authn_port", "8404", "authentication service external port")
+
+
 	versionFlag := fs.BoolP("version", "v", false, "get version number")
 
 	// parse flags
@@ -151,6 +166,15 @@ func main() {
 	logger.Info(fmt.Sprintf("Database connection string : %s ", connectionString))
 
 	db, err := database.New(ctx, connectionString, tracerEngine, coreMetrics, logger, authSvcEndpoint)
+	if err != nil {
+		logger.For(ctx).FatalM(err, "database connectivity failure")
+	}
+
+	// configure authn client connection for middleware auth
+	authClient, err := ConfigureAuthnClient()
+	if err != nil {
+		logger.For(ctx).FatalM(err, "auth client configuration failure")
+	}
 
 	// start stress tests if any
 	beginStressTest(viper.GetInt("stress-cpu"), viper.GetInt("stress-memory"), logger)
@@ -207,7 +231,7 @@ func main() {
 	)
 
 	// start HTTP server
-	srv, _ := api.NewServer(&srvCfg, logger, tracerEngine, coreMetrics, db)
+	srv, _ := api.NewServer(&srvCfg, logger, tracerEngine, coreMetrics, db, authClient)
 	stopCh := signals.SetupSignalHandler()
 	srv.ListenAndServe(stopCh)
 }
@@ -312,3 +336,34 @@ func beginStressTest(cpus int, mem int, logger core_logging.ILog) {
 		logger.Info("starting CPU stress", zap.Int("memory", len(stressMemoryPayload)))
 	}
 }
+
+func ConfigureAuthnClient() (*core_auth_sdk.Client, error){
+	username := viper.GetString("authn_username")
+	password := viper.GetString("authn_password")
+	audience := viper.GetString("authn_domains")
+	url := viper.GetString("authn_private_base_url") + ":" + viper.GetString("authn_internal_port")
+	origin := viper.GetString("authn_origin")
+	issuer := viper.GetString("authn_issuer_base_url") + ":" + viper.GetString("authn_port")
+
+	return core_auth_sdk.NewClient(core_auth_sdk.Config{
+		// The AUTHN_URL of your Keratin AuthN server. This will be used to verify tokens created by
+		// AuthN, and will also be used for API calls unless PrivateBaseURL is also set.
+		Issuer: issuer,
+
+		// The domain of your application (no protocol). This domain should be listed in the APP_DOMAINS
+		// of your Keratin AuthN server.
+		Audience: audience,
+
+		// Credentials for AuthN's private endpoints. These will be used to execute admin actions using
+		// the Client provided by this library.
+		//
+		// TIP: make them extra secure in production!
+		Username: username,
+		Password: password,
+
+		// RECOMMENDED: Send private API calls to AuthN using private network routing. This can be
+		// necessary if your environment has a firewall to limit public endpoints.
+		PrivateBaseURL: url,
+	}, origin)
+}
+

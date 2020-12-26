@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/giantswarm/retry-go"
-	"github.com/jinzhu/gorm"
 	"github.com/opentracing/opentracing-go"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
