@@ -22,6 +22,7 @@ jobs:
           go-version: 1.15.x
       - name: Format Code
         uses: Jerome1337/gofmt-action@v1.0.4
+        continue-on-error: true
         with:
           gofmt-path: './src/services/business_account_service'
           gofmt-flags: '-l -d'

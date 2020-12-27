@@ -16,25 +16,25 @@ import (
 )
 
 var (
-	db        *database.Db
-	host = "localhost"
-	port = 5433
-	user = "postgres"
+	db       *database.Db
+	host     = "localhost"
+	port     = 5433
+	user     = "postgres"
 	password = "postgres"
-	dbname = "postgres"
+	dbname   = "postgres"
 )
 
 var (
 	testBusinessAccount = &proto.BusinessAccount{
-		Id:                          0,
-		CompanyName:                 "BlackspaceInc",
-		CompanyAddress:              "340 clifton pl",
-		PhoneNumber:                 &proto.PhoneNumber{
+		Id:             0,
+		CompanyName:    "BlackspaceInc",
+		CompanyAddress: "340 clifton pl",
+		PhoneNumber: &proto.PhoneNumber{
 			Number: "424-410-6123",
 			Type:   0,
 		},
-		Category:                    "small business",
-		Media:                       &proto.Media{
+		Category: "small business",
+		Media: &proto.Media{
 			Id:        0,
 			Website:   "blackspaceInc.com",
 			Instagram: "blkspace",
@@ -42,35 +42,35 @@ var (
 			LinkedIn:  "",
 			Pinterest: "",
 		},
-		Password:                    "Granada123",
-		Email:                       "BlackspaceInc@gmail.com",
-		IsActive:                    false,
-		TypeOfBusiness:              &proto.BusinessType{
+		Password: "Granada123",
+		Email:    "BlackspaceInc@gmail.com",
+		IsActive: false,
+		TypeOfBusiness: &proto.BusinessType{
 			Category:    proto.BusinessCategory_Tech,
 			SubCategory: proto.BusinessSubCategory_Technology,
 		},
-		BusinessGoals:              []string{"onboard as many customers as possible"},
-		BusinessStage:               "small business",
-		MerchantType:                proto.MerchantType_CasualUse,
-		PaymentDetails:              &proto.PaymentProcessingMethods{
+		BusinessGoals: []string{"onboard as many customers as possible"},
+		BusinessStage: "small business",
+		MerchantType:  proto.MerchantType_CasualUse,
+		PaymentDetails: &proto.PaymentProcessingMethods{
 			PaymentOptions: []proto.PaymentOptions{proto.PaymentOptions_Online},
 			Medium:         nil,
 		},
 		ServicesManagedByBlackspace: proto.ServicesManagedByBlackspace_FundingYourBusiness,
-		FounderAddress:              &proto.Address{
+		FounderAddress: &proto.Address{
 			Address:       "340 Clifton Pl",
 			ApartmentUnit: "3D",
 			ZipCode:       "19101",
 			City:          "Brooklyn",
 			State:         "NY",
-			Birthdate:     &proto.DateOfBirth{
+			Birthdate: &proto.DateOfBirth{
 				Month: "july",
 				Day:   "12",
 				Year:  "1996",
 			},
 		},
-		SubscribedTopics:            &proto.Topics{Business: true},
-		AuthnId:                     0,
+		SubscribedTopics: &proto.Topics{Business: true},
+		AuthnId:          0,
 	}
 )
 
@@ -91,7 +91,7 @@ func TestMain(m *testing.M) {
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 
-	db = database.Setup(ctx,connectionString,tracerEngine, serviceMetrics, logger, "")
+	db = database.Setup(ctx, connectionString, tracerEngine, serviceMetrics, logger, "")
 
 	_ = m.Run()
 	return
@@ -100,7 +100,7 @@ func TestMain(m *testing.M) {
 // GenerateRandomId generates a random id over a range
 func GenerateRandomId(min, max int) int {
 	rand.Seed(time.Now().UnixNano())
-	return rand.Intn(max - min + 1) + min
+	return rand.Intn(max-min+1) + min
 }
 
 //  ExpectNoErrorOccured ensures no errors occured during the operation
