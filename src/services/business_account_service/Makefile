@@ -15,9 +15,10 @@ run:
 	--level=debug --grpc-port=9999 --backend-url=https://httpbin.org/status/401 --backend-url=https://httpbin.org/status/500 \
 	--ui-logo=https://raw.githubusercontent.com/stefanprodan/$(NAME)//gh-pages/cuddle_clap.gif $(EXTRA_RUN_ARGS)
 
-build:
-	GIT_COMMIT=$$(git rev-list -1 HEAD) && CGO_ENABLED=0 go build  -ldflags "-s -w -X github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version.REVISION=$(GIT_COMMIT)" -a -o ./bin/$(NAME)/ ./cmd/$(NAME)//*
-	GIT_COMMIT=$$(git rev-list -1 HEAD) && CGO_ENABLED=0 go build  -ldflags "-s -w -X github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version.REVISION=$(GIT_COMMIT)" -a -o ./bin/$(NAME)_cli/ ./cmd/$(NAME)_cli//*
+build-cli:
+	GIT_COMMIT=$$(git rev-list -1 HEAD) && CGO_ENABLED=0 go build  -ldflags "-s -w -X github.com/blackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/version.REVISION=$(GIT_COMMIT)" -a -o ./bin/business_account_service_cli ./cmd/business_account_service_cli/*
+build: build-cli
+	GIT_COMMIT=$$(git rev-list -1 HEAD) && CGO_ENABLED=0 go build  -ldflags "-s -w -X github.com/blackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/version.REVISION=$(GIT_COMMIT)" -a -o ./bin/business_account_service ./cmd/business_account_service/*
 
 fmt:
 	gofmt -l -s -w ./

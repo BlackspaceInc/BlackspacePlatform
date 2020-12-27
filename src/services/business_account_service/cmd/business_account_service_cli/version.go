@@ -4,7 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/stefanprodan/business_account_service/pkg/version"
+
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/version"
 )
 
 func init() {
