@@ -5,11 +5,10 @@ import (
 	"os"
 	"time"
 
+	core_database "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-database"
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
 	core_tracing "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-tracing"
-	"github.com/giantswarm/retry-go"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
 	svcErrors "github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
@@ -25,7 +24,7 @@ type IDatabase interface {
 
 // Db witholds connection to a postgres database as well as a logging handler
 type Db struct {
-	Engine                                   *gorm.DB
+	Conn                                     *core_database.DatabaseConn
 	Logger                                   core_logging.ILog
 	TracingEngine                            *core_tracing.TracingEngine
 	MetricsEngine                            *core_metrics.CoreMetricsEngine
@@ -62,19 +61,19 @@ func New(ctx context.Context, connectionString string, tracingEngine *core_traci
 	}
 
 	logger.Info("Attempting database connection operation")
-	conn, err := ConnectToDb(connectionString, logger)
-	if err != nil {
-		logger.FatalM(err, svcErrors.ErrFailedToConnectToDatabase.Error())
+	dbConn := core_database.NewDatabaseConn(connectionString, "postgres")
+	if dbConn == nil {
+		logger.FatalM(svcErrors.ErrFailedToConnectToDatabase, svcErrors.ErrFailedToConnectToDatabase.Error())
 	}
 	logger.Info("Successfully connected to the database")
 
 	// configure db
 	logger.Info("Attempting database connection configuration")
-	conn = configureDbConnection(conn)
+	ConfigureDatabaseConnection(dbConn)
 	logger.Info("Successfully configured database connection object")
 
 	logger.Info("Attempting database schema migration")
-	err = MigrateSchemas(conn, logger, &proto.BusinessAccountORM{}, &proto.MediaORM{}, &proto.TopicsORM{})
+	err := MigrateSchemas(dbConn, logger, &proto.BusinessAccountORM{}, &proto.MediaORM{}, &proto.TopicsORM{})
 	if err != nil {
 		logger.FatalM(err, svcErrors.ErrFailedToPerformDatabaseMigrations.Error())
 	}
@@ -86,7 +85,7 @@ func New(ctx context.Context, connectionString string, tracingEngine *core_traci
 	}
 
 	return &Db{
-		Engine:                                   conn,
+		Conn:                                     dbConn,
 		Logger:                                   logger,
 		TracingEngine:                            tracingEngine,
 		MetricsEngine:                            metricsEngine,
@@ -99,43 +98,19 @@ func New(ctx context.Context, connectionString string, tracingEngine *core_traci
 	}, nil
 }
 
-// ConnectToDb attempts to connect to the database using retries
-func ConnectToDb(connectionString string, logger core_logging.ILog) (*gorm.DB, error) {
-	var connection = make(chan *gorm.DB, 1)
-
-	err := retry.Do(
-		func(conn chan<- *gorm.DB) func() error {
-			return func() error {
-				newConn, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
-				conn <- newConn
-				return err
-			}
-		}(connection),
-		retry.MaxTries(5),
-		retry.Timeout(time.Second*10),
-		retry.Sleep(1*time.Second),
-	)
-
-	if err != nil {
-		logger.Error(err, svcErrors.ErrExceededMaxRetryAttempts.Error())
-		return nil, svcErrors.ErrExceededMaxRetryAttempts
-	}
-
-	return <-connection, nil
-}
-
-// configureDbConnection configures the database connection object
-func configureDbConnection(conn *gorm.DB) *gorm.DB {
-	conn.FullSaveAssociations = true
-	conn.SkipDefaultTransaction = false
-	conn = conn.Set("gorm:auto_preload", true)
-	return conn
+// ConfigureDatabaseConnection configures a database connection
+func ConfigureDatabaseConnection(dbConn *core_database.DatabaseConn) {
+	dbConn.Engine.FullSaveAssociations = true
+	dbConn.Engine.SkipDefaultTransaction = false
+	dbConn.Engine.PrepareStmt = true
+	dbConn.Engine.DisableAutomaticPing = false
+	dbConn.Engine = dbConn.Engine.Set("gorm:auto_preload", true)
 }
 
 // MigrateSchemas creates or updates a given set of model based on a schema
 // if it does not exist or migrates the model schemas to the latest version
-func MigrateSchemas(db *gorm.DB, logger core_logging.ILog, models ...interface{}) error {
-	if err := db.AutoMigrate(models...); err != nil {
+func MigrateSchemas(db *core_database.DatabaseConn, logger core_logging.ILog, models ...interface{}) error {
+	if err := db.Engine.AutoMigrate(models...); err != nil {
 		// TODO: emit metric
 		logger.ErrorM(err, svcErrors.ErrFailedToPerformDatabaseMigrations.Error())
 		return err

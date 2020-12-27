@@ -1,13 +1,7 @@
 ## Business Account Service
 
 #### Table Of Contents
-- [Overview](#overview)
-  - [Service Level Dependencies](#dependencies)
-  - [Service Level Agreement](#service-level-interactions-slas)
-  - [Testing](#testing)
-    - [Unit Testing](#unit-testing)
-    - [End To End Testing](#e2e-testing)
-    - [Stress Testing](#stress-testing)
+- [Business Account Service](#business-account-service)
 
 #### Overview
 The business account service manages all interactions and features specific to our merchant/business profiles. Some interactions that this service

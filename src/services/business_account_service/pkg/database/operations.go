@@ -55,7 +55,7 @@ func (db *Db) UpdateBusinessAccount(ctx context.Context, id uint32, account *pro
 
 		// TODO compare the passwords and if they differ update the field through /password auth handler service call
 		// As of now we do not allow users the ability to update their passwords through this call
-		if !db.ComparePasswords(result.Password, []byte(account.Password)) {
+		if !db.Conn.ComparePasswords(result.Password, []byte(account.Password)) {
 			db.Logger.ErrorM(errors.ErrCannotUpdatePassword, errors.ErrCannotUpdatePassword.Error())
 			return nil, errors.ErrCannotUpdatePassword
 		}
@@ -82,7 +82,7 @@ func (db *Db) UpdateBusinessAccount(ctx context.Context, id uint32, account *pro
 		return &updatedAccount, nil
 	}
 
-	res, err := db.PerformComplexTransaction(ctx, tx)
+	res, err := db.Conn.PerformComplexTransaction(ctx, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func (db *Db) ArchiveBusinessAccounts(ctx context.Context, ids []uint32) ([]bool
 		return deleteStatus, nil
 	}
 
-	res, err := db.PerformComplexTransaction(ctx, tx)
+	res, err := db.Conn.PerformComplexTransaction(ctx, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -168,7 +168,7 @@ func (db *Db) ArchiveBusinessAccount(ctx context.Context, id uint32) (error) {
 		return nil
 	}
 
-	err := db.PerformTransaction(ctx, tx)
+	err := db.Conn.PerformTransaction(ctx, tx)
 	if err != nil {
 		return err
 	}
@@ -204,7 +204,7 @@ func (db *Db) GetBusinessAccounts(ctx context.Context, ids []uint32) ([]*proto.B
 		return accounts, nil
 	}
 
-	res, err := db.PerformComplexTransaction(ctx, tx)
+	res, err := db.Conn.PerformComplexTransaction(ctx, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -226,7 +226,7 @@ func (db *Db) GetPaginatedBusinessAccounts(ctx context.Context, limit int64) ([]
 
 		var obtainedAccounts = make([]*proto.BusinessAccount, 0)
 		var result []*proto.BusinessAccountORM
-		if err := db.Engine.Limit(int(limit)).Find(&result).Error; err != nil {
+		if err := db.Conn.Engine.Limit(int(limit)).Find(&result).Error; err != nil {
 			db.Logger.For(ctx).Error(errors.ErrUnableToObtainBusinessAccounts, err.Error())
 			return nil, err
 		}
@@ -249,7 +249,7 @@ func (db *Db) GetPaginatedBusinessAccounts(ctx context.Context, limit int64) ([]
 		return obtainedAccounts, nil
 	}
 
-	res, err := db.PerformComplexTransaction(ctx, tx)
+	res, err := db.Conn.PerformComplexTransaction(ctx, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -281,7 +281,7 @@ func (db *Db) GetBusinessAccount(ctx context.Context, id uint32) (*proto.Busines
 		return account, nil
 	}
 
-	res, err := db.PerformComplexTransaction(ctx, tx)
+	res, err := db.Conn.PerformComplexTransaction(ctx, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -323,7 +323,7 @@ func (db *Db) GetBusinessById(ctx context.Context, id uint32) *proto.BusinessAcc
 		return &account, nil
 	}
 
-	res, err := db.PerformComplexTransaction(ctx, tx)
+	res, err := db.Conn.PerformComplexTransaction(ctx, tx)
 	if err != nil {
 		return nil
 	}
@@ -367,7 +367,7 @@ func (db *Db) GetBusinessByEmail(ctx context.Context, email string) *proto.Busin
 		return &account, nil
 	}
 
-	res, err := db.PerformComplexTransaction(ctx, tx)
+	res, err := db.Conn.PerformComplexTransaction(ctx, tx)
 	if err != nil {
 		return nil
 	}
@@ -420,7 +420,7 @@ func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.Business
 		}
 
 		// hash password
-		if businessAccount.Password, err = db.ValidateAndHashPassword(businessAccount.Password); err != nil {
+		if businessAccount.Password, err = db.Conn.ValidateAndHashPassword(businessAccount.Password); err != nil {
 			db.Logger.For(ctx).Error(errors.ErrFailedToHashPassword, err.Error())
 			return nil, err
 		}
@@ -444,7 +444,7 @@ func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.Business
 		return &createdAccount, nil
 	}
 
-	result, err := db.PerformComplexTransaction(ctx, tx)
+	result, err := db.Conn.PerformComplexTransaction(ctx, tx)
 	if err != nil {
 		return nil, err
 	}
@@ -481,7 +481,7 @@ func (db *Db) SetBusinessAccountStatusAndSave(ctx context.Context, businessAccou
 	}
 
 	f := func() error {
-		return db.PerformTransaction(ctx, tx)
+		return db.Conn.PerformTransaction(ctx, tx)
 	}
 
 	// should perform this as a retryable operation in case of errors

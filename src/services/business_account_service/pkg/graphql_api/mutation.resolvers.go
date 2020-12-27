@@ -138,7 +138,7 @@ func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input mode
 	var updatedAccount = make(chan *proto.BusinessAccount, 1)
 	// TODO: handle password updates via authentication handler service in the future - Need to implement this too
 	// TODO: send out an email to the account owner that the email or password has been changed
-	if !r.Db.ComparePasswords(oldBusinessAccount.Password, []byte(newBusinessAccount.Password)) {
+	if !r.Db.Conn.ComparePasswords(oldBusinessAccount.Password, []byte(newBusinessAccount.Password)) {
 		r.Db.Logger.For(ctx).ErrorM(svcErrors.ErrCannotUpdatePassword, svcErrors.ErrCannotUpdatePassword.Error())
 		return nil, svcErrors.ErrCannotUpdatePassword
 	}
