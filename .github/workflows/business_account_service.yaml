@@ -20,12 +20,6 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.15.x
-      - name: Format Code
-        uses: Jerome1337/gofmt-action@v1.0.4
-        continue-on-error: true
-        with:
-          gofmt-path: './src/services/business_account_service'
-          gofmt-flags: '-l -d'
       - name: Validate Helm chart
         uses: stefanprodan/kube-tools@v1
         with:
@@ -39,6 +33,12 @@ jobs:
           command: |
             kustomize build ./src/services/business_account_service/kustomize | kubeval --strict
             kustomize build ./src/services/business_account_service/kustomize | conftest test -p .github/policy -
+      - name: Format Code
+        uses: Jerome1337/gofmt-action@v1.0.4
+        continue-on-error: true
+        with:
+          gofmt-path: './src/services/business_account_service'
+          gofmt-flags: '-l -d'
       - name: Build code base
         working-directory: ./src/services/business_account_service
         run: make build
