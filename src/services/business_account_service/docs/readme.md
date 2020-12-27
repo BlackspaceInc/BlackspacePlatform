@@ -2,15 +2,15 @@
 
 #### Table Of Contents
 - [Business Account Service](#business-account-service)
-		- [Table Of Contents](#table-of-contents)
-		- [Overview](#overview)
-		- [Dependencies](#dependencies)
-		- [Service Level Interactions (SLAs)](#service-level-interactions-slas)
-			- [Account Sign Up Flow](#account-sign-up-flow)
-			- [Account Login Flow](#account-login-flow)
-			- [Account Archive Flow](#account-archive-flow)
-		- [Testing](#testing)
-			- [Stress & Chaos Testing](#stress--chaos-testing)
+    - [Table Of Contents](#table-of-contents)
+    - [Overview](#overview)
+    - [Dependencies](#dependencies)
+    - [Service Level Interactions (SLAs)](#service-level-interactions-slas)
+        - [Account Sign Up Flow](#account-sign-up-flow)
+        - [Account Login Flow](#account-login-flow)
+        - [Account Archive Flow](#account-archive-flow)
+    - [Testing](#testing)
+        - [Stress & Chaos Testing](#stress--chaos-testing)
 
 #### Overview
 The business account service manages all interactions and features specific to our merchant/business profiles. Some interactions that this service

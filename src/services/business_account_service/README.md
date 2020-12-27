@@ -107,30 +107,22 @@ Docker:
 docker run -dp 9898:9898 stefanprodan/podinfo
 ```
 
-## TODO (this weekend)
-### Business Account Service
+## Service Level Interationc
+---
+To read more about service level interactions check out [docs](./docs/readme.md)
+
+## TODO
+---
 - add support for other models in gqlgen.yml
 - emit metrics
-- provide service level documentation
 - setup kubernetes local environment for end to end testing
 - set up end to end testing flow using .github actions and kubernetes
 - setup automatic docker container deployment as a github action with all platform support
 - learn about k8, kustomize, helm and linkerd deployment options & ensure CI flow to run all tests (unit and end to end tests)
-### API Gateway Service (Graphql)
-- implement api gateway & coordinate authentication and business account creation
-### Frontend
-- build business account registration flow in typescript
 
-## TODO (next week)
-### Shopper Account Service
-- implement business logic and get production ready
-- document all service level interactions
 ### API Gateway Service
+- build api-gateway with schema stitching functionality
 - coordinate interactions via the api gateway
+
 ### Frontend
-- build shopper account registration flow in typescript
-- build business account admin page
-    - product input
-    - coupon input
-
-
+- build sign up flow in typescript & react
