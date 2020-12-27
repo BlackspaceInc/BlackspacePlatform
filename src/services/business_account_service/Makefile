@@ -148,13 +148,13 @@ stop_services_locally:
 	docker-compose -f compose/docker-compose.jaeger.yaml \
 				   -f compose/docker-compose.postgres.yaml \
  				   -f compose/docker-compose.authentication_handler_service.yaml \
- 				   -f compose/docker-compose.dev.yaml down
+ 				   -f compose/docker-compose.dev.yaml down --rmi all --volumes
 
 test:
 	go test -v -race -cover -coverprofile=prof.out ./...
 
 
-integration_and_unit_tests: build_and_start_services_locally
+integration_and_unit_tests: start_services_locally
 	sh -c "echo waiting 25s to let dependencies start... && sleep 25"
 	make test
 	make stop_services_locally

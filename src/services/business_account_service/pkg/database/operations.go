@@ -4,11 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	saga "github.com/itimofeev/go-saga"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
-
-	saga "github.com/itimofeev/go-saga"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
@@ -69,7 +68,7 @@ func (db *Db) UpdateBusinessAccount(ctx context.Context, id uint32, account *pro
 		}
 
 		// save the account
-		if err := tx.Clauses(clause.OnConflict{DoNothing: true}).Updates(&businessAccountOrm).Error; err != nil {
+		if err := tx.Session(&gorm.Session{FullSaveAssociations: true}).Save(&businessAccountOrm).Error; err != nil {
 			db.Logger.Error(errors.ErrFailedToSaveUpdatedAccountRecord, err.Error())
 			return nil, err
 		}
@@ -471,9 +470,9 @@ func (db *Db) SetBusinessAccountStatusAndSave(ctx context.Context, businessAccou
 		}
 
 		// set account active status
-		account.IsActive = activateAccount
-		err = tx.Save(&account).Error
-		if err != nil {
+		if err = tx.Clauses(clause.OnConflict{
+			UpdateAll: true,
+		}).Model(&proto.BusinessAccountORM{}).Where("email = ?", account.Email).Update("is_active", activateAccount).Error; err != nil {
 			db.Logger.For(ctx).Error(errors.ErrFailedToUpdateAccountActiveStatus, err.Error())
 			return err
 		}

@@ -12,6 +12,7 @@ func TestSetBusinessAccountActiveStatus(t *testing.T){
 	t.Run("TestName:SetAccountActive", SetAccountActive)
 }
 
+
 // SetAccountActive test that an account can be set as active
 func SetAccountActive(t *testing.T){
 	ctx := context.TODO()
@@ -20,6 +21,13 @@ func SetAccountActive(t *testing.T){
 	// create account first
 	result, err := db.CreateBusinessAccount(ctx, account, authnId)
 	ExpectNoErrorOccured(t, err, result)
+
+	err = db.ArchiveBusinessAccount(ctx, result.Id)
+	assert.NoError(t, err)
+
+	archivedAccount, err := db.GetBusinessAccount(ctx, result.Id)
+	ExpectNoErrorOccured(t, err, archivedAccount)
+	assert.False(t, archivedAccount.IsActive)
 
 	// update account
 	err = db.SetBusinessAccountStatusAndSave(ctx, result,true)

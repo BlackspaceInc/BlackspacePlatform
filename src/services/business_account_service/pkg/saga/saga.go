@@ -42,7 +42,7 @@ func (s *SagaCoordinator) RunSaga(ctx context.Context, operationName string, ste
 
 		// construct error
 		errMsg := fmt.Sprintf("compensate errors : %s , execution errors %s", zap.Errors("compensate error",
-			result.CompensateErrors).String+zap.Error(result.ExecutionError).String)
+			result.CompensateErrors).String, zap.Error(result.ExecutionError).String)
 		err := errors.NewError(errMsg)
 		return err
 	}
