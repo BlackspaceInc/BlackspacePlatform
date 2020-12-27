@@ -22,6 +22,6 @@ spec:
           curl -sk ${PODINFO_SVC}/api/info | grep version
       env:
         - name: PODINFO_SVC
-          value: "https://{{ template "podinfo.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.tls.port }}"
+          value: "https://{{ template "business_account_service.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.tls.port }}"
   restartPolicy: Never
 {{- end }}

@@ -1,5 +1,5 @@
-name: static check
-on: pull_request
+name: Business Account Service Static Check
+on: push
 
 jobs:
   imports:
@@ -15,7 +15,6 @@ jobs:
         with:
           run: imports
           token: ${{ secrets.ACTION_TOKEN }}
-
   errcheck:
     name: Errcheck
     runs-on: ubuntu-latest
@@ -29,7 +28,6 @@ jobs:
         with:
           run: errcheck
           token: ${{ secrets.ACTION_TOKEN }}
-
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -43,7 +41,6 @@ jobs:
         with:
           run: lint
           token: ${{ secrets.ACTION_TOKEN }}
-
   shadow:
     name: Shadow
     runs-on: ubuntu-latest
@@ -57,7 +54,6 @@ jobs:
         with:
           run: shadow
           token: ${{ secrets.ACTION_TOKEN }}
-
   staticcheck:
     name: StaticCheck
     runs-on: ubuntu-latest
@@ -71,7 +67,6 @@ jobs:
         with:
           run: staticcheck
           token: ${{ secrets.ACTION_TOKEN }}
-
   sec:
     name: Sec
     runs-on: ubuntu-latest

@@ -24,6 +24,6 @@ spec:
           curl -s -XDELETE ${PODINFO_SVC}/cache/test
       env:
       - name: PODINFO_SVC
-        value: "{{ template "podinfo.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.service.externalPort }}"
+        value: "{{ template "business_account_service.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.service.externalPort }}"
   restartPolicy: Never
 {{- end }}
