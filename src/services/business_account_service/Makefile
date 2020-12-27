@@ -4,7 +4,7 @@
 
 TAG?=latest
 NAME:=business_account_service
-DOCKER_REPOSITORY:=blackspaceInc
+DOCKER_REPOSITORY:=blackspaceinc
 DOCKER_IMAGE_NAME:=$(DOCKER_REPOSITORY)/$(NAME)
 GIT_COMMIT:=$(shell git describe --dirty --always)
 VERSION:=$(shell grep 'VERSION' pkg/version/version.go | awk '{ print $$4 }' | tr -d '"')
