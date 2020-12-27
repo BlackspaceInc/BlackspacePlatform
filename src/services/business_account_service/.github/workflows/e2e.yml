@@ -22,7 +22,7 @@ jobs:
       - name: Build container image
         run: |
           ./hack/build.sh
-          kind load docker-image test/podinfo:latest
+          kind load docker-image test/business_account_service:latest
       - name: Setup Helm
         uses: ./.github/actions/helm
         with:
@@ -37,4 +37,4 @@ jobs:
       - name: Debug failure
         if: failure()
         run: |
-          kubectl logs -l app=podinfo || true
+          kubectl logs -l app=business_account_service || true

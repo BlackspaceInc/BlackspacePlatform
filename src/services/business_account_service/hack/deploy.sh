@@ -24,8 +24,8 @@ spec:
 EOF
 
 # install business_account_service with tls enabled
-helm upgrade --install podinfo ./charts/podinfo \
-    --set image.repository=test/podinfo \
+helm upgrade --install business_account_service ./charts/business_account_service \
+    --set image.repository=test/business_account_service \
     --set image.tag=latest \
     --set tls.enabled=true \
     --set certificate.create=true \

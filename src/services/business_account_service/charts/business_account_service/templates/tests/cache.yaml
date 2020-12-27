@@ -19,11 +19,11 @@ spec:
         - sh
         - -c
         - |
-          curl -sd 'data' ${PODINFO_SVC}/cache/test &&
-          curl -s ${PODINFO_SVC}/cache/test | grep data &&
-          curl -s -XDELETE ${PODINFO_SVC}/cache/test
+          curl -sd 'data' ${business_account_service_SVC}/cache/test &&
+          curl -s ${business_account_service_SVC}/cache/test | grep data &&
+          curl -s -XDELETE ${business_account_service_SVC}/cache/test
       env:
-      - name: PODINFO_SVC
+      - name: business_account_service_SVC
         value: "{{ template "business_account_service.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.service.externalPort }}"
   restartPolicy: Never
 {{- end }}

@@ -36,15 +36,15 @@ import (
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/generated"
 )
 
-// @title Podinfo API
+// @title business_account_service API
 // @version 2.0
 // @description Go microservice template for Kubernetes.
 
 // @contact.name Source Code
-// @contact.url https://github.com/stefanprodan/podinfo
+// @contact.url https://github.com/stefanprodan/business_account_service
 
 // @license.name MIT License
-// @license.url https://github.com/stefanprodan/podinfo/blob/master/LICENSE
+// @license.url https://github.com/stefanprodan/business_account_service/blob/master/LICENSE
 
 // @host localhost:9898
 // @BasePath /

@@ -18,9 +18,9 @@ spec:
         - sh
         - -c
         - |
-          TOKEN=$(curl -sd 'test' ${PODINFO_SVC}/token | jq -r .token) &&
-          curl -sH "Authorization: Bearer ${TOKEN}" ${PODINFO_SVC}/token/validate | grep test
+          TOKEN=$(curl -sd 'test' ${business_account_service_SVC}/token | jq -r .token) &&
+          curl -sH "Authorization: Bearer ${TOKEN}" ${business_account_service_SVC}/token/validate | grep test
       env:
-      - name: PODINFO_SVC
+      - name: business_account_service_SVC
         value: "{{ template "business_account_service.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.service.externalPort }}"
   restartPolicy: Never

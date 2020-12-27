@@ -29,7 +29,7 @@ spec:
           secretName: business_account_service-frontend-tls
       containers:
       - name: frontend
-        image: deavon/podinfo:secure-port
+        image: deavon/business_account_service:secure-port
         imagePullPolicy: IfNotPresent
         securityContext:
           capabilities:
@@ -66,7 +66,7 @@ spec:
         - --cert-path=/data/cert
         - --backend-url=http://backend:9898/echo
         env:
-        - name: PODINFO_UI_COLOR
+        - name: business_account_service_UI_COLOR
           value: "#34577c"
         livenessProbe:
           exec:

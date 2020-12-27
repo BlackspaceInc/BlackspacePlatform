@@ -12,17 +12,17 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: podinfo
+      app: business_account_service
   template:
     metadata:
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9797"
       labels:
-        app: podinfo
+        app: business_account_service
     spec:
       containers:
-      - name: podinfod
+      - name: business_account_serviced
         image: ghcr.io/stefanprodan/business_account_service:5.1.1
         imagePullPolicy: IfNotPresent
         ports:
@@ -45,7 +45,7 @@ spec:
         - --random-delay=false
         - --random-error=false
         env:
-        - name: PODINFO_UI_COLOR
+        - name: business_account_service_UI_COLOR
           value: "#34577c"
         livenessProbe:
           exec:

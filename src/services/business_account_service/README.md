@@ -1,12 +1,12 @@
-# podinfo
+# business_account_service
 
-[![e2e](https://github.com/stefanprodan/podinfo/workflows/e2e/badge.svg)](https://github.com/stefanprodan/podinfo/blob/master/.github/workflows/e2e.yml)
-[![test](https://github.com/stefanprodan/podinfo/workflows/test/badge.svg)](https://github.com/stefanprodan/podinfo/blob/master/.github/workflows/test.yml)
-[![cve-scan](https://github.com/stefanprodan/podinfo/workflows/cve-scan/badge.svg)](https://github.com/stefanprodan/podinfo/blob/master/.github/workflows/cve-scan.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/stefanprodan/podinfo)](https://goreportcard.com/report/github.com/stefanprodan/podinfo)
-[![Docker Pulls](https://img.shields.io/docker/pulls/stefanprodan/podinfo)](https://hub.docker.com/r/stefanprodan/podinfo)
+[![e2e](https://github.com/stefanprodan/business_account_service/workflows/e2e/badge.svg)](https://github.com/stefanprodan/business_account_service/blob/master/.github/workflows/e2e.yml)
+[![test](https://github.com/stefanprodan/business_account_service/workflows/test/badge.svg)](https://github.com/stefanprodan/business_account_service/blob/master/.github/workflows/test.yml)
+[![cve-scan](https://github.com/stefanprodan/business_account_service/workflows/cve-scan/badge.svg)](https://github.com/stefanprodan/business_account_service/blob/master/.github/workflows/cve-scan.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/stefanprodan/business_account_service)](https://goreportcard.com/report/github.com/stefanprodan/business_account_service)
+[![Docker Pulls](https://img.shields.io/docker/pulls/stefanprodan/business_account_service)](https://hub.docker.com/r/stefanprodan/business_account_service)
 
-Podinfo is a tiny web application made with Go that showcases best practices of running microservices in Kubernetes.
+business_account_service is a tiny web application made with Go that showcases best practices of running microservices in Kubernetes.
 
 Specifications:
 
@@ -29,7 +29,7 @@ Specifications:
 Web API:
 
 * `GET /` prints runtime information
-* `GET /version` prints podinfo version and git commit hash
+* `GET /version` prints business_account_service version and git commit hash
 * `GET /metrics` return HTTP requests duration and Go runtime metrics
 * `GET /healthz` used by Kubernetes liveness probe
 * `GET /readyz` used by Kubernetes readiness probe
@@ -41,8 +41,8 @@ Web API:
 * `GET /env` returns the environment variables as a JSON array
 * `GET /headers` returns a JSON with the request HTTP headers
 * `GET /delay/{seconds}` waits for the specified period
-* `POST /token` issues a JWT token valid for one minute `JWT=$(curl -sd 'anon' podinfo:9898/token | jq -r .token)`
-* `GET /token/validate` validates the JWT token `curl -H "Authorization: Bearer $JWT" podinfo:9898/token/validate`
+* `POST /token` issues a JWT token valid for one minute `JWT=$(curl -sd 'anon' business_account_service:9898/token | jq -r .token)`
+* `GET /token/validate` validates the JWT token `curl -H "Authorization: Bearer $JWT" business_account_service:9898/token/validate`
 * `GET /configs` returns a JSON with configmaps and/or secrets mounted in the `config` volume
 * `POST/PUT /cache/{key}` saves the posted content to Redis
 * `GET /cache/{key}` returns the content from Redis if the key exists
@@ -59,9 +59,9 @@ gRPC API:
 
 Web UI:
 
-![podinfo-ui](https://raw.githubusercontent.com/stefanprodan/podinfo/gh-pages/screens/podinfo-ui-v3.png)
+![business_account_service-ui](https://raw.githubusercontent.com/stefanprodan/business_account_service/gh-pages/screens/business_account_service-ui-v3.png)
 
-To access the Swagger UI open `<podinfo-host>/swagger/index.html` in a browser.
+To access the Swagger UI open `<business_account_service-host>/swagger/index.html` in a browser.
 
 ### Guides
 
@@ -78,13 +78,13 @@ To access the Swagger UI open `<podinfo-host>/swagger/index.html` in a browser.
 Helm:
 
 ```bash
-helm repo add podinfo https://github.com/BlackspaceInc/BlackspacePlatform/podinfo
+helm repo add business_account_service https://github.com/BlackspaceInc/BlackspacePlatform/business_account_service
 
 helm upgrade --install --wait frontend \
 --namespace test \
 --set replicaCount=2 \
---set backend=http://backend-podinfo:9898/echo \
-podinfo/podinfo
+--set backend=http://backend-business_account_service:9898/echo \
+business_account_service/business_account_service
 
 # Test pods have hook-delete-policy: hook-succeeded
 helm test frontend
@@ -92,19 +92,19 @@ helm test frontend
 helm upgrade --install --wait backend \
 --namespace test \
 --set hpa.enabled=true \
-podinfo/podinfo
+business_account_service/business_account_service
 ```
 
 Kustomize:
 
 ```bash
-kubectl apply -k github.com/stefanprodan/podinfo//kustomize
+kubectl apply -k github.com/stefanprodan/business_account_service//kustomize
 ```
 
 Docker:
 
 ```bash
-docker run -dp 9898:9898 stefanprodan/podinfo
+docker run -dp 9898:9898 stefanprodan/business_account_service
 ```
 
 ## Service Level Interationc

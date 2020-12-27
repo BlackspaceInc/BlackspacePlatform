@@ -47,9 +47,9 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
-            docker.io/stefanprodan/podinfo:${{ steps.prep.outputs.VERSION }}
-            docker.io/stefanprodan/podinfo:latest
-            ghcr.io/stefanprodan/podinfo:${{ steps.prep.outputs.VERSION }}
+            docker.io/stefanprodan/business_account_service:${{ steps.prep.outputs.VERSION }}
+            docker.io/stefanprodan/business_account_service:latest
+            ghcr.io/stefanprodan/business_account_service:${{ steps.prep.outputs.VERSION }}
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
             org.opencontainers.image.description=${{ github.event.repository.description }}
@@ -75,7 +75,7 @@ jobs:
       - name: Generate release notes
         run: |
           echo 'CHANGELOG' > /tmp/release.txt
-          github-release-notes -org stefanprodan -repo podinfo -since-latest-release >> /tmp/release.txt
+          github-release-notes -org stefanprodan -repo business_account_service -since-latest-release >> /tmp/release.txt
       - name: Publish release
         uses: goreleaser/goreleaser-action@v1
         with:

@@ -5,7 +5,7 @@ metadata:
 spec:
   type: ClusterIP
   selector:
-    app: podinfo
+    app: business_account_service
   ports:
     - name: http
       port: 9898

@@ -34,7 +34,7 @@ jobs:
         uses: stefanprodan/kube-tools@v1
         with:
           command: |
-            helmv3 template ./charts/podinfo | kubeval --strict
+            helmv3 template ./charts/business_account_service | kubeval --strict
       - name: Validate kustomization
         uses: stefanprodan/kube-tools@v1
         with:

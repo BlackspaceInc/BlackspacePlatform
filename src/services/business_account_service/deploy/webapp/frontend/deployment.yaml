@@ -44,7 +44,7 @@ spec:
         - --level=info
         - --backend-url=http://backend:9898/echo
         env:
-        - name: PODINFO_UI_COLOR
+        - name: business_account_service_UI_COLOR
           value: "#34577c"
         livenessProbe:
           exec:

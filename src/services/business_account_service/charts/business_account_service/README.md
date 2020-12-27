@@ -48,7 +48,7 @@ Parameter | Default | Description
 `faults.testFail` | `false` | When set, a helm test is included which always fails
 `faults.testTimeout` | `false` | When set, a helm test is included which always times out
 `h2c.enabled` | `false` | Allow upgrading to h2c
-`image.repository` | `stefanprodan/podinfo` | Image repository
+`image.repository` | `stefanprodan/business_account_service` | Image repository
 `image.tag` | `<VERSION>` | Image tag
 `image.pullPolicy` | `IfNotPresent` | Image pull policy
 `service.enabled` | `true` | Create a Kubernetes Service, should be disabled when using [Flagger](https://flagger.app)
@@ -57,7 +57,7 @@ Parameter | Default | Description
 `service.httpPort` | `9898` | Container HTTP port
 `service.externalPort` | `9898` | ClusterIP HTTP port
 `service.grpcPort` | `9999` | ClusterIP gPRC port
-`service.grpcService` | `podinfo` | gPRC service name
+`service.grpcService` | `business_account_service` | gPRC service name
 `service.nodePort` | `31198` | NodePort for the HTTP endpoint
 `hpa.enabled` | `false` | Enables the Kubernetes HPA
 `hpa.maxReplicas` | `10` | Maximum amount of pods

@@ -52,7 +52,7 @@ info:
   license:
     name: MIT License
     url: https://github.com/stefanprodan/business_account_service/blob/master/LICENSE
-  title: Podinfo API
+  title: business_account_service API
   version: "2.0"
 paths:
   /:

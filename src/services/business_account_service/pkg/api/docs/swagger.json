@@ -6,14 +6,14 @@
     "swagger": "2.0",
     "info": {
         "description": "Go microservice template for Kubernetes.",
-        "title": "Podinfo API",
+        "title": "business_account_service API",
         "contact": {
             "name": "Source Code",
-            "url": "https://github.com/stefanprodan/podinfo"
+            "url": "https://github.com/stefanprodan/business_account_service"
         },
         "license": {
             "name": "MIT License",
-            "url": "https://github.com/stefanprodan/podinfo/blob/master/LICENSE"
+            "url": "https://github.com/stefanprodan/business_account_service/blob/master/LICENSE"
         },
         "version": "2.0"
     },
@@ -22,7 +22,7 @@
     "paths": {
         "/": {
             "get": {
-                "description": "renders podinfo UI",
+                "description": "renders business_account_service UI",
                 "produces": [
                     "text/html"
                 ],
@@ -483,7 +483,7 @@
         },
         "/version": {
             "get": {
-                "description": "returns podinfo version and git commit hash",
+                "description": "returns business_account_service version and git commit hash",
                 "produces": [
                     "application/json"
                 ],

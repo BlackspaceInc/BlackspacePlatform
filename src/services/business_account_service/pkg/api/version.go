@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/stefanprodan/podinfo/pkg/version"
+	"github.com/stefanprodan/business_account_service/pkg/version"
 )
 
 // Version godoc

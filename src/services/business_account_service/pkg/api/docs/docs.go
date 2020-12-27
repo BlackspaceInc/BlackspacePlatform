@@ -621,7 +621,7 @@ var SwaggerInfo = swaggerInfo{
 	Host:        "localhost:9898",
 	BasePath:    "/",
 	Schemes:     []string{"http", "https"},
-	Title:       "Podinfo API",
+	Title:       "business_account_service API",
 	Description: "Go microservice template for Kubernetes.",
 }
 

@@ -44,7 +44,7 @@ spec:
         - --level=info
         - --cache-server=cache:6379
         env:
-        - name: PODINFO_UI_COLOR
+        - name: business_account_service_UI_COLOR
           value: "#34577c"
         livenessProbe:
           exec:

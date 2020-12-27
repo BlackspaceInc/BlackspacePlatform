@@ -83,19 +83,19 @@ spec:
             {{- end }}
           env:
           {{- if .Values.ui.message }}
-          - name: PODINFO_UI_MESSAGE
+          - name: business_account_service_UI_MESSAGE
             value: {{ quote .Values.ui.message }}
           {{- end }}
           {{- if .Values.ui.logo }}
-          - name: PODINFO_UI_LOGO
+          - name: business_account_service_UI_LOGO
             value: {{ .Values.ui.logo }}
           {{- end }}
           {{- if .Values.ui.color }}
-          - name: PODINFO_UI_COLOR
+          - name: business_account_service_UI_COLOR
             value: {{ quote .Values.ui.color }}
           {{- end }}
           {{- if .Values.backend }}
-          - name: PODINFO_BACKEND_URL
+          - name: business_account_service_BACKEND_URL
             value: {{ .Values.backend }}
           {{- end }}
           ports:
