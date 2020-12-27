@@ -9,7 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	"go.uber.org/zap"
 
-	"github.com/stefanprodan/business_account_service/pkg/version"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/version"
 )
 
 // Cache godoc

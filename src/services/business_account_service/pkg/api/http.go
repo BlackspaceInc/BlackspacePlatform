@@ -7,8 +7,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/stefanprodan/business_account_service/pkg/version"
 	"go.uber.org/zap"
+
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/version"
 )
 
 func randomErrorMiddleware(next http.Handler) http.Handler {

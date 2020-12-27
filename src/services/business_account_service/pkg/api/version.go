@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/stefanprodan/business_account_service/pkg/version"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/version"
 )
 
 // Version godoc

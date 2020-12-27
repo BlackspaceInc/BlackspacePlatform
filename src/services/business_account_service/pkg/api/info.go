@@ -6,7 +6,7 @@ import (
 	"runtime"
 	"strconv"
 
-	"github.com/stefanprodan/business_account_service/pkg/version"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/version"
 )
 
 // Info godoc
