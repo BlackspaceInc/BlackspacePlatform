@@ -154,7 +154,7 @@ test:
 	go test -v -race -cover -coverprofile=prof.out ./...
 
 
-integration_and_unit_tests: start_services_locally
+test-suite: start_services_locally
 	sh -c "echo waiting 25s to let dependencies start... && sleep 25"
 	make test
 	make stop_services_locally

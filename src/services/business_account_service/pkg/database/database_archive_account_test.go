@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestArchiveBusinessAccount(t *testing.T){
+func TestArchiveBusinessAccount(t *testing.T) {
 	t.Run("TestName:ArchiveBusinessAccount", ArchiveBusinessAccount)
 	t.Run("TestName:ArchiveBusinessAccountWithInvalidId", ArchiveBusinessAccountWithInvalidId)
 	t.Run("TestName:ArchiveBusinessAccountThatDoesntExist", ArchiveBusinessAccountThatDoesntExist)
@@ -15,7 +15,7 @@ func TestArchiveBusinessAccount(t *testing.T){
 }
 
 // ArchiveBusinessAccount test that an account can be set as inactive correctly
-func ArchiveBusinessAccount(t *testing.T){
+func ArchiveBusinessAccount(t *testing.T) {
 	ctx := context.TODO()
 	var authnId uint32 = uint32(GenerateRandomId(20, 100))
 	account := GenerateRandomizedAccount()
@@ -33,7 +33,7 @@ func ArchiveBusinessAccount(t *testing.T){
 }
 
 // ArchiveBusinessAccountWithInvalidId test that an account can be set as inactive correctly
-func ArchiveBusinessAccountWithInvalidId(t *testing.T){
+func ArchiveBusinessAccountWithInvalidId(t *testing.T) {
 	ctx := context.TODO()
 	var authnId uint32 = uint32(GenerateRandomId(20, 100))
 	account := GenerateRandomizedAccount()
@@ -43,11 +43,11 @@ func ArchiveBusinessAccountWithInvalidId(t *testing.T){
 
 	// update account
 	err = db.ArchiveBusinessAccount(ctx, 0)
-	ExpectInvalidArgumentsError(t,err, nil)
+	ExpectInvalidArgumentsError(t, err, nil)
 }
 
 // ArchiveBusinessAccountThatDoesntExist ensures that we cannot archive an account that does not exist
-func ArchiveBusinessAccountThatDoesntExist(t *testing.T){
+func ArchiveBusinessAccountThatDoesntExist(t *testing.T) {
 	ctx := context.TODO()
 	randomId := GenerateRandomId(500, 2000)
 
@@ -56,7 +56,8 @@ func ArchiveBusinessAccountThatDoesntExist(t *testing.T){
 	ExpectAccountDoesNotExistError(t, err, nil)
 }
 
-func ArchiveBusinessAccounts(t *testing.T){
+// ArchiveBusinessAccounts archives a set of accounts
+func ArchiveBusinessAccounts(t *testing.T) {
 	ctx := context.TODO()
 	var authnId = uint32(GenerateRandomId(20, 100))
 	account := GenerateRandomizedAccount()
@@ -66,8 +67,7 @@ func ArchiveBusinessAccounts(t *testing.T){
 		result.Id,
 	}
 
-
 	res, err := db.ArchiveBusinessAccounts(ctx, accountIds)
 	assert.Empty(t, err)
-	assert.Contains(t, res,true)
+	assert.Contains(t, res, true)
 }

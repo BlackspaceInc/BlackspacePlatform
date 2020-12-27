@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUpdateBusinessAccount(t *testing.T){
+func TestUpdateBusinessAccount(t *testing.T) {
 	t.Run("TestName:UpdateBusinessAccountThatDoesntExist", UpdateBusinessAccountThatDoesntExist)
 	t.Run("TestName:UpdateBusinessAccountWithInvalidId", UpdateBusinessAccountWithInvalidId)
 	t.Run("TestName:UpdateBusinessAccountCannotChangePassword", UpdateBusinessAccountCannotChangePassword)
@@ -15,7 +15,7 @@ func TestUpdateBusinessAccount(t *testing.T){
 }
 
 // UpdateBusinessAccount test that an account can be updated correctly
-func UpdateBusinessAccount(t *testing.T){
+func UpdateBusinessAccount(t *testing.T) {
 	ctx := context.TODO()
 	var authnId uint32 = uint32(GenerateRandomId(5000, 10000))
 	account := GenerateRandomizedAccount()
@@ -38,7 +38,7 @@ func UpdateBusinessAccount(t *testing.T){
 }
 
 // UpdateBusinessAccountWithInvalidId test that an account can be updated correctly
-func UpdateBusinessAccountWithInvalidId(t *testing.T){
+func UpdateBusinessAccountWithInvalidId(t *testing.T) {
 	ctx := context.TODO()
 	var authnId uint32 = uint32(GenerateRandomId(5000, 10000))
 	account := GenerateRandomizedAccount()
@@ -51,22 +51,22 @@ func UpdateBusinessAccountWithInvalidId(t *testing.T){
 
 	// update account
 	result, err = db.UpdateBusinessAccount(ctx, 0, result)
-	ExpectInvalidArgumentsError(t,err, result)
+	ExpectInvalidArgumentsError(t, err, result)
 }
 
 // UpdateBusinessAccountThatDoesntExist ensures that we cannot update a non existent account
-func UpdateBusinessAccountThatDoesntExist(t *testing.T){
+func UpdateBusinessAccountThatDoesntExist(t *testing.T) {
 	ctx := context.TODO()
 	account := GenerateRandomizedAccount()
 	var randomAccountId uint32 = uint32(GenerateRandomId(5000, 10000))
 
 	result, err := db.UpdateBusinessAccount(ctx, randomAccountId, account)
-	ExpectAccountDoesNotExistError(t,err, result)
+	ExpectAccountDoesNotExistError(t, err, result)
 }
 
 // UpdateBusinessAccountCannotChangePassword ensures we cannot update a password as of yet
 // TODO: change this when we enable this feature
-func UpdateBusinessAccountCannotChangePassword(t *testing.T){
+func UpdateBusinessAccountCannotChangePassword(t *testing.T) {
 	ctx := context.TODO()
 	var authnId uint32 = uint32(GenerateRandomId(5000, 10000))
 	account := GenerateRandomizedAccount()
@@ -79,5 +79,5 @@ func UpdateBusinessAccountCannotChangePassword(t *testing.T){
 
 	// update account
 	result, err = db.UpdateBusinessAccount(ctx, result.Id, result)
-	ExpectCannotUpdatePasswordError(t,err, result)
+	ExpectCannotUpdatePasswordError(t, err, result)
 }

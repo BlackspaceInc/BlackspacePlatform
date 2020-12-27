@@ -20,11 +20,11 @@ import (
 )
 
 var (
-	host = "localhost"
-	port = 5433
-	user = "postgres"
+	host     = "localhost"
+	port     = 5433
+	user     = "postgres"
 	password = "postgres"
-	dbname = "postgres"
+	dbname   = "postgres"
 )
 
 func NewMockServer() *Server {
@@ -71,10 +71,10 @@ func NewMockServer() *Server {
 	srv := &Server{
 		router:        mux.NewRouter(),
 		config:        config,
-		tracingEngine:  tracerEngine,
+		tracingEngine: tracerEngine,
 		metricsEngine: serviceMetrics,
 		logger:        logger,
-		gqlServer: gqlServer,
+		gqlServer:     gqlServer,
 	}
 
 	return srv

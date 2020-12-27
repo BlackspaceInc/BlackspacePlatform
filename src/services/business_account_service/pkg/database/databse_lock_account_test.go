@@ -7,14 +7,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSetBusinessAccountActiveStatus(t *testing.T){
+func TestSetBusinessAccountActiveStatus(t *testing.T) {
 	t.Run("TestName:SetAccountInactive", SetAccountInactive)
 	t.Run("TestName:SetAccountActive", SetAccountActive)
 }
 
-
 // SetAccountActive test that an account can be set as active
-func SetAccountActive(t *testing.T){
+func SetAccountActive(t *testing.T) {
 	ctx := context.TODO()
 	var authnId uint32 = uint32(GenerateRandomId(5000, 10000))
 	account := GenerateRandomizedAccount()
@@ -30,7 +29,7 @@ func SetAccountActive(t *testing.T){
 	assert.False(t, archivedAccount.IsActive)
 
 	// update account
-	err = db.SetBusinessAccountStatusAndSave(ctx, result,true)
+	err = db.SetBusinessAccountStatusAndSave(ctx, result, true)
 	ExpectNoErrorOccured(t, err, result)
 
 	obtainedAccount, err := db.GetBusinessAccount(ctx, result.Id)
@@ -39,7 +38,7 @@ func SetAccountActive(t *testing.T){
 }
 
 // SetAccountInactive test that an account can be set as active
-func SetAccountInactive(t *testing.T){
+func SetAccountInactive(t *testing.T) {
 	ctx := context.TODO()
 	var authnId uint32 = uint32(GenerateRandomId(5000, 10000))
 	account := GenerateRandomizedAccount()
@@ -48,7 +47,7 @@ func SetAccountInactive(t *testing.T){
 	ExpectNoErrorOccured(t, err, result)
 
 	// update account
-	err = db.SetBusinessAccountStatusAndSave(ctx, result,false)
+	err = db.SetBusinessAccountStatusAndSave(ctx, result, false)
 	ExpectNoErrorOccured(t, err, result)
 
 	obtainedAccount, err := db.GetBusinessAccount(ctx, result.Id)

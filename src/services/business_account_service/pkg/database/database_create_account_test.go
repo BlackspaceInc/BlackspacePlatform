@@ -5,10 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/database"
-	svcErrors "github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
 )
 
 func TestBusinessCreateAccount(t *testing.T) {
@@ -33,7 +29,7 @@ func CreateAccountNonExistentAccount(t *testing.T) {
 }
 
 // CreateDuplicateBusinessAccounts tests that duplicate accounts can have the expected error return type
-func CreateDuplicateBusinessAccounts(t *testing.T){
+func CreateDuplicateBusinessAccounts(t *testing.T) {
 	account := GenerateRandomizedAccount()
 
 	var authnId uint32 = 500
@@ -47,7 +43,7 @@ func CreateDuplicateBusinessAccounts(t *testing.T){
 }
 
 // CreateBusinessAccountWithFaultyAuthnId tests the proper errors are returned for accounts with faulty authnn Ids
-func CreateBusinessAccountWithFaultyAuthnId(t *testing.T){
+func CreateBusinessAccountWithFaultyAuthnId(t *testing.T) {
 	account := GenerateRandomizedAccount()
 
 	var authnId uint32 = 0
@@ -57,7 +53,7 @@ func CreateBusinessAccountWithFaultyAuthnId(t *testing.T){
 }
 
 // CreateBusinessAccountWithNoCompanyName tests the proper errors are returned for accounts with no company name
-func CreateBusinessAccountWithNoCompanyName(t *testing.T){
+func CreateBusinessAccountWithNoCompanyName(t *testing.T) {
 	account := GenerateRandomizedAccount()
 	// remove company name
 	account.CompanyName = ""
@@ -68,7 +64,7 @@ func CreateBusinessAccountWithNoCompanyName(t *testing.T){
 }
 
 // CreateBusinessAccountWithNoEmail tests the proper errors are returned for accounts with no email
-func CreateBusinessAccountWithNoEmail(t *testing.T){
+func CreateBusinessAccountWithNoEmail(t *testing.T) {
 	account := GenerateRandomizedAccount()
 	// remove company name
 	account.Email = ""
@@ -79,7 +75,7 @@ func CreateBusinessAccountWithNoEmail(t *testing.T){
 }
 
 // CreateBusinessAccountWithNoPassword tests the proper errors are returned for accounts with no password
-func CreateBusinessAccountWithNoPassword(t *testing.T){
+func CreateBusinessAccountWithNoPassword(t *testing.T) {
 	account := GenerateRandomizedAccount()
 	// remove company name
 	account.Password = ""
@@ -87,40 +83,4 @@ func CreateBusinessAccountWithNoPassword(t *testing.T){
 	var authnId uint32 = 503
 	createdAccount, err := db.CreateBusinessAccount(context.Background(), account, authnId)
 	ExpectInvalidArgumentsError(t, err, createdAccount)
-}
-
-// ExpectInvalidArgumentsError ensure the invalid error is present
-func ExpectInvalidArgumentsError(t *testing.T, err error, account *proto.BusinessAccount) {
-	assert.NotEmpty(t, err)
-	assert.EqualError(t, err, svcErrors.ErrInvalidInputArguments.Error())
-	assert.Nil(t, account)
-}
-
-// ExpectAccountAlreadyExistError ensures the account already exist error is present
-func ExpectAccountAlreadyExistError(t *testing.T, err error, createdAccount *proto.BusinessAccount) {
-	assert.NotEmpty(t, err)
-	assert.EqualError(t, err, svcErrors.ErrAccountAlreadyExist.Error())
-	assert.Nil(t, createdAccount)
-}
-
-// ExpectAccountDoesNotExistError ensures the account does not exist error is present
-func ExpectAccountDoesNotExistError(t *testing.T, err error, createdAccount *proto.BusinessAccount) {
-	assert.NotEmpty(t, err)
-	assert.EqualError(t, err, svcErrors.ErrAccountDoesNotExist.Error())
-	assert.Nil(t, createdAccount)
-}
-
-// ExpectCannotUpdatePasswordError ensure the invalid error is present
-func ExpectCannotUpdatePasswordError(t *testing.T, err error, account *proto.BusinessAccount) {
-	assert.NotEmpty(t, err)
-	assert.EqualError(t, err, svcErrors.ErrCannotUpdatePassword.Error())
-	assert.Nil(t, account)
-}
-
-func GenerateRandomizedAccount() *proto.BusinessAccount {
-	randStr := database.GenerateRandomString(150)
-	account := testBusinessAccount
-	account.Email = account.Email + randStr
-	account.CompanyName = account.CompanyName + randStr
-	return account
 }

@@ -16,7 +16,7 @@ import (
 )
 
 type CreateAccountDtxRequest struct {
-	Email string `json:"email"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
@@ -26,7 +26,7 @@ type CreateAccountDtxResponse struct {
 }
 
 type LockAccountDtxResponse struct {
-	Error error  `json:"error"`
+	Error error `json:"error"`
 }
 
 var src = rand.NewSource(time.Now().UnixNano())
@@ -139,10 +139,10 @@ func AuthenticateAccountAndReturnJwtToken(t *testing.T, email, password string) 
 	return result.Token
 }
 
-func LockAccountInAuthService(t *testing.T, authnId uint32, token string) error{
+func LockAccountInAuthService(t *testing.T, authnId uint32, token string) error {
 	var response LockAccountDtxResponse
 	id := fmt.Sprint(authnId)
-	req, err := http.NewRequest("POST", "http://localhost:9898/v1/account/lock/" + id, nil)
+	req, err := http.NewRequest("POST", "http://localhost:9898/v1/account/lock/"+id, nil)
 	req = mux.SetURLVars(req, map[string]string{"id": id})
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 
@@ -164,7 +164,6 @@ func LockAccountInAuthService(t *testing.T, authnId uint32, token string) error{
 
 	return response.Error
 }
-
 
 func CreateRequestBody(body interface{}) (*bytes.Reader, error) {
 	b, err := json.Marshal(body)

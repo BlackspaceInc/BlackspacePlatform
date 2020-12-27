@@ -11,6 +11,7 @@ import (
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/api"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/database"
+	svcErrors "github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
 )
 
@@ -115,4 +116,41 @@ func ExpectValidAccountObtained(t *testing.T, err error, obtainedAccount *proto.
 	assert.Equal(t, obtainedAccount.CompanyName, result.CompanyName)
 	assert.Equal(t, obtainedAccount.Email, result.Email)
 	assert.Equal(t, obtainedAccount.Password, result.Password)
+}
+
+// ExpectInvalidArgumentsError ensure the invalid error is present
+func ExpectInvalidArgumentsError(t *testing.T, err error, account *proto.BusinessAccount) {
+	assert.NotEmpty(t, err)
+	assert.EqualError(t, err, svcErrors.ErrInvalidInputArguments.Error())
+	assert.Nil(t, account)
+}
+
+// ExpectAccountAlreadyExistError ensures the account already exist error is present
+func ExpectAccountAlreadyExistError(t *testing.T, err error, createdAccount *proto.BusinessAccount) {
+	assert.NotEmpty(t, err)
+	assert.EqualError(t, err, svcErrors.ErrAccountAlreadyExist.Error())
+	assert.Nil(t, createdAccount)
+}
+
+// ExpectAccountDoesNotExistError ensures the account does not exist error is present
+func ExpectAccountDoesNotExistError(t *testing.T, err error, createdAccount *proto.BusinessAccount) {
+	assert.NotEmpty(t, err)
+	assert.EqualError(t, err, svcErrors.ErrAccountDoesNotExist.Error())
+	assert.Nil(t, createdAccount)
+}
+
+// ExpectCannotUpdatePasswordError ensure the invalid error is present
+func ExpectCannotUpdatePasswordError(t *testing.T, err error, account *proto.BusinessAccount) {
+	assert.NotEmpty(t, err)
+	assert.EqualError(t, err, svcErrors.ErrCannotUpdatePassword.Error())
+	assert.Nil(t, account)
+}
+
+// GenerateRandomizedAccount generates a random account
+func GenerateRandomizedAccount() *proto.BusinessAccount {
+	randStr := database.GenerateRandomString(150)
+	account := testBusinessAccount
+	account.Email = account.Email + randStr
+	account.CompanyName = account.CompanyName + randStr
+	return account
 }

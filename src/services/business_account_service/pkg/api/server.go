@@ -114,7 +114,7 @@ func NewServer(config *Config, logger core_logging.ILog, tracer *core_tracing.Tr
 		db:            db,
 		tracingEngine: tracer,
 		metricsEngine: metrics,
-		authClient: authClient,
+		authClient:    authClient,
 	}
 
 	return srv, nil

@@ -96,7 +96,6 @@ func main() {
 	fs.String("authn_internal_port", "3000", "authentication service port")
 	fs.String("authn_port", "8404", "authentication service external port")
 
-
 	versionFlag := fs.BoolP("version", "v", false, "get version number")
 
 	// parse flags
@@ -337,7 +336,7 @@ func beginStressTest(cpus int, mem int, logger core_logging.ILog) {
 	}
 }
 
-func ConfigureAuthnClient() (*core_auth_sdk.Client, error){
+func ConfigureAuthnClient() (*core_auth_sdk.Client, error) {
 	username := viper.GetString("authn_username")
 	password := viper.GetString("authn_password")
 	audience := viper.GetString("authn_domains")
@@ -366,4 +365,3 @@ func ConfigureAuthnClient() (*core_auth_sdk.Client, error){
 		PrivateBaseURL: url,
 	}, origin)
 }
-

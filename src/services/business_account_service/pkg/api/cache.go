@@ -37,7 +37,7 @@ func (s *Server) cacheWriteHandler(w http.ResponseWriter, r *http.Request) {
 	defer conn.Close()
 	_, err = conn.Do("SET", key, string(body))
 	if err != nil {
-		s.logger.Error(err,"cache set failed", zap.Error(err))
+		s.logger.Error(err, "cache set failed", zap.Error(err))
 		s.ErrorResponse(w, r, "cache set failed", http.StatusInternalServerError)
 		return
 	}

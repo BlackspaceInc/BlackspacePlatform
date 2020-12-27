@@ -21,12 +21,12 @@ func TestE2EGetUserAccount(t *testing.T) {
 	t.Run("TestName:E2E_GetAccountMisconfiguredInput", GetAccountMisconfiguredInput)
 }
 
-func TestE2EGetUserAccounts(t *testing.T){
+func TestE2EGetUserAccounts(t *testing.T) {
 	t.Run("TestName:E2E_GetExistingUserAccounts", GetExistingUserAccounts)
 	t.Run("TestName:E2E_GetNonExistentAccounts", GetNonExistentUserAccounts)
 }
 
-func GetExistingUserAccounts(t * testing.T){
+func GetExistingUserAccounts(t *testing.T) {
 	resolvers := graphql_api.Resolver{Db: db}
 	c := client.New(handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &resolvers})))
 
@@ -37,7 +37,7 @@ func GetExistingUserAccounts(t * testing.T){
 		account := testBusinessAccount
 		RandomizeAccount(account)
 
-		var authnId uint32 = uint32(i+1)
+		var authnId uint32 = uint32(i + 1)
 		account, err := db.CreateBusinessAccount(ctx, account, authnId)
 		assert.Empty(t, err)
 		assert.NotNil(t, account)
@@ -58,7 +58,7 @@ func GetExistingUserAccounts(t * testing.T){
 	ExpectedNoErrorToOccur(t, err, resp)
 }
 
-func GetNonExistentUserAccounts(t * testing.T){
+func GetNonExistentUserAccounts(t *testing.T) {
 	resolvers := graphql_api.Resolver{Db: db}
 	c := client.New(handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &resolvers})))
 	q := `
@@ -77,8 +77,7 @@ func GetNonExistentUserAccounts(t * testing.T){
 	ExpectedNoErrorToOccur(t, err, resp)
 }
 
-
-func GetNonExistentAccount(t *testing.T){
+func GetNonExistentAccount(t *testing.T) {
 	resolvers := graphql_api.Resolver{Db: db}
 	c := client.New(handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &resolvers})))
 
@@ -95,7 +94,7 @@ func GetNonExistentAccount(t *testing.T){
 	ExpectedErrorToOccur(t, err, resp)
 }
 
-func GetExistingAccount(t *testing.T){
+func GetExistingAccount(t *testing.T) {
 	resolvers := graphql_api.Resolver{Db: db}
 	c := client.New(handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &resolvers})))
 

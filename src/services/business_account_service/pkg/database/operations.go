@@ -126,12 +126,12 @@ func (db *Db) ArchiveBusinessAccounts(ctx context.Context, ids []uint32) ([]bool
 }
 
 // DeleteBusinessAccount archives a business account by id
-func (db *Db) ArchiveBusinessAccount(ctx context.Context, id uint32) (error) {
+func (db *Db) ArchiveBusinessAccount(ctx context.Context, id uint32) error {
 	db.Logger.For(ctx).Info("delete business account")
 	ctx, span := db.startRootSpan(ctx, "archive_business_account_db_op")
 	defer span.Finish()
 
-	tx := func(ctx context.Context, tx *gorm.DB) (error) {
+	tx := func(ctx context.Context, tx *gorm.DB) error {
 		db.Logger.For(ctx).Info("starting db transactions")
 		childSpan := db.TracingEngine.CreateChildSpan(ctx, "archive_business_account_db_tx")
 		defer childSpan.Finish()
@@ -150,14 +150,14 @@ func (db *Db) ArchiveBusinessAccount(ctx context.Context, id uint32) (error) {
 
 		// deactivate account activity status
 		deactivateAccountOpStep := saga.Step{
-			Name:           "deactivate_business_account",
-			Func:           func(ctx context.Context) error {
+			Name: "deactivate_business_account",
+			Func: func(ctx context.Context) error {
 				return db.SetBusinessAccountStatusAndSave(ctx, account, false)
 			},
 			CompensateFunc: func(ctx context.Context) error {
 				return db.SetBusinessAccountStatusAndSave(ctx, account, true)
 			},
-			Options:        nil,
+			Options: nil,
 		}
 
 		if err := db.Saga.RunSaga(ctx, "deactivate_business_account", &deactivateAccountOpStep); err != nil {
@@ -199,7 +199,6 @@ func (db *Db) GetBusinessAccounts(ctx context.Context, ids []uint32) ([]*proto.B
 				accounts = append(accounts, account)
 			}
 		}
-
 
 		return accounts, nil
 	}
@@ -244,7 +243,6 @@ func (db *Db) GetPaginatedBusinessAccounts(ctx context.Context, limit int64) ([]
 
 			obtainedAccounts = append(obtainedAccounts, &obj)
 		}
-
 
 		return obtainedAccounts, nil
 	}
@@ -394,7 +392,7 @@ func (db *Db) CreateBusinessAccount(ctx context.Context, account *proto.Business
 		}
 
 		// ensure authn id is valid
-		if authnid ==  0 || account.Email == "" || account.Password == "" || account.CompanyName == ""{
+		if authnid == 0 || account.Email == "" || account.Password == "" || account.CompanyName == "" {
 			db.Logger.Error(errors.ErrInvalidInputArguments, fmt.Sprintf("authn id cannot be %d", authnid))
 			return nil, errors.ErrInvalidInputArguments
 		}

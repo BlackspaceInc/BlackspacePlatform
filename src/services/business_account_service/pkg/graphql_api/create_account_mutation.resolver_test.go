@@ -18,6 +18,7 @@ import (
 var (
 	CreateBusinessAccountOperationName = "CreateBusinessAccount"
 )
+
 func TestE2ECreateAccount(t *testing.T) {
 	t.Run("TestName:E2E_CreateAccount", CreateAccount)
 	// case where account exists but is active
@@ -27,15 +28,15 @@ func TestE2ECreateAccount(t *testing.T) {
 }
 
 // CreateAccount tests the create account scenario where we create a previously non-existent account record
-func CreateAccount(t *testing.T){
+func CreateAccount(t *testing.T) {
 	/*
-		Since this is an integration test, we generate account data.
-		1. we first initiate a call to the authentication handler service to create a record in the authentication service from it's perspective
-	and return to us an "authn" id as well as a json web token.
-		2. we pass this token into a context which we wrap in our custom middleware function.
-	This ensures the context gets propagated to the graphql mutation handler
-		3. we perform our request with and expect no error to occur
-	 */
+			Since this is an integration test, we generate account data.
+			1. we first initiate a call to the authentication handler service to create a record in the authentication service from it's perspective
+		and return to us an "authn" id as well as a json web token.
+			2. we pass this token into a context which we wrap in our custom middleware function.
+		This ensures the context gets propagated to the graphql mutation handler
+			3. we perform our request with and expect no error to occur
+	*/
 	randStr := graphql_api.GenerateRandomString(40)
 	fakeEmail := randStr + "@gmail.com"
 	fakeCompanyName := randStr
@@ -76,7 +77,7 @@ func CreateAccount(t *testing.T){
 }
 
 // CreateExistentActiceAccount attempts to create an account that already exists
-func CreateExistentActiveAccount(t *testing.T){
+func CreateExistentActiveAccount(t *testing.T) {
 	account := testBusinessAccount
 	RandomizeAccount(account)
 	ctx := context.TODO()
@@ -127,7 +128,7 @@ func CreateExistentActiveAccount(t *testing.T){
 }
 
 // CreateExistentInactiveAccount activates a previously existent account via distributed transactions
-func CreateExistentInactiveAccount(t *testing.T){
+func CreateExistentInactiveAccount(t *testing.T) {
 	/*
 		In this integration test, we define a test account.
 		1. We create an account record from the context of the authentication handler service in the authentication service.
@@ -137,7 +138,7 @@ func CreateExistentInactiveAccount(t *testing.T){
 		5. We lock this account from the perspective of the authentication handler service
 		6. We wrap the auth context in a custom middleware to be ran prior to the mutation handler
 		7. we generate the query string and perform the operation. As a post condition, the account should be reactivated
-	 */
+	*/
 	account := testBusinessAccount
 	RandomizeAccount(account)
 	ctx := context.TODO()

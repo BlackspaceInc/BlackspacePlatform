@@ -147,15 +147,15 @@ func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input mode
 	updateAndSaveAccountStep := saga.Step{
 		Name: "update_business_account",
 		// initial operation to update business account
-		Func:  func(ctx context.Context, output chan<- *proto.BusinessAccount) SagaRefType {
+		Func: func(ctx context.Context, output chan<- *proto.BusinessAccount) SagaRefType {
 			return func(ctx context.Context) error {
 				acc, err := r.Db.UpdateBusinessAccount(ctx, businessAccountId, newBusinessAccount)
 				output <- acc
 				return err
 			}
 		}(ctx, updatedAccount),
-			// no compensating operation for the update. Just return an error if the initial call failed
-			CompensateFunc: func(ctx context.Context) error { // no compensating function just return an error if this operation fails
+		// no compensating operation for the update. Just return an error if the initial call failed
+		CompensateFunc: func(ctx context.Context) error { // no compensating function just return an error if this operation fails
 			return svcErrors.ErrFailedToSaveUpdatedAccountRecord
 		},
 	}

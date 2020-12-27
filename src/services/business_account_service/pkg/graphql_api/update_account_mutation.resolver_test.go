@@ -22,7 +22,7 @@ func TestE2EUpdateAccount(t *testing.T) {
 	t.Run("TestName:E2E_UpdateNonExistentAccount", UpdateNonExistentAccount)
 }
 
-func UpdateExistentAccount(t *testing.T){
+func UpdateExistentAccount(t *testing.T) {
 	account := testBusinessAccount
 	RandomizeAccount(account)
 	ctx := context.TODO()
@@ -85,7 +85,7 @@ func UpdateExistentAccount(t *testing.T){
 	}
 }
 
-func UpdateEmailOfExistentAccount(t *testing.T){
+func UpdateEmailOfExistentAccount(t *testing.T) {
 	account := testBusinessAccount
 	RandomizeAccount(account)
 	ctx := context.TODO()
@@ -148,7 +148,7 @@ func UpdateEmailOfExistentAccount(t *testing.T){
 	}
 }
 
-func UpdatePasswordOfExistentAccount(t *testing.T){
+func UpdatePasswordOfExistentAccount(t *testing.T) {
 	account := testBusinessAccount
 	RandomizeAccount(account)
 	ctx := context.TODO()
@@ -197,7 +197,7 @@ func UpdatePasswordOfExistentAccount(t *testing.T){
 	assert.NotEmpty(t, resp.Errors)
 }
 
-func UpdateNonExistentAccount(t *testing.T){
+func UpdateNonExistentAccount(t *testing.T) {
 	account := testBusinessAccount
 	RandomizeAccount(account)
 	ctx := context.TODO()

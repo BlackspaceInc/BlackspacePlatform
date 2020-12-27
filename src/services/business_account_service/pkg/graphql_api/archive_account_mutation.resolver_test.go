@@ -14,6 +14,7 @@ import (
 var (
 	ArchiveBusinessAccountOperationName = "ArchiveBusinessAccount"
 )
+
 func TestE2EArchiveAccount(t *testing.T) {
 	// archive existent business account
 	t.Run("TestName:E2E_ArchiveExistentAccount", ArchiveExistentAccount)
@@ -21,7 +22,7 @@ func TestE2EArchiveAccount(t *testing.T) {
 	t.Run("TestName:E2E_ArchiveNonexistentAccount", ArchiveNonexistentAccount)
 }
 
-func ArchiveExistentAccount(t *testing.T){
+func ArchiveExistentAccount(t *testing.T) {
 	account := testBusinessAccount
 	RandomizeAccount(account)
 	ctx := context.TODO()
@@ -69,7 +70,7 @@ func ArchiveExistentAccount(t *testing.T){
 	}
 }
 
-func ArchiveNonexistentAccount(t *testing.T){
+func ArchiveNonexistentAccount(t *testing.T) {
 	account := testBusinessAccount
 	RandomizeAccount(account)
 	ctx := context.TODO()
