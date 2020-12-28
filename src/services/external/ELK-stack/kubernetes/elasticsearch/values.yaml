@@ -205,7 +205,7 @@ exporter:
     ## Address (host and port) of the Elasticsearch node we should connect to.
     ## This could be a local node (localhost:9200, for instance), or the address
     ## of a remote Elasticsearch server. When basic auth is needed,
-    ## specify as: <proto>://<user>:<password>@<host>:<port>. e.g., http://admin:pass@localhost:9200.
+    ## specify as: <model>://<user>:<password>@<host>:<port>. e.g., http://admin:pass@localhost:9200.
     ## If no value, defaults to the elasticsearch service created by this Helm chart
     # uri: elasticsearch:9200
 

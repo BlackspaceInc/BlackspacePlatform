@@ -69,7 +69,7 @@ func NewMockServer() *Server {
 }
 
 func InitializeAuthnClient(logger core_logging.ILog) (*core_auth_sdk.Client, error) {
-	// TODO Move this to constants folder
+	// TODO Move this to errors folder
 	const username string = "blackspaceinc"
 	const password string = "blackspaceinc"
 	const audience string = "localhost"

@@ -55,4 +55,3 @@ jobs:
           docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
           docker build . --file Dockerfile --tag blackspaceinc/authentication_handler_service:dev
           docker push blackspaceinc/authentication_handler_service:dev
-
