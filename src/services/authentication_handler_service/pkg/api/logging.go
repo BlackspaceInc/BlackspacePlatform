@@ -17,7 +17,7 @@ func (m *LoggingMiddleware) Handler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		core_logging.JSONLogger.Info(
 			"request started",
-			"proto", r.Proto,
+			"model", r.Proto,
 			"uri", r.RequestURI,
 			"method", r.Method,
 			"remote", r.RemoteAddr,
