@@ -12,7 +12,7 @@ import (
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/generated"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/model"
 )
 
 func TestE2EGetUserAccount(t *testing.T) {
@@ -164,7 +164,7 @@ func ExpectedErrorToOccur(t *testing.T, err error, resp *client.Response) {
 	assert.Nil(t, resp.Data)
 }
 
-func RandomizeAccount(account *proto.BusinessAccount) {
+func RandomizeAccount(account *model.BusinessAccount) {
 	var randStr = graphql_api.GenerateRandomString(50)
 	account.Email = account.Email + randStr
 	account.CompanyName = account.CompanyName + randStr

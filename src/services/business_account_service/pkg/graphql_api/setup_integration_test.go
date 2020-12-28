@@ -7,7 +7,7 @@ import (
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/api"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/database"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/model"
 )
 
 var (
@@ -17,52 +17,91 @@ var (
 	user                = "postgres"
 	password            = "postgres"
 	dbname              = "postgres"
-	testBusinessAccount = &proto.BusinessAccount{
-		Id:             0,
-		CompanyName:    "BlackspaceInc",
-		CompanyAddress: "340 clifton pl",
-		PhoneNumber: &proto.PhoneNumber{
+	testBusinessAccount = &model.BusinessAccount{
+		Id: 0,
+		CompanyName:                 "BlackspaceInc",
+		CompanyAddress:              "340 Clifton Pl",
+		PhoneNumber:                 &model.PhoneNumber{
 			Number: "424-410-6123",
-			Type:   0,
-		},
-		Category: "small business",
-		Media: &proto.Media{
-			Id:        0,
-			Website:   "blackspaceInc.com",
-			Instagram: "blkspace",
-			Facebook:  "blkspace_",
-			LinkedIn:  "",
-			Pinterest: "",
-		},
-		Password: "Granada123",
-		Email:    "BlackspaceInc@gmail.com",
-		IsActive: false,
-		TypeOfBusiness: &proto.BusinessType{
-			Category:    proto.BusinessCategory_Tech,
-			SubCategory: proto.BusinessSubCategory_Technology,
-		},
-		BusinessGoals: []string{"onboard as many customers as possible"},
-		BusinessStage: "small business",
-		MerchantType:  proto.MerchantType_CasualUse,
-		PaymentDetails: &proto.PaymentProcessingMethods{
-			PaymentOptions: []proto.PaymentOptions{proto.PaymentOptions_Online},
-			Medium:         nil,
-		},
-		ServicesManagedByBlackspace: proto.ServicesManagedByBlackspace_FundingYourBusiness,
-		FounderAddress: &proto.Address{
-			Address:       "340 Clifton Pl",
-			ApartmentUnit: "3D",
-			ZipCode:       "19101",
-			City:          "Brooklyn",
-			State:         "NY",
-			Birthdate: &proto.DateOfBirth{
-				Month: "july",
-				Day:   "12",
-				Year:  "1996",
+			Type:   &model.PhoneType{
+				Home:   true,
+				Work:   false,
+				Mobile: false,
 			},
 		},
-		SubscribedTopics: &proto.Topics{Business: true},
-		AuthnId:          0,
+		Category:                    "small business",
+		Media:                       &model.Media{
+			Id:        0,
+			Website:   "space.com",
+			Instagram: "space@instagram.com",
+			Facebook:  "space@facebook.com",
+			LinkedIn:  "space@linkedin.com",
+			Pinterest: "space@pinterest.com",
+		},
+		Password:                    "Granada123",
+		Email:                       "space@gmail.com",
+		IsActive:                    false,
+		TypeOfBusiness:              &model.BusinessType{
+			Category:    &model.BusinessCategory{
+				Tech:                         true,
+				CharitiesEducationMembership: false,
+				FoodAndDrink:                 false,
+				HealthCareAndFitness:         true,
+				HomeAndRepair:                false,
+				LeisureAndEntertainment:      false,
+				ProfessionalServices:         false,
+				Retail:                       false,
+				Transportation:               false,
+				BeautyAndPersonalCare:        false,
+			},
+			SubCategory: &model.BusinessSubCategory{
+				Marketing:         false,
+				Travel:            false,
+				Interior_Design:   false,
+				Music:             false,
+				Technology:        true,
+				Food:              false,
+				Restaurants:       false,
+				Polictics:         false,
+				Health_And_Beauty: false,
+				Design:            false,
+				Non_Profit:        false,
+				Jewelry:           false,
+				Gaming:            false,
+				Magazine:          false,
+				Photography:       false,
+				Fitenss:           true,
+				Consulting:        false,
+				Fashion:           false,
+				Services:          false,
+				Art:               false,
+			},
+		},
+		BusinessGoals:               []string{"make a lot of money", "change the world"},
+		BusinessStage:               "small business",
+		MerchantType:                &model.MerchantType{
+			SoleProprietor:        true,
+			SideProject:           false,
+			CasualUse:             false,
+			LLCCorporation:        true,
+			Partnership:           false,
+			Charity:               false,
+			ReligiousOrganization: false,
+			OnePersonBusiness:     true,
+		},
+		PaymentDetails:              &model.PaymentProcessingMethods{
+			PaymentOptions: []*model.PaymentOptions{{
+				BrickAndMortar:  true,
+				OnTheGo:         true,
+				Online:          false,
+				ThroughInvoices: false,
+			}},
+			Medium:         nil,
+		},
+		ServicesManagedByBlackspace: nil,
+		FounderAddress:              nil,
+		SubscribedTopics:            nil,
+		AuthnId:                     0,
 	}
 )
 

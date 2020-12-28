@@ -97,10 +97,10 @@ generate_grpc_definitions: download_proto_dependencies
 			-I=$(GOPATH)/src/github.com/protobuf/src/google/protobuf/timestamp.proto \
 			--proto_path=${GOPATH}/src/github.com/gogo/protobuf/protobuf \
 			--govalidators_out=./pkg/graphql_api/ \
-			--go_out=./pkg/graphql_api --gorm_out="engine=postgres:./pkg/graphql_api/" ./proto/schema.proto
+			--go_out=./pkg/graphql_api --gorm_out="engine=postgres:./pkg/graphql_api/" ./model/schema.proto
 
 generate_graphql_schema_from_proto_definitions: generate_grpc_definitions
-	proto2graphql --input ./proto/schema.proto --output ./pkg/graphql_api/schema/schema.graphql
+	proto2graphql --input ./model/schema.proto --output ./pkg/graphql_api/schema/schema.graphql
 
 graphql: generate_graphql_schema_from_proto_definitions
 	go run github.com/99designs/gqlgen
@@ -142,7 +142,7 @@ start_services_locally:
 	docker-compose -f compose/docker-compose.jaeger.yaml \
 				   -f compose/docker-compose.postgres.yaml \
 				   -f compose/docker-compose.authentication_handler_service.yaml \
-				   -f compose/docker-compose.dev.yaml up --remove-orphans -d
+				   -f compose/docker-compose.dev.yaml up --remove-orphans
 
 stop_services_locally:
 	@echo stopping the container services used for testing

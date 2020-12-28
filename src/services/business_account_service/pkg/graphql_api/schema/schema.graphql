@@ -53,84 +53,84 @@ type DateOfBirth {
   Day: String
   Year: String
 }
-enum ServicesManagedByBlackspace {
-  ItemCatalog
-  GiftCards
-  Discounts
-  MarketingCampaigns
-  LoyaltyProgram
-  FundingYourBusiness
-  Analytics
+type ServicesManagedByBlackspace {
+  ItemCatalog: Boolean
+  GiftCards: Boolean
+  Discounts: Boolean
+  MarketingCampaigns: Boolean
+  LoyaltyProgram: Boolean
+  FundingYourBusiness: Boolean
+  Analytics: Boolean
 }
 type PaymentProcessingMethods {
   paymentOptions: [PaymentOptions]
   medium: [PaymentMedium]
 }
-enum PaymentMedium {
-  MobilePhone
-  Tablet
-  Computer
+type PaymentMedium {
+  MobilePhone: Boolean
+  Tablet: Boolean
+  Computer: Boolean
 }
-enum PaymentOptions {
-  BrickAndMortar
-  OnTheGo
-  Online
-  ThroughInvoices
+type PaymentOptions {
+  BrickAndMortar: Boolean
+  OnTheGo: Boolean
+  Online: Boolean
+  ThroughInvoices: Boolean
 }
 type BusinessType {
   category: BusinessCategory
   subCategory: BusinessSubCategory
 }
-enum BusinessCategory {
-  BeautyAndPersonalCare
-  Tech
-  CharitiesEducationMembership
-  FoodAndDrink
-  HealthCareAndFitness
-  HomeAndRepair
-  LeisureAndEntertainment
-  ProfessionalServices
-  Retail
-  Transportation
+type BusinessCategory {
+  Tech: Boolean
+  CharitiesEducationMembership: Boolean
+  FoodAndDrink: Boolean
+  HealthCareAndFitness: Boolean
+  HomeAndRepair: Boolean
+  LeisureAndEntertainment: Boolean
+  ProfessionalServices: Boolean
+  Retail: Boolean
+  Transportation: Boolean
+  BeautyAndPersonalCare: Boolean
 }
-enum BusinessSubCategory {
-  Art
-  Marketing
-  Travel
-  Interior_Design
-  Music
-  Technology
-  Food
-  Restaurants
-  Polictics
-  Health_And_Beauty
-  Design
-  Non_Profit
-  Jewelry
-  Gaming
-  Magazine
-  Photography
-  Fitenss
-  Consulting
-  Fashion
-  Services
+type BusinessSubCategory {
+  Marketing: Boolean
+  Travel: Boolean
+  Interior_Design: Boolean
+  Music: Boolean
+  Technology: Boolean
+  Food: Boolean
+  Restaurants: Boolean
+  Polictics: Boolean
+  Health_And_Beauty: Boolean
+  Design: Boolean
+  Non_Profit: Boolean
+  Jewelry: Boolean
+  Gaming: Boolean
+  Magazine: Boolean
+  Photography: Boolean
+  Fitenss: Boolean
+  Consulting: Boolean
+  Fashion: Boolean
+  Services: Boolean
+  Art: Boolean
 }
-enum MerchantType {
-  OnePersonBusiness
-  SoleProprietor
-  SideProject
-  CasualUse
-  LLCCorporation
-  Partnership
-  Charity
-  ReligiousOrganization
+type MerchantType {
+  SoleProprietor: Boolean
+  SideProject: Boolean
+  CasualUse: Boolean
+  LLCCorporation: Boolean
+  Partnership: Boolean
+  Charity: Boolean
+  ReligiousOrganization: Boolean
+  OnePersonBusiness: Boolean
 }
 type PhoneNumber {
   number: String
   type: PhoneType
 }
-enum PhoneType {
-  MOBILE
-  HOME
-  WORK
+type PhoneType {
+  home: Boolean
+  work: Boolean
+  mobile: Boolean
 }

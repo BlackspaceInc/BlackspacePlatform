@@ -1,10 +1,9 @@
 syntax = "proto3";
 
 import "github.com/infobloxopen/protoc-gen-gorm/options/gorm.proto";
-import "github.com/mwitkow/go-proto-validators/validator.proto";
 import "github.com/protobuf/src/google/protobuf/timestamp.proto";
 
-option go_package = "proto";
+option go_package = "model";
 
 message BusinessAccount {
 	option (gorm.opts) = {
@@ -88,21 +87,21 @@ message DateOfBirth {
 	string Year = 3;
 }
 
-enum ServicesManagedByBlackspace {
+message ServicesManagedByBlackspace {
 	// create items or services to speed up checkout and enhance reports
-	ItemCatalog = 0;
+	bool ItemCatalog = 1;
 	// sell gift cards in store or online to boost sales
-	GiftCards = 1;
+	bool GiftCards = 2;
 	// provide discounts to boost visibility and sales
-	Discounts = 2;
+	bool Discounts = 3;
 	// email your customers to tell them about promotions or special events
-	MarketingCampaigns = 3;
+	bool MarketingCampaigns = 4;
 	// keep your customers coming back with customized rewards program
-	LoyaltyProgram = 4;
+	bool LoyaltyProgram = 5;
 	// get access to financing by running your business on blackspace
-	FundingYourBusiness = 5;
+	bool FundingYourBusiness = 6;
 	// access analytics (indepth) data on buying trends
-	Analytics = 6;
+	bool Analytics = 7;
 }
 
 message PaymentProcessingMethods {
@@ -110,17 +109,17 @@ message PaymentProcessingMethods {
 	repeated PaymentMedium medium = 2;
 }
 
-enum PaymentMedium {
-	MobilePhone = 0;
-	Tablet = 1;
-	Computer = 2;
+message PaymentMedium {
+	bool MobilePhone = 1;
+	bool Tablet = 2;
+	bool Computer = 3;
 }
 
-enum PaymentOptions {
-	BrickAndMortar = 0;
-	OnTheGo = 1;
-	Online = 2;
-	ThroughInvoices = 3;
+message PaymentOptions {
+	bool BrickAndMortar = 1;
+	bool OnTheGo = 2;
+	bool Online = 3;
+	bool ThroughInvoices = 4;
 }
 
 message BusinessType {
@@ -128,53 +127,53 @@ message BusinessType {
 	BusinessSubCategory subCategory = 2;
 }
 
-enum BusinessCategory {
-	BeautyAndPersonalCare = 0;
-	Tech = 1;
-	CharitiesEducationMembership = 2;
-	FoodAndDrink = 3;
-	HealthCareAndFitness = 4;
-	HomeAndRepair = 5;
-	LeisureAndEntertainment = 6;
-	ProfessionalServices = 7;
-	Retail = 8;
-	Transportation = 9;
+message BusinessCategory {
+	bool Tech = 1;
+	bool CharitiesEducationMembership = 2;
+	bool FoodAndDrink = 3;
+	bool HealthCareAndFitness = 4;
+	bool HomeAndRepair = 5;
+	bool LeisureAndEntertainment = 6;
+	bool ProfessionalServices = 7;
+	bool Retail = 8;
+	bool Transportation = 9;
+	bool BeautyAndPersonalCare = 10;
 }
 
-enum BusinessSubCategory {
+message BusinessSubCategory {
 	// art, marketing, travel, interior design, music, technology, food, restaurants, politics, health & beauty,
 	// design, non-profit, jewelry, gaming, magazine, photography, fitness, consulting, fashion, services
-	Art = 0;
-	Marketing = 1;
-	Travel = 2;
-	Interior_Design = 3;
-	Music = 4;
-	Technology = 5;
-	Food = 6;
-	Restaurants = 7;
-	Polictics = 8;
-	Health_And_Beauty = 9;
-	Design = 10;
-	Non_Profit = 11;
-	Jewelry = 12;
-	Gaming = 13;
-	Magazine = 14;
-	Photography = 15;
-	Fitenss = 16;
-	Consulting = 17;
-	Fashion = 18;
-	Services = 19;
+	bool Marketing = 1;
+	bool Travel = 2;
+	bool Interior_Design = 3;
+	bool Music = 4;
+	bool Technology = 5;
+	bool Food = 6;
+	bool Restaurants = 7;
+	bool Polictics = 8;
+	bool Health_And_Beauty = 9;
+	bool Design = 10;
+	bool Non_Profit = 11;
+	bool Jewelry = 12;
+	bool Gaming = 13;
+	bool Magazine = 14;
+	bool Photography = 15;
+	bool Fitenss = 16;
+	bool Consulting = 17;
+	bool Fashion = 18;
+	bool Services = 19;
+	bool Art = 20;
 }
 
-enum MerchantType {
-	OnePersonBusiness  = 0;
-	SoleProprietor = 1;
-	SideProject = 2;
-	CasualUse = 3;
-	LLCCorporation = 4;
-	Partnership = 5;
-	Charity = 6;
-	ReligiousOrganization = 7;
+message MerchantType {
+	bool SoleProprietor = 1;
+	bool SideProject = 2;
+	bool CasualUse = 3;
+	bool LLCCorporation = 4;
+	bool Partnership = 5;
+	bool Charity = 6;
+	bool ReligiousOrganization = 7;
+	bool OnePersonBusiness  = 8;
 }
 
 message PhoneNumber {
@@ -182,8 +181,8 @@ message PhoneNumber {
 	PhoneType type = 2;
 }
 
-enum PhoneType {
-	MOBILE = 0;
-	HOME = 1;
-	WORK = 2;
+message PhoneType {
+	bool home = 1;
+	bool work = 2;
+	bool mobile = 3;
 }

@@ -9,13 +9,13 @@ import (
 
 	svcErrors "github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/generated"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/models"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/model"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
 	opentracing "github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 )
 
-func (r *queryResolver) GetBusinessAccount(ctx context.Context, input models.GetBusinessAccountRequest) (*proto.BusinessAccount, error) {
+func (r *queryResolver) GetBusinessAccount(ctx context.Context, input proto.GetBusinessAccountRequest) (*model.BusinessAccount, error) {
 	r.Db.Logger.For(ctx).Info(fmt.Sprintf("get business account api op"))
 	sp, ctx := opentracing.StartSpanFromContext(ctx, "get_business_account_api_op")
 	defer sp.Finish()
@@ -38,7 +38,7 @@ func (r *queryResolver) GetBusinessAccount(ctx context.Context, input models.Get
 	return account, nil
 }
 
-func (r *queryResolver) GetBusinessAccounts(ctx context.Context, limit models.GetBusinessAccountsRequest) ([]*proto.BusinessAccount, error) {
+func (r *queryResolver) GetBusinessAccounts(ctx context.Context, limit proto.GetBusinessAccountsRequest) ([]*model.BusinessAccount, error) {
 	r.Db.Logger.For(ctx).Info(fmt.Sprintf("get paginated business accounts api op"))
 	sp, ctx := opentracing.StartSpanFromContext(ctx, "get_paginated_business_account_api_op")
 	defer sp.Finish()

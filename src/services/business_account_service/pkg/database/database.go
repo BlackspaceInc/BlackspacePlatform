@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 
 	svcErrors "github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/model"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/saga"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/utils"
 )
@@ -73,7 +73,7 @@ func New(ctx context.Context, connectionString string, tracingEngine *core_traci
 	logger.Info("Successfully configured database connection object")
 
 	logger.Info("Attempting database schema migration")
-	err := MigrateSchemas(dbConn, logger, &proto.BusinessAccountORM{}, &proto.MediaORM{}, &proto.TopicsORM{})
+	err := MigrateSchemas(dbConn, logger, &model.BusinessAccountORM{}, &model.MediaORM{}, &model.TopicsORM{})
 	if err != nil {
 		logger.FatalM(err, svcErrors.ErrFailedToPerformDatabaseMigrations.Error())
 	}

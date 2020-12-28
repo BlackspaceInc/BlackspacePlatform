@@ -8,17 +8,16 @@ import (
 	"fmt"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-middleware"
+	svcErrors "github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/generated"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/model"
+	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
 	"github.com/itimofeev/go-saga"
 	opentracing "github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
-
-	svcErrors "github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/errors"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/generated"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/models"
-	"github.com/BlackspaceInc/BlackspacePlatform/src/services/business_account_service/pkg/graphql_api/proto"
 )
 
-func (r *mutationResolver) CreateBusinessAccount(ctx context.Context, input models.CreateBusinessAccountRequest) (*proto.BusinessAccount, error) {
+func (r *mutationResolver) CreateBusinessAccount(ctx context.Context, input proto.CreateBusinessAccountRequest) (*model.BusinessAccount, error) {
 	if err := r.IsRequestAuthorized(ctx); err != nil {
 		r.Db.Logger.ErrorM(svcErrors.ErrUnauthorizedRequest, svcErrors.ErrUnauthorizedRequest.Error())
 		return nil, svcErrors.ErrUnauthorizedRequest
@@ -100,7 +99,7 @@ func (r *mutationResolver) CreateBusinessAccount(ctx context.Context, input mode
 	return account, nil
 }
 
-func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input models.UpdateBusinessAccountRequest) (*proto.BusinessAccount, error) {
+func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input proto.UpdateBusinessAccountRequest) (*model.BusinessAccount, error) {
 	if err := r.IsRequestAuthorized(ctx); err != nil {
 		return nil, err
 	}
@@ -135,7 +134,7 @@ func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input mode
 	}
 
 	var transactionalSteps = make([]*saga.Step, 0)
-	var updatedAccount = make(chan *proto.BusinessAccount, 1)
+	var updatedAccount = make(chan *model.BusinessAccount, 1)
 	// TODO: handle password updates via authentication handler service in the future - Need to implement this too
 	// TODO: send out an email to the account owner that the email or password has been changed
 	if !r.Db.Conn.ComparePasswords(oldBusinessAccount.Password, []byte(newBusinessAccount.Password)) {
@@ -147,7 +146,7 @@ func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input mode
 	updateAndSaveAccountStep := saga.Step{
 		Name: "update_business_account",
 		// initial operation to update business account
-		Func: func(ctx context.Context, output chan<- *proto.BusinessAccount) SagaRefType {
+		Func: func(ctx context.Context, output chan<- *model.BusinessAccount) SagaRefType {
 			return func(ctx context.Context) error {
 				acc, err := r.Db.UpdateBusinessAccount(ctx, businessAccountId, newBusinessAccount)
 				output <- acc
@@ -175,7 +174,7 @@ func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input mode
 				return r.Db.DistributedTxUpdateAccountEmail(ctx, authnId, newEmail, sp, jwtToken)
 			},
 			// compensating function to reset the account to its inital state if the distributed update call failed
-			CompensateFunc: func(ctx context.Context, output chan<- *proto.BusinessAccount) SagaRefType {
+			CompensateFunc: func(ctx context.Context, output chan<- *model.BusinessAccount) SagaRefType {
 				return func(ctx context.Context) error {
 					acc, err := r.Db.UpdateBusinessAccount(ctx, businessAccountId, oldBusinessAccount) // reset business account to original state
 					if err != nil {
@@ -200,7 +199,7 @@ func (r *mutationResolver) UpdateBusinessAccount(ctx context.Context, input mode
 	return <-updatedAccount, nil
 }
 
-func (r *mutationResolver) DeleteBusinessAccount(ctx context.Context, id models.DeleteBusinessAccountRequest) (*models.DeleteBusinessAccountResponse, error) {
+func (r *mutationResolver) DeleteBusinessAccount(ctx context.Context, id proto.DeleteBusinessAccountRequest) (*proto.DeleteBusinessAccountResponse, error) {
 	trueResp := true
 	if err := r.IsRequestAuthorized(ctx); err != nil {
 		return nil, err
@@ -273,7 +272,7 @@ func (r *mutationResolver) DeleteBusinessAccount(ctx context.Context, id models.
 		return nil, err
 	}
 
-	return &models.DeleteBusinessAccountResponse{Result: &trueResp}, nil
+	return &proto.DeleteBusinessAccountResponse{Result: &trueResp}, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.
