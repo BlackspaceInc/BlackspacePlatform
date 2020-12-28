@@ -20,7 +20,7 @@ func (m *LoggingMiddleware) Handler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		m.logger.Debug(
 			"request started",
-			zap.String("proto", r.Proto),
+			zap.String("model", r.Proto),
 			zap.String("uri", r.RequestURI),
 			zap.String("method", r.Method),
 			zap.String("remote", r.RemoteAddr),

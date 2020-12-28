@@ -3,80 +3,47 @@ module github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core
 go 1.15
 
 require (
-	cloud.google.com/go/pubsub v1.0.1
-	github.com/BlackspaceInc/common v1.0.1
-	github.com/DataDog/datadog-go v4.2.0+incompatible
-	github.com/Shopify/sarama v1.19.0
-	github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5
-	github.com/aws/aws-sdk-go v1.34.28
+	github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-auth-sdk v0.0.0-20201221083514-0656fe0af326
+	github.com/DATA-DOG/go-sqlmock v1.4.1 // indirect
+	github.com/HdrHistogram/hdrhistogram-go v0.9.0 // indirect
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b
-	github.com/confluentinc/confluent-kafka-go v1.5.2 // indirect
-	github.com/eapache/go-resiliency v1.2.0
-	github.com/emicklei/go-restful v0.0.0-20170410110728-ff4f55a20633
-	github.com/garyburd/redigo v1.6.2
-	github.com/gin-gonic/gin v1.6.3
-	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8
-	github.com/go-chi/chi v1.5.0
+	github.com/giantswarm/retry-go v0.0.0-20151203102909-d78cea247d5e
 	github.com/go-logr/logr v0.2.0
-	github.com/go-pg/pg/v10 v10.7.2
-	github.com/go-redis/redis v6.15.9+incompatible
-	github.com/go-redis/redis/v8 v8.4.0
-	github.com/go-sql-driver/mysql v1.5.0
-	github.com/gocql/gocql v0.0.0-20201024154641-5913df4d474e
 	github.com/golang/protobuf v1.4.3
-	github.com/gomodule/redigo v1.8.2
-	github.com/google/uuid v1.1.1
-	github.com/gorilla/mux v1.7.3
-	github.com/graph-gophers/graphql-go v0.0.0-20201113091052-beb923fada29
-	github.com/hashicorp/consul/api v1.3.0
-	github.com/hashicorp/vault/api v1.0.4
-	github.com/hashicorp/vault/sdk v0.1.13
+	github.com/gorilla/mux v1.7.4
+	github.com/grpc-ecosystem/grpc-gateway v1.14.5 // indirect
 	github.com/infobloxopen/atlas-app-toolkit v0.22.1
 	github.com/infobloxopen/protoc-gen-gorm v0.20.0
 	github.com/jinzhu/gorm v1.9.16
-	github.com/jmoiron/sqlx v1.2.0
-	github.com/julienschmidt/httprouter v1.3.0
-	github.com/labstack/echo v3.3.10+incompatible
-	github.com/labstack/echo/v4 v4.1.17
+	github.com/juju/errgo v0.0.0-20140925100237-08cceb5d0b53 // indirect
+	github.com/kr/text v0.2.0 // indirect
 	github.com/lib/pq v1.8.0
-	github.com/mattn/go-sqlite3 v1.14.0
-	github.com/miekg/dns v1.0.14
 	github.com/mwitkow/go-proto-validators v0.3.2
+	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
+	github.com/opentracing-contrib/go-stdlib v1.0.0
 	github.com/opentracing/opentracing-go v1.2.0
-	github.com/openzipkin-contrib/zipkin-go-opentracing v0.4.5
-	github.com/openzipkin/zipkin-go v0.2.5
 	github.com/prometheus/client_golang v1.8.0
 	github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/common v0.15.0
 	github.com/prometheus/procfs v0.2.0
-	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/pflag v1.0.5
-	github.com/spf13/viper v1.7.1
-	github.com/streadway/amqp v1.0.0
 	github.com/stretchr/testify v1.6.1
-	github.com/syndtr/goleveldb v1.0.0
-	github.com/tidwall/buntdb v1.1.4
-	github.com/tinylib/msgp v1.1.4
-	github.com/twitchtv/twirp v7.1.0+incompatible
-	github.com/zenazn/goji v1.0.1
-	go.mongodb.org/mongo-driver v1.4.3
+	github.com/uber/jaeger-client-go v2.25.0+incompatible
+	github.com/uber/jaeger-lib v2.4.0+incompatible
 	go.uber.org/zap v1.16.0
-	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
-	golang.org/x/oauth2 v0.0.0-20191202225959-858c2ad4c8b6
-	golang.org/x/time v0.0.0-20191024005414-555d28b269f0
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
-	google.golang.org/api v0.15.0
+	golang.org/x/crypto v0.0.0-20201124201722-c8d3bf9c5392
+	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
+	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b // indirect
+	golang.org/x/sys v0.0.0-20201119102817-f84b799fce68 // indirect
+	golang.org/x/text v0.3.4 // indirect
+	golang.org/x/tools v0.0.0-20201022035929-9cf592e881e9 // indirect
 	google.golang.org/genproto v0.0.0-20201119123407-9b1e624d6bc4
-	google.golang.org/grpc v1.30.0
-	gopkg.in/DataDog/dd-trace-go.v1 v1.27.1
-	gopkg.in/confluentinc/confluent-kafka-go.v1 v1.5.2
-	gopkg.in/h2non/gock.v1 v1.0.15
-	gopkg.in/jinzhu/gorm.v1 v1.9.2
-	gopkg.in/olivere/elastic.v3 v3.0.75
-	gopkg.in/olivere/elastic.v5 v5.0.86
+	google.golang.org/grpc v1.30.0 // indirect
+	google.golang.org/protobuf v1.25.0 // indirect
+	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
+	gorm.io/driver/postgres v1.0.6
+	gorm.io/gorm v1.20.8
 	k8s.io/apimachinery v0.19.4
-	k8s.io/client-go v0.19.4
 	k8s.io/component-base v0.19.4
 	k8s.io/klog/v2 v2.4.0
 	k8s.io/utils v0.0.0-20201110183641-67b214c5f920

@@ -23,9 +23,9 @@ import (
 )
 
 var (
-	MAJOR_VERSION =  version.Get().Major
-	MINOR_VERSION =  version.Get().Minor
-	GIT_VERSION = version.Get().GitVersion
+	MAJOR_VERSION = version.Get().Major
+	MINOR_VERSION = version.Get().Minor
+	GIT_VERSION   = version.Get().GitVersion
 )
 
 var metricVersion = parseVersion(apimachineryversion.Info{
@@ -40,7 +40,7 @@ type CoreMetricsEngine struct {
 }
 
 // NewCoreMetricsEngineInstance returns an instance to the metrics engine through which metrics can be emitted and registered
-func NewCoreMetricsEngineInstance(namespace string /* more specific to the service which aims to subscribe to the metrics engine */,
+func NewCoreMetricsEngineInstance(namespace string, /* more specific to the service which aims to subscribe to the metrics engine */
 	db *gorm.DB) *CoreMetricsEngine {
 	coreMetricsEngine := &CoreMetricsEngine{Registry: NewPlatformRegistry()}
 
@@ -49,18 +49,17 @@ func NewCoreMetricsEngineInstance(namespace string /* more specific to the servi
 		coreMetricsEngine.RegisterCustomMetric(database_metrics...)
 	}
 
-	coreMetricsEngine.RegisterCustomMetric(queue_metrics...)
-	coreMetricsEngine.RegisterCustomMetric(rest_metrics...)
+	coreMetricsEngine.RegisterMetric(queue_metrics...)
+	coreMetricsEngine.RegisterMetric(rest_metrics...)
 	return coreMetricsEngine
 }
 
 // RegisterMetric registers a metrics to the metrics engine
-func (engine *CoreMetricsEngine) RegisterMetric(metrics ...Registerable){
+func (engine *CoreMetricsEngine) RegisterMetric(metrics ...Registerable) {
 	engine.Registry.MustRegister(metrics...)
 }
 
 // RegisterCustomMetric registers a custom metric to the metrics engine
-func (engine *CoreMetricsEngine) RegisterCustomMetric(metrics ...prometheus.Collector){
+func (engine *CoreMetricsEngine) RegisterCustomMetric(metrics ...prometheus.Collector) {
 	engine.Registry.RawMustRegister(metrics...)
 }
-
