@@ -75,4 +75,4 @@ services:
       - net
     depends_on:
       - auth_service
-      - jaeger-query
+      #- jaeger-query

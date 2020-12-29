@@ -155,7 +155,7 @@ func TestMain(m *testing.M) {
 
 // GenerateRandomizedAccount generates a random account
 func GenerateRandomizedAccount() *model.ShopperAccount {
-	randStr := core_database.GenerateRandomString(150)
+	randStr := core_database.GenerateRandomString(50)
 	account := testAccount
 	account.Email = account.Email + randStr
 	account.Username = account.Username + randStr

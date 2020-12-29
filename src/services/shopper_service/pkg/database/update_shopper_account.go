@@ -27,7 +27,7 @@ func (db *Db) UpdateShopperAccount(ctx context.Context, id uint32, account *mode
 			return nil, svcErrors.ErrInvalidInputArguments
 		}
 
-		if _, err := db.AssertAccountExistsAndPasswordUnchanged(ctx, id, account); err != nil {
+		if _, err := db.AssertAccountExistsAndPasswordUnchanged(ctx, account.Email, account); err != nil {
 			return nil, err
 		}
 
@@ -70,9 +70,9 @@ func (db *Db) ProcessAccountAndSave(ctx context.Context, tx *gorm.DB, account *m
 
 // AssertAccountExistsAndPasswordUnchanged ensures the account to update does not have an updated password field as well as that the account exists
 // in the backend database
-func (db *Db) AssertAccountExistsAndPasswordUnchanged(ctx context.Context, id uint32, account *model.ShopperAccount) (interface{}, error) {
+func (db *Db) AssertAccountExistsAndPasswordUnchanged(ctx context.Context, email string, account *model.ShopperAccount) (interface{}, error) {
 	// attempt to see if account exist
-	storedAccount := db.GetShopperAccountByQueryParam(ctx, "id", id)
+	storedAccount := db.GetShopperAccountByEmail(ctx, email)
 	if storedAccount == nil {
 		db.Logger.ErrorM(errors.ErrAccountDoesNotExist, errors.ErrAccountDoesNotExist.Error())
 		return nil, errors.ErrAccountDoesNotExist

@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -11,24 +10,24 @@ import (
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/shopper_service/pkg/graphql_api/model"
 )
 
-// GetShopperAccountByQueryParam gets a shopper account by query parameter from the backend database
+// GetShopperAccountByEmail gets a shopper account by email parameter from the backend database
 // This query is performed against a certain field present in the respective backend database table
-func (db *Db) GetShopperAccountByQueryParam(ctx context.Context, queryField string, queryParam interface{}) *model.ShopperAccount {
-	db.Logger.For(ctx).Info(fmt.Sprintf("get shopper account by %s", queryParam))
-	ctx, span := db.startRootSpan(ctx, fmt.Sprintf("get_shopper_account_by_%s_op", queryParam))
+func (db *Db) GetShopperAccountByEmail(ctx context.Context, email string) *model.ShopperAccount {
+	db.Logger.For(ctx).Info("get shopper account by email")
+	ctx, span := db.startRootSpan(ctx, "get_shopper_account_by_email_op")
 	defer span.Finish()
 
 	tx := func(ctx context.Context, tx *gorm.DB) (interface{}, error) {
 		conn := db.Conn.Engine
 
 		db.Logger.For(ctx).Info("starting db transactions")
-		childSpan := db.TracingEngine.CreateChildSpan(ctx, fmt.Sprintf("get_shopper_account_by_%s_tx", queryParam))
+		childSpan := db.TracingEngine.CreateChildSpan(ctx, "get_shopper_account_by_email_tx")
 		defer childSpan.Finish()
 
 		var shopperAccountORM model.ShopperAccountORM
 
 		// attempt to see if the record already exists
-		recordNotFoundErr := conn.Where(map[string]interface{}{queryField: queryParam}).First(&shopperAccountORM).Error
+		recordNotFoundErr := conn.Where(&model.ShopperAccountORM{Email: email}).First(&shopperAccountORM).Error
 		if recordNotFoundErr != nil {
 			db.Logger.For(ctx).Error(svcErrors.ErrAccountDoesNotExist, "account does not exist")
 			return nil, svcErrors.ErrAccountDoesNotExist
@@ -41,7 +40,7 @@ func (db *Db) GetShopperAccountByQueryParam(ctx context.Context, queryField stri
 			return nil, err
 		}
 
-		db.Logger.For(ctx).Info("successfully obtained business account", zap.Any(queryField, queryParam))
+		db.Logger.For(ctx).Info("successfully obtained business account", zap.Any("Email", email))
 		return &account, nil
 	}
 

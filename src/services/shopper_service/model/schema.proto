@@ -7,7 +7,7 @@ message ShopperAccount {
 	option (gorm.opts) = {
         ormable: true,
     };
-	uint32 id = 1 [(gorm.field).tag = {type: "serial" primary_key: true, auto_increment: true}];
+	uint32 id = 1;
 	string firstName = 2;
 	string lastName = 3;
 	string email = 4;
@@ -19,30 +19,14 @@ message ShopperAccount {
 	// time at which the customer has agreed to accept marketing material
 	string acceptedMarketingAt = 9;
 	// list of addresses associated with the customer
-	repeated Address addresses = 10 [(gorm.field).has_many = {
-		foreignkey_tag: {not_null: true, type: "serial", auto_increment: true}
-		association_autoupdate: true
-		association_autocreate: true
-		association_save_reference: true
-		preload: true
-		position_field: "priority"}];
+	repeated Address addresses = 10;
 	// list of tags associated with the customer
 	repeated string tags = 11;
 	// list of causes the customer cares about
-	repeated SubscribedTopic causes = 12 [(gorm.field).has_many = {
-		association_autoupdate: true
-		association_autocreate: true
-		association_save_reference: true
-		preload: true
-		position_field: "priority"}];
-	CreditCard creditCard = 13 [(gorm.field).has_one = {foreignkey_tag: {not_null: true, type: "serial", auto_increment: true}}];
+	repeated SubscribedTopic causes = 12;
+	CreditCard creditCard = 13;
 	// topics of interest to the shopper
-	repeated SubscribedTopic subscribedTopics = 14 [(gorm.field).has_many = {
-		association_autoupdate: true
-		association_autocreate: true
-		association_save_reference: true
-		preload: true
-		position_field: "priority"}];
+	repeated SubscribedTopic subscribedTopics = 14;
 	uint32 authnId = 15;
 	string password = 16;
 }
@@ -51,7 +35,7 @@ message CreditCard {
 	option (gorm.opts) = {
         ormable: true,
     };
-	uint32 id = 1 [(gorm.field).tag = {type: "serial" primary_key: true, auto_increment: true}];
+	uint32 id = 1;
 	string cardNumber = 2;
 	string cardBrand = 3;
 	bool expiresSoon = 4;
@@ -65,14 +49,14 @@ message CreditCard {
 	string maskedNumber = 9;
 	// name of card holder
 	string cardHolderName = 10;
-	Address creditCardBillingAddress = 11 [(gorm.field).has_one = {foreignkey_tag: {not_null: true}}];
+	Address creditCardBillingAddress = 11;
 }
 
 message Address {
 	option (gorm.opts) = {
         ormable: true,
     };
-	uint32 id = 1 [(gorm.field).tag = {type: "serial" primary_key: true, auto_increment: true}];
+	uint32 id = 1;
 	string street = 2;
 	string province = 3;
 	string city = 4;
@@ -86,8 +70,8 @@ message SubscribedTopic {
 	option (gorm.opts) = {
         ormable: true,
     };
-	uint32 id = 1 [(gorm.field).tag = {type: "serial" primary_key: true, auto_increment: true}];
-	Topic subscribedTopic = 2 [(gorm.field).has_one = {foreignkey_tag: {not_null: true}}];
+	uint32 id = 1;
+	Topic subscribedTopic = 2;
 	string subscribedAt = 3;
 	string description = 4;
 }
@@ -96,17 +80,17 @@ message Topic {
 	option (gorm.opts) = {
         ormable: true,
     };
-	uint32 id = 1 [(gorm.field).tag = {type: "serial" primary_key: true, auto_increment: true}];
+	uint32 id = 1;
 	string name = 2;
 	repeated string tags = 3;
-	Image topicCoverImage = 4 [(gorm.field).has_one = {foreignkey_tag: {not_null: true}}];
+	Image topicCoverImage = 4;
 }
 
 message Image {
 	option (gorm.opts) = {
         ormable: true,
     };
-	uint32 id = 1 [(gorm.field).tag = {type: "serial" primary_key: true, auto_increment: true}];
+	uint32 id = 1;
 	ImageMeta metadata = 2;
 	string blobUrl = 3;
 	string altText = 4;

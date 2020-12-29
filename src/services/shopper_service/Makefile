@@ -168,7 +168,6 @@ build_and_start:
 	@echo starts the required support container services to allow e2e testing
 	docker-compose -f compose/docker-compose.network.yaml \
                    -f compose/docker-compose.volumes.yaml \
-				   -f compose/docker-compose.jaeger.yaml \
 				   -f compose/docker-compose.postgres.yaml \
 				   -f compose/docker-compose.authentication_handler_service.yaml \
 				   -f compose/docker-compose.dev.yaml up --force-recreate --build --remove-orphans --always-recreate-deps --renew-anon-volumes
@@ -178,7 +177,6 @@ start:
 	@echo starts the required support container services to allow e2e testing
 	docker-compose -f compose/docker-compose.network.yaml \
                    -f compose/docker-compose.volumes.yaml \
-				   -f compose/docker-compose.jaeger.yaml \
 				   -f compose/docker-compose.postgres.yaml \
 				   -f compose/docker-compose.authentication_handler_service.yaml \
 				   -f compose/docker-compose.dev.yaml up --remove-orphans
@@ -187,7 +185,6 @@ stop:
 	@echo stopping the container services used for testing
 	docker-compose -f compose/docker-compose.network.yaml \
 				   -f compose/docker-compose.volumes.yaml \
-				   -f compose/docker-compose.jaeger.yaml \
 				   -f compose/docker-compose.postgres.yaml \
  				   -f compose/docker-compose.authentication_handler_service.yaml \
  				   -f compose/docker-compose.dev.yaml down --rmi all --volumes

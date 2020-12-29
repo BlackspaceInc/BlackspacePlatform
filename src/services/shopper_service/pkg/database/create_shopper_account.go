@@ -28,7 +28,7 @@ func (db *Db) CreateShopperAccount(ctx context.Context, account *model.ShopperAc
 		}
 
 		// attempt to obtain the account from the backend database by email
-		if existingAccount := db.GetShopperAccountByQueryParam(ctx, "email", account.Email); existingAccount != nil {
+		if existingAccount := db.GetShopperAccountByEmail(ctx, account.Email); existingAccount != nil {
 			db.Logger.Error(svcErrors.ErrAccountAlreadyExist, svcErrors.ErrAccountAlreadyExist.Error())
 			return nil, svcErrors.ErrAccountAlreadyExist
 		}
@@ -73,6 +73,7 @@ func (db *Db) CreateAndSaveAccount(ctx context.Context, tx *gorm.DB, shopperAcco
 		db.Logger.For(ctx).Error(svcErrors.ErrFailedToCreateAccount, err.Error())
 		return nil, err
 	}
+
 
 	// convert from orm to shopper account
 	createdAccount, err := shopperAccount.ToPB(ctx)
