@@ -16,7 +16,7 @@ var fileMap = map[string]string{
 	"./generator/templates/metrics": "pkg/metrics",
 	"./generator/templates/middleware": "pkg/middleware",
 	"./generator/templates/databaseModels": "pkg/database_models",
-	"./generator/templates/models": "models",
+	"./generator/templates/model": "model",
 	"./generator/templates/alerts" : "alerts",
 	"./generator/templates/telemetry" : "monitoring",
 	"./generator/templates/docker-compose.monitoring.yaml" : "docker-compose.monitoring.yaml",
