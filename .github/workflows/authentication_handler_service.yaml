@@ -76,7 +76,8 @@ jobs:
         with:
           args: --cache-dir /var/lib/trivy --no-progress --exit-code 1 --severity MEDIUM,HIGH,CRITICAL ${{ steps.build.outputs.image }}
 
-  kind-helm:
+  Authentication Handler Service Helm:
+    name: Authentication Handler Service Helm
     strategy:
       matrix:
         helm-version:
@@ -114,7 +115,8 @@ jobs:
         run: |
           kubectl logs -l app=authentication_handler_service || true
 
-  test:
+  Authentication Handler Service Tests:
+    name: Authentication Handler Service Tests
     runs-on: ubuntu-latest
     env:
       working-directory: ./src/services/authentication_handler_service
@@ -152,7 +154,8 @@ jobs:
             kustomize build ./${{env.working-directory}}/kustomize | kubeval --strict
             kustomize build ./${{env.working-directory}}/kustomize | conftest test -p .github/policy -
 
-  release:
+  Authentication Handler Service Release:
+    name: Authentication Handler Service Release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
