@@ -22,7 +22,7 @@ h2c:
   enabled: false
 
 image:
-  repository: blackspaceinc/authentication_handler_service
+  repository: blackspaceInc/authentication_handler_service
   tag: 5.0.3
   pullPolicy: IfNotPresent
 
@@ -33,7 +33,7 @@ service:
   httpPort: 9898
   externalPort: 9898
   grpcPort: 9999
-  grpcService: authentication-handler-service
+  grpcService: authentication_handler_service
   nodePort: 31198
   # the port used to bind the http port to the host
   # NOTE: requires privileged container with NET_BIND_SERVICE capability -- this is useful for testing
@@ -63,7 +63,7 @@ certificate:
     name: self-signed
   # the hostname / subject alternative names for the certificate
   dnsNames:
-    - authentication-handler-service
+    - authentication_handler_service
 
 # metrics-server add-on required
 hpa:

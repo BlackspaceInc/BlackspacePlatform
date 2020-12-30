@@ -22,7 +22,7 @@ h2c:
   enabled: false
 
 image:
-  repository: ghcr.io/github.com/blackspaceInc/BlackspacePlatform/authentication_handler_service
+  repository: blackspaceInc/authentication_handler_service
   tag: 5.0.3
   pullPolicy: IfNotPresent
 
