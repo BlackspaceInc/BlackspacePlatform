@@ -63,7 +63,7 @@ certificate:
     name: self-signed
   # the hostname / subject alternative names for the certificate
   dnsNames:
-    - authentication_handler_service
+    - authentication-handler-service
 
 # metrics-server add-on required
 hpa:
