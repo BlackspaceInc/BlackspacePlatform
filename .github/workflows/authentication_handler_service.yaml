@@ -114,116 +114,116 @@ jobs:
         run: |
           kubectl logs -l app=authentication_handler_service || true
 
-test:
-  runs-on: ubuntu-latest
-  env:
-    working-directory: ./src/services/authentication_handler_service
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Restore Go cache
-      uses: actions/cache@v1
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: ${{ runner.os }}-go-
-    - name: Setup Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.15.x
-    - name: Run unit tests
-      working-directory: ${{env.working-directory}}
-      run: make test-suite
-    - name: Check if working tree is dirty
-      run: |
-        if [[ $(git diff --stat) != '' ]]; then
-          echo 'run make test and commit changes'
-          exit 1
-        fi
-    - name: Validate Helm chart
-      uses: stefanprodan/kube-tools@v1
-      working-directory: ${{env.working-directory}}
-      with:
-        command: |
-          helmv3 template ./charts/authentication_handler_service | kubeval --strict
-    - name: Validate kustomization
-      uses: stefanprodan/kube-tools@v1
-      with:
-        command: |
-          kustomize build ./kustomize | kubeval --strict
-          kustomize build ./kustomize | conftest test -p .github/policy -
+  test:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./src/services/authentication_handler_service
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Restore Go cache
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: ${{ runner.os }}-go-
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15.x
+      - name: Run unit tests
+        working-directory: ${{env.working-directory}}
+        run: make test-suite
+      - name: Check if working tree is dirty
+        run: |
+          if [[ $(git diff --stat) != '' ]]; then
+            echo 'run make test and commit changes'
+            exit 1
+          fi
+      - name: Validate Helm chart
+        uses: stefanprodan/kube-tools@v1
+        working-directory: ${{env.working-directory}}
+        with:
+          command: |
+            helmv3 template ./charts/authentication_handler_service | kubeval --strict
+      - name: Validate kustomization
+        uses: stefanprodan/kube-tools@v1
+        with:
+          command: |
+            kustomize build ./kustomize | kubeval --strict
+            kustomize build ./kustomize | conftest test -p .github/policy -
 
-release:
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v2
-    - name: Setup QEMU
-      uses: docker/setup-qemu-action@v1
-      with:
-        platforms: all
-    - name: Setup Docker Buildx
-      id: buildx
-      uses: docker/setup-buildx-action@v1
-      with:
-        buildkitd-flags: "--debug"
-    - name: Login to Docker Hub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKER_USER }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    - name: Prepare
-      id: prep
-      run: |
-        VERSION=sha-${GITHUB_SHA::8}
-        if [[ $GITHUB_REF == refs/tags/* ]]; then
-          VERSION=${GITHUB_REF/refs\/tags\//}
-        fi
-        echo ::set-output name=BUILD_DATE::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-        echo ::set-output name=VERSION::${VERSION}
-    - name: Publish multi-arch image
-      uses: docker/build-push-action@v2
-      with:
-        push: true
-        builder: ${{ steps.buildx.outputs.name }}
-        working-directory: ${{env.working-directory}}
-        context: ${{env.working-directory}}
-        file: ./Dockerfile
-        platforms: linux/amd64,linux/arm/v7,linux/arm64
-        tags: |
-          docker.io/github.com/blackspaceInc/BlackspacePlatform/authentication_handler_service:${{ steps.prep.outputs.VERSION }}
-          docker.io/github.com/blackspaceInc/BlackspacePlatform/authentication_handler_service:latest
-          ghcr.io/github.com/blackspaceInc/BlackspacePlatform/authentication_handler_service:${{ steps.prep.outputs.VERSION }}
-        labels: |
-          org.opencontainers.image.title=${{ github.event.repository.name }}
-          org.opencontainers.image.description=${{ github.event.repository.description }}
-          org.opencontainers.image.source=${{ github.event.repository.html_url }}
-          org.opencontainers.image.url=${{ github.event.repository.html_url }}
-          org.opencontainers.image.revision=${{ github.sha }}
-          org.opencontainers.image.version=${{ steps.prep.outputs.VERSION }}
-          org.opencontainers.image.created=${{ steps.prep.outputs.BUILD_DATE }}
-    - name: Publish base image
-      uses: docker/build-push-action@v2
-      with:
-        push: true
-        builder: ${{ steps.buildx.outputs.name }}
-        working-directory: ${{env.working-directory}}
-        context: ${{env.working-directory}}
-        platforms: linux/amd64
-        file: ./Dockerfile.base
-        tags: docker.io/github.com/blackspaceInc/BlackspacePlatform/authentication_handler_service-base:latest
-    - name: Publish helm chart
-      uses: stefanprodan/helm-gh-pages@master
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-    - uses: ./.github/actions/release-notes
-    - name: Generate release notes
-      run: |
-        echo 'CHANGELOG' > /tmp/release.txt
-        github-release-notes -org blackspaceInc -repo authentication_handler_service -since-latest-release >> /tmp/release.txt
-    - name: Publish release
-      uses: goreleaser/goreleaser-action@v1
-      with:
-        version: latest
-        args: release --release-notes=/tmp/release.txt
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: all
+      - name: Setup Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          buildkitd-flags: "--debug"
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Prepare
+        id: prep
+        run: |
+          VERSION=sha-${GITHUB_SHA::8}
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF/refs\/tags\//}
+          fi
+          echo ::set-output name=BUILD_DATE::$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          echo ::set-output name=VERSION::${VERSION}
+      - name: Publish multi-arch image
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          builder: ${{ steps.buildx.outputs.name }}
+          working-directory: ${{env.working-directory}}
+          context: ${{env.working-directory}}
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          tags: |
+            docker.io/github.com/blackspaceInc/BlackspacePlatform/authentication_handler_service:${{ steps.prep.outputs.VERSION }}
+            docker.io/github.com/blackspaceInc/BlackspacePlatform/authentication_handler_service:latest
+            ghcr.io/github.com/blackspaceInc/BlackspacePlatform/authentication_handler_service:${{ steps.prep.outputs.VERSION }}
+          labels: |
+            org.opencontainers.image.title=${{ github.event.repository.name }}
+            org.opencontainers.image.description=${{ github.event.repository.description }}
+            org.opencontainers.image.source=${{ github.event.repository.html_url }}
+            org.opencontainers.image.url=${{ github.event.repository.html_url }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ steps.prep.outputs.VERSION }}
+            org.opencontainers.image.created=${{ steps.prep.outputs.BUILD_DATE }}
+      - name: Publish base image
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          builder: ${{ steps.buildx.outputs.name }}
+          working-directory: ${{env.working-directory}}
+          context: ${{env.working-directory}}
+          platforms: linux/amd64
+          file: ./Dockerfile.base
+          tags: docker.io/github.com/blackspaceInc/BlackspacePlatform/authentication_handler_service-base:latest
+      - name: Publish helm chart
+        uses: stefanprodan/helm-gh-pages@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: ./.github/actions/release-notes
+      - name: Generate release notes
+        run: |
+          echo 'CHANGELOG' > /tmp/release.txt
+          github-release-notes -org blackspaceInc -repo authentication_handler_service -since-latest-release >> /tmp/release.txt
+      - name: Publish release
+        uses: goreleaser/goreleaser-action@v1
+        with:
+          version: latest
+          args: release --release-notes=/tmp/release.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
