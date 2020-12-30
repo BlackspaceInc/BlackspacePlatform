@@ -151,8 +151,8 @@ jobs:
         uses: stefanprodan/kube-tools@v1
         with:
           command: |
-            kustomize build ./${{env.working-directory}}/kustomize | kubeval --strict
-            kustomize build ./${{env.working-directory}}/kustomize | conftest test -p .github/policy -
+            kustomize build ${{env.working-directory}}/kustomize | kubeval --strict
+            kustomize build ${{env.working-directory}}/kustomize | conftest test -p .github/policy -
 
   release:
     name: Authentication Handler Service Release
@@ -189,7 +189,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           working-directory: ${{env.working-directory}}
           context: .
-          file: ./${{env.working-directory}}/Dockerfile
+          file: ${{env.working-directory}}/Dockerfile
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
             docker.io/github.com/blackspaceinc/blackspaceplatform/authentication_handler_service:${{ steps.prep.outputs.VERSION }}
@@ -211,7 +211,7 @@ jobs:
           working-directory: ${{env.working-directory}}
           context: .
           platforms: linux/amd64
-          file: ./${{env.working-directory}}/Dockerfile.base
+          file: ${{env.working-directory}}/Dockerfile.base
           tags: docker.io/github.com/blackspaceinc/blackspaceplatform/authentication_handler_service-base:latest
       - name: Publish helm chart
         uses: stefanprodan/helm-gh-pages@master
