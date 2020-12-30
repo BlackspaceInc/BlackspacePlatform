@@ -149,8 +149,8 @@ jobs:
         uses: stefanprodan/kube-tools@v1
         with:
           command: |
-            kustomize build ./kustomize | kubeval --strict
-            kustomize build ./kustomize | conftest test -p .github/policy -
+            kustomize build ./${{env.working-directory}}/kustomize | kubeval --strict
+            kustomize build ./${{env.working-directory}}/kustomize | conftest test -p .github/policy -
 
   release:
     runs-on: ubuntu-latest
