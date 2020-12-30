@@ -24,7 +24,7 @@ spec:
 EOF
 
 # install authentication_handler_service with tls enabled
-helm upgrade --install authsvcployment ./charts/authentication_handler_service \
+helm upgrade --install auth-hdlr-svc-deployment ./charts/authentication_handler_service \
     --set image.repository=test/authentication_handler_service \
     --set image.tag=latest \
     --set tls.enabled=true \
