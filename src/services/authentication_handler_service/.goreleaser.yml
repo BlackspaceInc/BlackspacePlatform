@@ -1,6 +1,6 @@
 builds:
-  - main: ./cmd/podcli
-    binary: podcli
+  - main: ./cmd/authentication_handler_service_cli
+    binary: authentication_handler_service_cli
     ldflags: -s -w -X github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/version.REVISION={{.Commit}}
     goos:
       - windows

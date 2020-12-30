@@ -11,7 +11,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "podcli",
+	Use:   "authentication_handler_service_cli",
 	Short: "authentication_handler_service command line",
 	Long: `
 authentication_handler_service command line utilities`,

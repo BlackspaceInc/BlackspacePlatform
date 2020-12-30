@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -15,6 +16,7 @@ import (
 	core_logging "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-logging/json"
 	core_metrics "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-metrics"
 	core_tracing "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-tracing"
+	"github.com/giantswarm/retry-go"
 	"github.com/uber/jaeger-lib/metrics/prometheus"
 
 	// core_tracing "github.com/BlackspaceInc/BlackspacePlatform/src/libraries/core/core-tracing"
@@ -23,7 +25,6 @@ import (
 	"github.com/spf13/viper"
 	// "github.com/uber/jaeger-lib/metrics/prometheus"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/api"
 	"github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/pkg/grpc"
@@ -63,6 +64,7 @@ func main() {
 	fs.Bool("unready", false, "when set, ready state is never reached")
 	fs.Int("STRESS_CPU", 0, "number of CPU cores with 100 load")
 	fs.Int("STRESS_MEMORY", 0, "MB of data to load into memory")
+
 	// authentication service specific flags
 	fs.String("AUTHN_USERNAME", "blackspaceinc", "username of authentication client")
 	fs.String("AUTHN_PASSWORD", "blackspaceinc", "password of authentication client")
@@ -76,6 +78,7 @@ func main() {
 	fs.String("AUTHN_INTERNAL_PORT", "3000", "authentication service port")
 	fs.String("AUTHN_PORT", "8404", "authentication service external port")
 	fs.Bool("ENABLE_AUTH_SERVICE_PRIVATE_INTEGRATION", true, "enables communication with authentication service")
+
 	// logging specific configurations
 	fs.String("SERVICE_NAME", "authentication_handler_service", "service name")
 	fs.String("JAEGER_ENDPOINT", "http://jaeger-collector:14268/api/traces", "jaeger collector endpoint")
@@ -118,21 +121,15 @@ func main() {
 		}
 	}
 
-	serviceName := viper.GetString("SERVICE_NAME")
-	collectorEndpoint := viper.GetString("JAEGER_ENDPOINT")
-
-	// initiaize a tracing object globally
-	tracerEngine, closer := core_tracing.NewTracer(serviceName, collectorEndpoint, prometheus.New())
+	serviceName, tracerEngine, closer := SetupDistributedTracing()
 	defer closer.Close()
 
 	if tracerEngine == nil {
 		panic("cannot initialize tracer engine")
 	}
-
 	opentracing.SetGlobalTracer(tracerEngine.Tracer)
 
-	coreMetrics := core_metrics.NewCoreMetricsEngineInstance(serviceName, nil)
-	serviceMetrics := metrics.NewMetricsEngine(coreMetrics)
+	serviceMetrics := SetupMetrics(serviceName)
 
 	ctx := context.Background()
 	rootSpan := opentracing.SpanFromContext(ctx)
@@ -205,7 +202,24 @@ func main() {
 	srv.ListenAndServe(stopCh)
 }
 
-func NewAuthServiceClient(err error, logger core_logging.ILog) *core_auth_sdk.Client {
+// SetupMetrics configures metrics objects
+func SetupMetrics(serviceName string) *metrics.MetricsEngine {
+	coreMetrics := core_metrics.NewCoreMetricsEngineInstance(serviceName, nil)
+	serviceMetrics := metrics.NewMetricsEngine(coreMetrics)
+	return serviceMetrics
+}
+
+// SetupDistributedTracing sets up distributed tracing for the application
+func SetupDistributedTracing() (string, *core_tracing.TracingEngine, io.Closer) {
+	serviceName := viper.GetString("SERVICE_NAME")
+	collectorEndpoint := viper.GetString("JAEGER_ENDPOINT")
+	// initialize a tracing object globally
+	tracerEngine, closer := core_tracing.NewTracer(serviceName, collectorEndpoint, prometheus.New())
+	return serviceName, tracerEngine, closer
+}
+
+// NewAuthServiceClient configures the authentication service client
+func NewAuthServiceClient(err error, logger core_logging.ILog) (*core_auth_sdk.Client) {
 	// initialize authentication client in order to establish communication with the
 	// authentication service. This serves as a singular source of truth for authentication needs
 	authUsername := viper.GetString("AUTHN_USERNAME")
@@ -221,74 +235,37 @@ func NewAuthServiceClient(err error, logger core_logging.ILog) *core_auth_sdk.Cl
 		logger.FatalM(err, "failed to initialized authentication service client")
 	}
 
-	// TODO: make this a retryable operation
-	retries := 1
-	for retries < 4 {
-		// perform a test request to the authentication service
-		_, err = authnClient.ServerStats()
-		if err != nil {
-			if retries != 4 {
-				logger.ErrorM(err, "failed to connect to authentication service")
-			} else {
-				logger.FatalM(err, "failed to connect to authentication service")
-			}
-			retries += 1
-		} else {
-			retries = 4
-		}
+	type RetryConfigs struct {
+		MaxRetries int
+		RetryTimeout time.Duration
+		SleepInterval time.Duration
+	}
 
-		time.Sleep(1 * time.Second)
+	config := &RetryConfigs{
+		MaxRetries: 5,
+		RetryTimeout: 5 * time.Second,
+		SleepInterval: 20 * time.Millisecond,
+	}
+
+	f := func() error {
+		_, err = authnClient.ServerStats()
+		return err
+	}
+
+	err = retry.Do(func() error {
+		return f()
+	},
+		retry.MaxTries(config.MaxRetries),
+		retry.Timeout(config.RetryTimeout),
+		retry.Sleep(config.SleepInterval),
+	)
+
+	if err != nil {
+		logger.FatalM(err, err.Error())
 	}
 
 	// attempt to connect to the authentication service if not then crash process
 	return authnClient
-}
-
-func initZap(logLevel string) (*zap.Logger, error) {
-	level := zap.NewAtomicLevelAt(zapcore.InfoLevel)
-	switch logLevel {
-	case "debug":
-		level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
-	case "info":
-		level = zap.NewAtomicLevelAt(zapcore.InfoLevel)
-	case "warn":
-		level = zap.NewAtomicLevelAt(zapcore.WarnLevel)
-	case "error":
-		level = zap.NewAtomicLevelAt(zapcore.ErrorLevel)
-	case "fatal":
-		level = zap.NewAtomicLevelAt(zapcore.FatalLevel)
-	case "panic":
-		level = zap.NewAtomicLevelAt(zapcore.PanicLevel)
-	}
-
-	zapEncoderConfig := zapcore.EncoderConfig{
-		TimeKey:        "ts",
-		LevelKey:       "level",
-		NameKey:        "logger",
-		CallerKey:      "caller",
-		MessageKey:     "msg",
-		StacktraceKey:  "stacktrace",
-		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeLevel:    zapcore.LowercaseLevelEncoder,
-		EncodeTime:     zapcore.ISO8601TimeEncoder,
-		EncodeDuration: zapcore.SecondsDurationEncoder,
-		EncodeCaller:   zapcore.ShortCallerEncoder,
-	}
-
-	zapConfig := zap.Config{
-		Level:       level,
-		Development: false,
-		Sampling: &zap.SamplingConfig{
-			Initial:    100,
-			Thereafter: 100,
-		},
-		Encoding:         "json",
-		EncoderConfig:    zapEncoderConfig,
-		OutputPaths:      []string{"stderr"},
-		ErrorOutputPaths: []string{"stderr"},
-	}
-
-	return zapConfig.Build()
 }
 
 var stressMemoryPayload []byte
