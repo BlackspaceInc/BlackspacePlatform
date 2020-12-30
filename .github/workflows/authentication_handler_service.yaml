@@ -189,9 +189,9 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
-            docker.io/github.com/blackspaceInc/blackspaceplatform/authentication_handler_service:${{ steps.prep.outputs.VERSION }}
-            docker.io/github.com/blackspaceInc/blackspaceplatform/authentication_handler_service:latest
-            ghcr.io/github.com/blackspaceInc/blackspaceplatform/authentication_handler_service:${{ steps.prep.outputs.VERSION }}
+            docker.io/github.com/blackspaceinc/blackspaceplatform/authentication_handler_service:${{ steps.prep.outputs.VERSION }}
+            docker.io/github.com/blackspaceinc/blackspaceplatform/authentication_handler_service:latest
+            ghcr.io/github.com/blackspaceinc/blackspaceplatform/authentication_handler_service:${{ steps.prep.outputs.VERSION }}
           labels: |
             org.opencontainers.image.title=${{ github.event.repository.name }}
             org.opencontainers.image.description=${{ github.event.repository.description }}
@@ -209,7 +209,7 @@ jobs:
           context: ${{env.working-directory}}
           platforms: linux/amd64
           file: ./Dockerfile.base
-          tags: docker.io/github.com/blackspaceInc/blackspaceplatform/authentication_handler_service-base:latest
+          tags: docker.io/github.com/blackspaceinc/blackspaceplatform/authentication_handler_service-base:latest
       - name: Publish helm chart
         uses: stefanprodan/helm-gh-pages@master
         with:
