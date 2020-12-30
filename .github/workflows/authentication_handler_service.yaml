@@ -210,7 +210,6 @@ jobs:
           platforms: linux/amd64
           file: ./Dockerfile.base
           tags: docker.io/github.com/blackspaceInc/blackspaceplatform/authentication_handler_service-base:latest
-          tags: docker.io/github.com/blackspaceInc/blackspaceplatform/authentication_handler_service-base:latest
       - name: Publish helm chart
         uses: stefanprodan/helm-gh-pages@master
         with:
