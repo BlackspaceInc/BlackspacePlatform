@@ -188,8 +188,8 @@ jobs:
           push: true
           builder: ${{ steps.buildx.outputs.name }}
           working-directory: ${{env.working-directory}}
-          context: ${{env.working-directory}}
-          file: ./Dockerfile
+          context: .
+          file: ./${{env.working-directory}}/Dockerfile
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
             docker.io/github.com/blackspaceinc/blackspaceplatform/authentication_handler_service:${{ steps.prep.outputs.VERSION }}
@@ -209,9 +209,9 @@ jobs:
           push: true
           builder: ${{ steps.buildx.outputs.name }}
           working-directory: ${{env.working-directory}}
-          context: ${{env.working-directory}}
+          context: .
           platforms: linux/amd64
-          file: ./Dockerfile.base
+          file: ./${{env.working-directory}}/Dockerfile.base
           tags: docker.io/github.com/blackspaceinc/blackspaceplatform/authentication_handler_service-base:latest
       - name: Publish helm chart
         uses: stefanprodan/helm-gh-pages@master
