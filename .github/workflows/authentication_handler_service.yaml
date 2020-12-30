@@ -188,7 +188,7 @@ jobs:
           push: true
           builder: ${{ steps.buildx.outputs.name }}
           working-directory: ${{env.working-directory}}
-          context: .
+          context: ${{env.working-directory}}
           file: ${{env.working-directory}}/Dockerfile
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
@@ -209,7 +209,7 @@ jobs:
           push: true
           builder: ${{ steps.buildx.outputs.name }}
           working-directory: ${{env.working-directory}}
-          context: .
+          context: ${{env.working-directory}}
           platforms: linux/amd64
           file: ${{env.working-directory}}/Dockerfile.base
           tags: docker.io/github.com/blackspaceinc/blackspaceplatform/authentication_handler_service-base:latest
