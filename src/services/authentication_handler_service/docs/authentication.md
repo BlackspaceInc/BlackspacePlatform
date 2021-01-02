@@ -1,7 +1,7 @@
 ## How Authentication Works In The Blackspace Platform
 ---
 
-Authentication is a very unique and distributed operations that involves a multitude of services. This document
+Authentication is a very unique and engages in distributed operations that involves a multitude of services. This document
 aims to serve as a source of truth and further provide developers with a hollistic view of the operation.
 
 Our authentication and authorization schemes make extensive use of the JWT tokens. The following set of operations will be
