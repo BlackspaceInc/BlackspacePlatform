@@ -72,7 +72,7 @@ Web UI:
 
 ![business_account_service-ui](https://raw.githubusercontent.com/stefanprodan/business_account_service/gh-pages/screens/business_account_service-ui-v3.png)
 
-To access the Swagger UI open `<business_account_service-host>/swagger/index.html` in a browser.
+To access the Swagger UI open `<localhost:port>/swagger/index.html` in a browser.
 
 ### Guides
 
