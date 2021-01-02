@@ -1,12 +1,17 @@
 # authentication_handler_service
+[![Go Reference](https://pkg.go.dev/badge/BlackspaceInc/BlackspacePlatform.svg)](https://pkg.go.dev/BlackspaceInc/BlackspacePlatform)
+[![Go Report Card](https://goreportcard.com/badge/github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service)](https://goreportcard.com/report/github.com/BlackspaceInc/BlackspacePlatform/src/services/authentication_handler_service)
+[![Docker Pulls](https://img.shields.io/docker/pulls/blackspaceinc/shopper_service)](https://hub.docker.com/r/blackspaceinc/authentication_handler_service)
+[![Issues](https://img.shields.io/github/issues/BlackspaceInc/BlackspacePlatform)](https://img.shields.io/github/issues/BlackspaceInc/BlackspacePlatform)
+[![Forks](https://img.shields.io/github/forks/BlackspaceInc/BlackspacePlatform)](https://img.shields.io/github/forks/BlackspaceInc/BlackspacePlatform)
+[![Stars](	https://img.shields.io/github/stars/BlackspaceInc/BlackspacePlatform)](https://img.shields.io/github/stars/BlackspaceInc/BlackspacePlatform)
+[![License](https://img.shields.io/github/license/BlackspaceInc/BlackspacePlatform)](https://img.shields.io/github/license/BlackspaceInc/BlackspacePlatform)
 
-[![e2e](https://github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/workflows/e2e/badge.svg)](https://github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/blob/master/.github/workflows/e2e.yml)
-[![test](https://github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/workflows/test/badge.svg)](https://github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/blob/master/.github/workflows/test.yml)
-[![cve-scan](https://github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/workflows/cve-scan/badge.svg)](https://github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service/blob/master/.github/workflows/cve-scan.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service)](https://goreportcard.com/report/github.com/blackspaceInc/BlackspacePlatform/src/services/authentication_handler_service)
-[![Docker Pulls](https://img.shields.io/docker/pulls/github.com/blackspaceInc/BlackspacePlatform/authentication_handler_service)](https://hub.docker.com/r/github.com/blackspaceInc/BlackspacePlatform/authentication_handler_service)
 
-authentication_handler_service is a tiny web application made with Go that showcases best practices of running microservices in Kubernetes.
+authentication_handler_service is built on the podinfo open source golang microservice template which showcases the best
+ practices of running microservices in Kubernetes.
+
+ Please reference [SLA Details](./docs/authentication.md) for further information specific to the various SLAs (Service Level Agreements)
 
 Specifications:
 
@@ -52,16 +57,25 @@ Web API:
 * `GET /ws/echo` echos content via websockets `podcli ws ws://localhost:9898/ws/echo`
 * `GET /chunked/{seconds}` uses `transfer-encoding` type `chunked` to give a partial response and then waits for the specified period
 * `GET /swagger.json` returns the API Swagger docs, used for Linkerd service profiling and Gloo routes discovery
+* `POST /v1/account/create` creates an account record from the context of the authentication service through a distributed transaction. Request
+ body must be a json string comprised of the following `{"email": sample@gmail.com, "password": sample_password}`
+ * `DELETE /v1/account/delete/{id}` deletes a user account record from the context of the authentication service through a distributed transaction.
+ * `GET /v1/account/{id}` gets an account from the context of the authentication service by ID.
+ * `POST /v1/account/lock/{id}` locks an account from the context of the authentication service by ID.
+ * `POST /v1/account/login` logs in a user into the system and returns a jwt token which must be used to authenticate all requests. Request body
+  must be a json string comprised of the following `{"email": sample@gmail.com, "password": sample_password}`
+ * `POST /v1/account/logout/{id{}` logs out a user account from the system
+ * `POST /v1/account/unlock/{id}` unlocks an account from the context of the authentication service by ID.
+ * `POST /v1/account/update/{id}` updates a user account's email address from the context of the authentication service.
 
 gRPC API:
-
 * `/grpc.health.v1.Health/Check` health checking
 
 Web UI:
 
 ![authentication_handler_service-ui](https://raw.githubusercontent.com/github.com/blackspaceInc/BlackspacePlatform/authentication_handler_service/gh-pages/screens/authentication_handler_service-ui-v3.png)
 
-To access the Swagger UI open `<authentication_handler_service-host>/swagger/index.html` in a browser.
+To access the Swagger UI open `<localhost:port>/swagger/index.html` in a browser.
 
 ### Guides
 
@@ -107,33 +121,6 @@ Docker:
 docker run -dp 9898:9898 github.com/blackspaceInc/BlackspacePlatform/authentication_handler_service
 ```
 
----
-### TODO (This Week)
-#### Technical
-- [X] pull authn client library and enhance it with the custom impl. in the authentication folder
-- [X] emit metrics for this service and fix errors
-- [X] ensure some api are auth protected (use jwt)
-- [ ] __ implement circuit breaker [link](https://github.com/cep21/circuit) in core library & wrap around all remote calls
-- [ ] __ implement retryable operation in core library & for all remote operations [link](https://github.com/avast/retry-go)
-- [X] implement distributed request tracing & wrap around all remote calls
-- [ ] define graffana views, circuit breaker views, traces, ... etc to visualize metrics, circuit breaker, and traces and ensure
-      template service has this implementation
-- [ ] __ implement unit tests for all api's and new authn library client
-- [ ] __ implement load testing for service and automate this flow
-- [ ] __ configure github actions to run all service tests, run load tests, and end to end tests via docker end to end setup
-- [ ] define minikube and docker-compose local test flows and test local deployments
-- [ ] __ spec out user details and company details data for the registration flow
-    - [X] model after square space account registration, square business account registration, shopify account registration, quora and pinterest
-     account registration
-- [ ] ___ implement graphql api gateway
-- [ ] Implement linkerd side care deployment config (k8 and docker-compose) [link](https://github.com/LensPlatform/linkerd-examples)
-
-#### Non Technical
-- [ ] Reach out to 15 potential customers and follow the rubric specified in your product markdown file.
-    - [ ] talk to them about your solution and ask what needs they may have and how you can better solve them
-    - [ ] go on linkedIn find black owned businesses, get their emails and contact the entrepreneurs (either through email or through phone)
-        - [ ] make note of the trends
-- [ ] Watch 15 YCombinator Videos (1 Hour Long) & think
-- [ ] Plan out sprint and allocate tasks
-
-
+### Starting Locally
+To start the service and its dependencies locally, in the command line, run `make start-e2e-dependencies`. This will spin up a set of docker containers connected
+ to the same docker network.
