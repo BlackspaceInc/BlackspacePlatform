@@ -9,11 +9,10 @@ require (
 	github.com/HdrHistogram/hdrhistogram-go v1.0.1 // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e
-	github.com/danielvladco/go-proto-gql v0.8.0 // indirect
 	github.com/fatih/color v1.10.0
 	github.com/fsnotify/fsnotify v1.4.9
 	github.com/giantswarm/retry-go v0.0.0-20151203102909-d78cea247d5e
-	github.com/gogo/protobuf v1.3.1 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.4.3
 	github.com/gomodule/redigo v1.8.3
 	github.com/gorilla/mux v1.8.0
@@ -23,7 +22,6 @@ require (
 	github.com/infobloxopen/protoc-gen-gorm v0.20.0
 	github.com/itimofeev/go-saga v0.1.0
 	github.com/jinzhu/gorm v1.9.16
-	github.com/keratin/authn-go v1.1.0 // indirect
 	github.com/lib/pq v1.9.0
 	github.com/mitchellh/mapstructure v1.3.0 // indirect
 	github.com/mwitkow/go-proto-validators v0.3.2
@@ -36,7 +34,6 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.7.1
-	github.com/stefanprodan/podinfo v1.8.0 // indirect
 	github.com/stretchr/testify v1.6.1
 	github.com/swaggo/http-swagger v1.0.0
 	github.com/swaggo/swag v1.7.0
@@ -49,6 +46,5 @@ require (
 	google.golang.org/grpc v1.34.0
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/ini.v1 v1.52.0 // indirect
-	gorm.io/driver/postgres v1.0.6 // indirect
 	gorm.io/gorm v1.20.8
 )
