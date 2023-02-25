@@ -19,6 +19,6 @@ require (
 	github.com/swaggo/http-swagger v0.0.0-20200308142732-58ac5e232fba
 	github.com/swaggo/swag v1.6.7
 	go.uber.org/zap v1.15.0
-	golang.org/x/net v0.0.0-20200707034311-ab3426394381
+	golang.org/x/net v0.7.0
 	google.golang.org/grpc v1.30.0
 )
